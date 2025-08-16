@@ -22,10 +22,7 @@ export function RegisterUserView() {
         </Button>
 
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Link
-            to='/'
-            style={{ textDecoration: 'none', color: 'primary.main' }}
-          >
+          <Link href="/" underline="none">
             Já tem conta? Entre
           </Link>
         </Box>
