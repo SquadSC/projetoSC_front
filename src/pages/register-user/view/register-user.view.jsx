@@ -1,28 +1,73 @@
 import { Button, Container, Stack, Typography, Link, Box } from '@mui/material';
 import { HeaderComponent } from '../components/header/header-component';
-import { TextFieldComponent } from '../components/text-field/text-field-component.style';
+import { CustomTextField } from '../components/text-field/custom-text-field';
 
-export function RegisterUserView() {
+export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
   return (
     <>
       <HeaderComponent />
-      <Container sx={{ p: 3, }}>
+      <Container sx={{ p: 3 }}>
         <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
           <Typography variant='h5'> Crie sua conta! </Typography>
           <Typography variant='body1'> Rápido, fácil e gratuito. </Typography>
         </Stack>
 
-        <TextFieldComponent />
-
-        <Button
-          variant='contained'
-          sx={{ width: '100%', height: '48px', mt: 4 }}
+        <Box
+          component='form'
+          onSubmit={onSubmit}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
         >
-          Cadastrar
-        </Button>
+          <CustomTextField
+            label='Nome completo'
+            type='text'
+            value={fields.name}
+            onChange={e => onChange('name', e.target.value)}
+            error={errors.name}
+            helperText={errors.name}
+          />
+          <CustomTextField
+            label='Telefone'
+            type='tel'
+            value={fields.phone}
+            onChange={e => onChange('phone', e.target.value)}
+            error={errors.phone}
+            helperText={errors.phone}
+          />
+          <CustomTextField
+            label='E-mail'
+            type='email'
+            value={fields.email}
+            onChange={e => onChange('email', e.target.value)}
+            error={errors.email}
+            helperText={errors.email}
+          />
+          <CustomTextField
+            label='Senha'
+            type='password'
+            value={fields.password}
+            onChange={e => onChange('password', e.target.value)}
+            error={errors.password}
+            helperText={errors.password}
+          />
+          <CustomTextField
+            label='Confirmar Senha'
+            type='password'
+            value={fields.confirmPassword}
+            onChange={e => onChange('confirmPassword', e.target.value)}
+            error={errors.confirmPassword}
+            helperText={errors.confirmPassword}
+          />
+          <Button
+            type='submit'
+            variant='contained'
+            sx={{ width: '100%', height: '48px', mt: 4 }}
+          >
+            Cadastrar
+          </Button>
+        </Box>
 
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Link href="/" underline="none">
+          <Link href='/' underline='none'>
             Já tem conta? Entre
           </Link>
         </Box>
