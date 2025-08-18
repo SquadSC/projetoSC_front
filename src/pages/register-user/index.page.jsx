@@ -1,0 +1,1 @@
+export { RegisterUserController } from './controller/register-user.controller';
