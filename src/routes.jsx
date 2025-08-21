@@ -17,7 +17,7 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.REGISTER_USER,
       element: <RegisterUserController />,
-    }
+    },
   ];
 
   return (
