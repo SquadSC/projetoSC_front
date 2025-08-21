@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RegisterUserView } from '../view/register-user.view';
+import {request} from '../../../utils/request';
 
 export function RegisterUserController() {
   const [fields, setFields] = useState({
@@ -31,7 +32,23 @@ export function RegisterUserController() {
     e.preventDefault();
     if (!validate()) return;
     alert('Usuário válido!');
+    const user = {
+      "email": fields.email,
+      "senha": fields.password,
+      "nome": fields.name,
+      "telefone": fields.phone,
+      "admin": false
+    };
+    request.post('/usuarios', user)
+      .then(response => {
+        console.log('Usuário registrado com sucesso:', response.data);
+        alert('Usuário registrado com sucesso!');
+      })
+      .catch(error => {
+        console.error('Erro ao registrar usuário:', error);
+      });
   }
+
 
   return (
     <RegisterUserView
