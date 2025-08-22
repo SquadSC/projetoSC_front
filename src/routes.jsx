@@ -7,6 +7,7 @@ import {
 import { ROUTES_PATHS } from './utils/enums/routes-url';
 import { HomeController } from './pages/home/index.page';
 import { RegisterUserController } from './pages/register-user/index.page';
+import { ErrorGenericController } from './pages/error-generic/index.page';
 
 export default function AppRoutes() {
   const routes = [
@@ -17,6 +18,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.REGISTER_USER,
       element: <RegisterUserController />,
+    },
+    {
+      path: ROUTES_PATHS.ERROR_GENERIC,
+      element: <ErrorGenericController />,
     },
   ];
 
