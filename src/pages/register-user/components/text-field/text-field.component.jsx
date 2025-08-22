@@ -2,8 +2,6 @@ import {
   TextField,
   IconButton,
   InputAdornment,
-  Button,
-  Box,
 } from '@mui/material';
 import { useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
@@ -20,13 +18,23 @@ export function CustomTextField({
 }) {
   const [show, setShow] = useState(false);
   const isPassword = type === 'password';
+  const isNumber = type === 'number';
 
   return (
     <TextField
       label={label}
-      type={isPassword ? (show ? 'text' : 'password') : type}
+      type={
+        isPassword ? (show ? 'text' : 'password') : isNumber ? 'number' : type
+      }
       value={value}
-      onChange={onChange}
+      onChange={(e) => {
+        if (isNumber) {
+          const onlyNumbers = e.target.value.replace(/[^0-9]/g, '');
+          onChange({ ...e, target: { ...e.target, value: onlyNumbers } });
+        } else {
+          onChange(e);
+        }
+      }}
       error={!!error}
       helperText={helperText}
       slotProps={
@@ -35,7 +43,7 @@ export function CustomTextField({
               input: {
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <IconButton onClick={() => setShow(s => !s)} edge='end'>
+                    <IconButton onClick={() => setShow((s) => !s)} edge='end'>
                       {show ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
