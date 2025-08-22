@@ -1,6 +1,7 @@
 import { Button, Container, Stack, Typography, Link, Box } from '@mui/material';
 import { HeaderComponent } from '../../../components/header/header-component';
 import { CustomTextField } from '../../../components/text-field/custom-text-field';
+import { PhoneField } from '../components/phone-field/phone-field.component';
 
 export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
   return (
@@ -29,9 +30,8 @@ export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
             error={errors.name}
             helperText={errors.name}
           />
-          <CustomTextField
+          <PhoneField
             label='Telefone'
-            type='tel'
             value={fields.phone}
             onChange={e => onChange('phone', e.target.value)}
             error={errors.phone}
