@@ -7,6 +7,7 @@ import {
 import { ROUTES_PATHS } from './utils/enums/routes-url';
 import { HomeController } from './pages/home/index.page';
 import { RegisterUserController } from './pages/register-user/index.page';
+import { LoginController } from './pages/login/controller/login.controller.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -18,6 +19,10 @@ export default function AppRoutes() {
       path: ROUTES_PATHS.REGISTER_USER,
       element: <RegisterUserController />,
     },
+    {
+      path: ROUTES_PATHS.LOGIN,
+      element: <LoginController />,
+    }
   ];
 
   return (

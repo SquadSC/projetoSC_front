@@ -8,6 +8,7 @@ import {
 import { useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import theme from '../../theme';
 
 export function CustomTextField({
   label,
@@ -15,6 +16,7 @@ export function CustomTextField({
   value,
   onChange,
   error,
+  sx,
   helperText,
   ...props
 }) {
@@ -44,6 +46,19 @@ export function CustomTextField({
             }
           : undefined
       }
+      sx={{
+        ...sx,
+        '& .MuiOutlinedInput-root': {
+          '&.Mui-focused fieldset': {
+            borderColor: theme.palette.primary.main,
+            borderWidth: 2,
+          },
+          '& fieldset': {
+            borderColor: 'black',
+            borderWidth: 2,
+          },
+        },
+      }}
       {...props}
     />
   );
