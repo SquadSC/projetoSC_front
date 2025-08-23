@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AddressMenuView } from '../view/address-menu.view';
 import { request } from '../../../utils/request';
 import { getUserData } from '../../../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 export function AddressMenuController() {
     const navigate = useNavigate();
@@ -10,6 +11,10 @@ export function AddressMenuController() {
   
   //controlar o "carregando..."
   const [loading, setLoading] = useState(true);
+
+  // guardar o id do endereço selecionado
+    const [selectedAddressId, setSelectedAddressId] = useState(null);
+
 
   // Esta função será executada logo após o componente ser renderizado.
   useEffect(() => {
@@ -26,19 +31,33 @@ export function AddressMenuController() {
     const usuarioId = userData.id;
 
     request
-      .get(`/usuarios/${usuarioId}/enderecos`)
+      .get(`/enderecos/usuario/${usuarioId}`)
       .then(response => {
         setAddresses(response.data);
       })
       .catch(err => {
         console.error('Erro ao buscar endereços:', err);
-        setError('Ocorreu um erro ao buscar seus endereços.');
       })
       .finally(() => {
         setLoading(false);
       });
   }, []); // O array vazio [] garante que isso só rode uma vez.
 
+  function handleSelectAddress(id) { // att estado quando um card é clicado
+    if (id !== undefined) {
+      setSelectedAddressId(id);
+      console.log("Endereço selecionado com o ID:", id);
+    } else {
+      console.error("Tentativa de selecionar endereço com ID undefined!");
+    }
+  }
+
+  function handleConfirm() {
+    if (!selectedAddressId) {
+      alert("Por favor, selecione um endereço para continuar.");
+      return;
+    }
+  }
 
   function handleAddNewAddress() { // ir pra página de add endereço
   }
@@ -52,7 +71,10 @@ export function AddressMenuController() {
   return (
     <AddressMenuView
       addresses={addresses}
+      selectedAddressId={selectedAddressId} // Passa o ID selecionado
+      onSelectAddress={handleSelectAddress} // Passa a função para selecionar
       onAddNewAddress={handleAddNewAddress}
+      onConfirm={handleConfirm}
     />
   );
 }

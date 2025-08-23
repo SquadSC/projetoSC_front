@@ -3,4 +3,5 @@ export const ROUTES_PATHS = {
     REGISTER_USER: '/register-user',
     ERROR_GENERIC: '/error-generic',
     LOGIN: '/login-user',
+    ADDRESS_MENU: '/address-menu'
 }

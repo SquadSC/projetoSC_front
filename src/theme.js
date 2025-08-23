@@ -18,7 +18,9 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Poppins, Arial, sans-serif',
-    body1: { fontSize: '0.875rem' },
+    body1: { fontSize: '0.875rem',
+      // color: '#38090D'
+     },
     body2: { fontSize: '0.75rem' },
   },
   components: {
