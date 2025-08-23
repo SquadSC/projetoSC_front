@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from '@mui/material';
 import { lineGolden } from './header-component.style';
-import { LogoComponent } from '../logo/logo-component';
+import { LogoComponent } from '../logo/logo.component';
 
 export function HeaderComponent({ titulo, pagina }) {
   return (
