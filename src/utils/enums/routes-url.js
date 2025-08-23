@@ -3,5 +3,6 @@ export const ROUTES_PATHS = {
     REGISTER_USER: '/register-user',
     ERROR_GENERIC: '/error-generic',
     LOGIN: '/login-user',
-    ADDRESS_MENU: '/address-menu'
+    ADDRESS_MENU: '/address-menu',
+    NEW_ADDRESS:'/new-address',
 }

@@ -3,6 +3,8 @@ import { AddressMenuView } from '../view/address-menu.view';
 import { request } from '../../../utils/request';
 import { getUserData } from '../../../utils/auth';
 import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+
 
 export function AddressMenuController() {
     const navigate = useNavigate();
@@ -60,6 +62,8 @@ export function AddressMenuController() {
   }
 
   function handleAddNewAddress() { // ir pra página de add endereço
+    console.log('CLIQUE DETECTADO! Tentando navegar para:', ROUTES_PATHS.ADD_ADDRESS);
+    navigate(ROUTES_PATHS.NEW_ADDRESS);
   }
 
   // Se ainda estiver carregando, você pode mostrar uma mensagem
