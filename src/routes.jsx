@@ -8,6 +8,7 @@ import { ROUTES_PATHS } from './utils/enums/routes-url';
 import { HomeController } from './pages/home/index.page';
 import { RegisterUserController } from './pages/register-user/index.page';
 import { ErrorGenericController } from './pages/error-generic/index.page';
+import { NavigationProvider } from './hooks/use-navigation/navigation-provider';
 
 export default function AppRoutes() {
   const routes = [
@@ -27,12 +28,17 @@ export default function AppRoutes() {
 
   return (
     <Router>
-      <Routes>
-        {routes.map(route => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-        <Route path='*' element={<Navigate to={ROUTES_PATHS.HOME} replace />} />
-      </Routes>
+      <NavigationProvider>
+        <Routes>
+          {routes.map(route => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+          <Route
+            path='*'
+            element={<Navigate to={ROUTES_PATHS.HOME} replace />}
+          />
+        </Routes>
+      </NavigationProvider>
     </Router>
   );
 }

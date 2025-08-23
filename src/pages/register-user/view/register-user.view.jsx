@@ -2,8 +2,14 @@ import { Button, Container, Stack, Typography, Link, Box } from '@mui/material';
 import { HeaderComponent } from '../components/header/header-component';
 import { CustomTextField } from '../components/text-field/text-field.component';
 import { PhoneField } from '../components/phone-field/phone-field.component';
+import { useNavigate } from 'react-router-dom';
+import { useNavigation } from '../../../hooks/use-navigation/use-nagivation';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 
 export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
+  const navigate = useNavigate();
+  const { goBack } = useNavigation();
+
   return (
     <>
       <HeaderComponent />
@@ -67,9 +73,9 @@ export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
         </Box>
 
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Link href='/' underline='none'>
+          <Button variant='text' color='primary' onClick={() => {goBack(navigate, ROUTES_PATHS.HOME)}}>
             Já tem conta? Entre
-          </Link>
+          </Button>
         </Box>
       </Container>
     </>

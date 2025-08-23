@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from '@mui/material';
 import { lineGolden } from './header-component.style';
-import { LogoComponent } from '../../../../components/logo/logo-component';
+import { LogoComponent } from '../../../../components/logo/logo.component';
 
 export function HeaderComponent() {
   return (
