@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, Checkbox } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 export function HomeView() {

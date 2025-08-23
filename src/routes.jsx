@@ -8,6 +8,8 @@ import { ROUTES_PATHS } from './utils/enums/routes-url';
 import { HomeController } from './pages/home/index.page';
 import { RegisterUserController } from './pages/register-user/index.page';
 import { LoginController } from './pages/login/controller/login.controller.jsx';
+import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
+import { NavigationProvider } from './hooks/use-navigation/navigation-provider.jsx';
 
 export default function AppRoutes() {
   const routes = [
