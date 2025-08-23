@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { LoginView } from '../view/login.view';
 import { request } from '../../../utils/request';
+import { saveUserData } from '../../../utils/auth';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 
 export function LoginController() {
+  const navigate = useNavigate();
   const [fields, setFields] = useState({
     email: '',
     password: '',
@@ -27,13 +31,19 @@ export function LoginController() {
     alert('Tentativa de login válida');
     const login = {
       email: fields.email,
-      password: fields.password,
+      senha: fields.password,
     };
     request
-      .post('/login', login)
+      .post('/usuarios/login', login)
       .then(response => {
+        // armazenando a os dados do usuario do backend no localstorage
+        const userData = response.data
         if (response.status === 200) {
+          saveUserData(userData)
           alert('Login bem-sucedido');
+          // Redireciona o usuário para a página principal
+          navigate(ROUTES_PATHS.HOME);
+
         } else {
           alert('Falha no login');
         }

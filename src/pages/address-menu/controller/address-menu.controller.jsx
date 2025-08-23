@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AddressMenuView } from '../view/address-menu.view';
 import { request } from '../../../utils/request';
-import { useNavigate } from 'react-router-dom';
+import { getUserData } from '../../../utils/auth';
 
 export function AddressMenuController() {
     const navigate = useNavigate();
@@ -11,29 +11,34 @@ export function AddressMenuController() {
   //controlar o "carregando..."
   const [loading, setLoading] = useState(true);
 
-  // Esta função será executada UMA VEZ, logo após o componente ser renderizado.
+  // Esta função será executada logo após o componente ser renderizado.
   useEffect(() => {
-    // buscar os dados
-    function fetchAddresses() {
-      request
-        .get('/enderecos/usuario/{}') // Faz a chamada GET para a sua API de endereços
-        .then(response => {
-          // att o estado com os dados
-          setAddresses(response.data); 
-        })
-        .catch(error => {
-          console.error('Erro ao buscar endereços:', error);
-          alert('Não foi possível carregar os endereços.');
-        })
-        .finally(() => {
-          // independentemente do resultado, para de mostrar o "carregando"
-          setLoading(false);
-        });
+    // tenta pegar os dados do usuário.
+    const userData = getUserData();
+
+    // Se não houver usuário, não fazemos a chamada à API.
+    if (!userData || !userData.id) {
+      setLoading(false);
+      return;
     }
 
-    // Chamar a função de listagem
-    fetchAddresses();
-  }, []); // O array vazio [] no final significa: "execute isso apenas uma vez"
+    // Se encontrou um usuário, prossegue com a busca de endereços.
+    const usuarioId = userData.id;
+
+    request
+      .get(`/usuarios/${usuarioId}/enderecos`)
+      .then(response => {
+        setAddresses(response.data);
+      })
+      .catch(err => {
+        console.error('Erro ao buscar endereços:', err);
+        setError('Ocorreu um erro ao buscar seus endereços.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []); // O array vazio [] garante que isso só rode uma vez.
+
 
   function handleAddNewAddress() { // ir pra página de add endereço
   }

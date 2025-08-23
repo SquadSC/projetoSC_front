@@ -1,26 +1,33 @@
-const AUTH_TOKEN_KEY = 'authToken';
 const USER_DATA_KEY = 'userData';
 
-// salvar os dados no localStorage após o login
-export function saveAuthData(token, userData) {
-  localStorage.setItem(AUTH_TOKEN_KEY, token);
+export function saveUserData(userData) {
+  // guarda o objeto do usuário como texto.
   localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
 }
 
-// pegar os dados do usuário
+// Recupera os dados do usuário do localStorage.
 export function getUserData() {
   const userDataString = localStorage.getItem(USER_DATA_KEY);
-  if (!userDataString) return null;
+  if (!userDataString) {
+    return null;
+  }
   return JSON.parse(userDataString);
 }
 
-// pegar apenas o token
-export function getAuthToken() {
-  return localStorage.getItem(AUTH_TOKEN_KEY);
+// Remove os dados do usuário do localStorage
+export function logout() {
+  localStorage.removeItem(USER_DATA_KEY);
 }
 
-// limpar os dados no logout
-export function clearAuthData() {
-  localStorage.removeItem(AUTH_TOKEN_KEY);
-  localStorage.removeItem(USER_DATA_KEY);
+// Verifica se o usuário está atualmente logado -  proteger rotas e exibir conteúdo condicional-
+export function isLoggedIn() {
+  const userData = getUserData();
+
+  // Retorna false se não houver dados de usuário salvos
+  if (!userData) {
+    return false;
+  }
+
+  // Retorna o valor da propriedade 'logado' (true ou false)
+  return userData.logado === true;
 }
