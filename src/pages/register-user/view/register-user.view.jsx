@@ -1,6 +1,6 @@
 import { Button, Container, Stack, Typography, Link, Box } from '@mui/material';
-import { HeaderComponent } from '../components/header/header-component';
-import { CustomTextField } from '../components/text-field/text-field.component';
+import { HeaderComponent } from '../../../components/header/header-component';
+import { CustomTextField } from '../../../components/text-field/custom-text-field';
 import { PhoneField } from '../components/phone-field/phone-field.component';
 import { useNavigate } from 'react-router-dom';
 import { useNavigation } from '../../../hooks/use-navigation/use-nagivation';
@@ -12,7 +12,11 @@ export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
 
   return (
     <>
-      <HeaderComponent />
+      <HeaderComponent 
+        titulo="Bem-vindo à Elê Doces!"
+        pagina="Peça seus doces de forma rápida, prática e com todo o carinho de
+            sempre."
+      />
       <Container sx={{ p: 3 }}>
         <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
           <Typography variant='h5'> Crie sua conta! </Typography>

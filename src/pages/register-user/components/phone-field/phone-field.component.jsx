@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { IMaskInput } from 'react-imask';
 import TextField from '@mui/material/TextField';
-
+import theme from '../../../../theme';
 const TextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
   const { onChange, ...other } = props;
   return (
@@ -29,6 +29,7 @@ export function PhoneField({
   onChange,
   error,
   helperText,
+  sx,
   ...props
 }) {
   return (
@@ -42,6 +43,19 @@ export function PhoneField({
         inputComponent: TextMaskCustom,
       }}
       fullWidth
+      sx={{
+              ...sx,
+              '& .MuiOutlinedInput-root': {
+                '&.Mui-focused fieldset': {
+                  borderColor: theme.palette.primary.main,
+                  borderWidth: 2,
+                },
+                '& fieldset': {
+                  borderColor: 'black',
+                  borderWidth: 2,
+                },
+              },
+            }}
       {...props}
     />
   );
