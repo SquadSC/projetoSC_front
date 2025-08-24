@@ -1,25 +1,93 @@
-import { Button, Container, Stack, Typography, Link, Box } from '@mui/material';
-import { HeaderComponent } from '../../../components/header/header-component';
-import { useNavigate } from 'react-router-dom';
+import { Button, Container, Stack, Typography, Box } from '@mui/material';
+import { AddressCard } from '../../../components/address-card/address-card';
+import { PageHeader } from '../../../components/header-jornada/header-jornada-component';
+import { StepperComponent } from '../../../components/stepper/stepper-component'; 
 
-export function AddressMenuView ( {addresses, onSelectAddress, onAddNewAddress, onConfirm }) {
-    const navigate = useNavigate();
+const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3'];
 
-    return (
-        <>
-        <HeaderComponent
-        titulo='Entrega do Pedido'
+// A View agora recebe a lista de 'addresses' e uma função 'onSelectAddress'
+export function AddressMenuView({
+  addresses,
+  selectedAddressId,
+  onSelectAddress,
+  onAddNewAddress,
+  onConfirm,
+}) {
+  return (
+    // Box principal
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <PageHeader titulo='' showBackButton={true} />
+      <PageHeader titulo='Entrega do Pedido' showBackButton={false} />
+
+      {/* Container principal que ocupa o espaço disponível */}
+      <Container
+        sx={{
+          pt: 0,
+          px: 3,
+          pb: 3,
+          flexGrow: 1,
+          mb: '96px' /* Margem no fundo para não sobrepor o botão fixo */,
+        }}
+      >
+        <StepperComponent
+          steps={['Etapa 1', 'Etapa 2', 'Etapa 3']}
+          activeStep={2}
         />
-        <Container sx={{p:3}}>
-            <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
-          <Typography variant='h5'>Que bom te ver de novo!</Typography>
-          <Typography variant='body1'>
-            Entre e continue adoçando seus dias com a gente
-          </Typography>
+
+        <Typography variant='body1' sx={{ mb: 2 }}>
+          Endereços de entregas cadastrados
+        </Typography>
+
+        <Stack spacing={2}>
+          {addresses.length > 0 ? (
+            addresses.map(address => (
+              <AddressCard
+                key={address.idEndereco}
+                address={address}
+                // A View passa a função do controller para a prop 'onSelect' do card
+                onSelect={onSelectAddress}
+                // A lógica para saber se o card está selecionado está perfeita
+                isSelected={address.idEndereco === selectedAddressId}
+              />
+            ))
+          ) : (
+            <Typography variant='body1' sx={{ textAlign: 'center', mt: 4 }}>
+              Nenhum endereço cadastrado.
+            </Typography>
+          )}
         </Stack>
 
-        </Container>
+        {}
+        <Button
+          variant='outlined'
+          fullWidth
+          sx={{ mt: 3, borderRadius: '24px', height: '48px' }}
+          onClick={onAddNewAddress}
+        >
+          Adicionar Endereço
+        </Button>
+      </Container>
 
-        </>
-    );
+      {/*BOTÃO FIXO */}
+      <Box
+        sx={{
+          position: 'fixed', // Posição fixa
+          bottom: 0,
+          left: 0,
+          right: 0,
+          p: 2, // Padding interno
+          backgroundColor: 'background.default',
+        }}
+      >
+        <Button
+          variant='contained'
+          fullWidth
+          sx={{ borderRadius: '24px', height: '48px' }}
+          onClick={onConfirm}
+        >
+          Confirmar
+        </Button>
+      </Box>
+    </Box>
+  );
 }
