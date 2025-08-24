@@ -5,4 +5,5 @@ export const ROUTES_PATHS = {
     LOGIN: '/login-user',
     ADDRESS_MENU: '/address-menu',
     NEW_ADDRESS:'/new-address',
+    CART: '/cart',
 }
