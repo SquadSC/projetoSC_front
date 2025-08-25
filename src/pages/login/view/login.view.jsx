@@ -10,6 +10,7 @@ export function LoginView({ fields, error, onSubmit, onChange }) {
       <HeaderComponent
         titulo='Bem-vindo à Elê Doces!'
         pagina='Peça seus doces de forma rápida, prática e com todo o carinho de sempre.'
+        variant='loggoff'
       />
       <Container sx={{ p: 3 }}>
         <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>

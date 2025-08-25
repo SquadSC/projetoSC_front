@@ -13,6 +13,7 @@ import { NavigationProvider } from './hooks/use-navigation/navigation-provider.j
 import { AddressMenuController } from './pages/address-menu/index.page';
 import { NewAddressController } from './pages/new-address/index.page';
 import { CartController } from './pages/cart/index.page.jsx';
+import { CalendarUserController } from './pages/calendar-user/controller/calendar-user.controller.jsx';
 
 
 export default function AppRoutes() {
@@ -45,6 +46,10 @@ export default function AppRoutes() {
       path: ROUTES_PATHS.CART,
       element: <CartController />,
     },
+    {
+      path: ROUTES_PATHS.CALENDAR_USER,
+      element: <CalendarUserController />,
+    }
   ];
 
   return (
