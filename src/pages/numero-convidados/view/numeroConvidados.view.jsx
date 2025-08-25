@@ -8,8 +8,7 @@ export function NumeroConvidadosView({ fields, errors, onChange, onSubmit }) {
     const navigate = useNavigate();
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            {/* Header com botão voltar */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', p: 1 }}>
             <PageHeader titulo='' showBackButton={true} />
             <PageHeader titulo='Número de Convidados' showBackButton={false} />
 
