@@ -2,7 +2,7 @@ import { Button, Container, Stack, Typography, Box } from '@mui/material';
 import { PageHeader } from '../../../components/header-jornada/header-jornada-component';
 import { StepperComponent } from '../../../components/stepper/stepper-component';
 import { request } from '../../../utils/request';
-import { PhoneField } from '../../../components/phone-field/phone-field.component';
+import { CepField } from '../components/cep-field/cep-field.component';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import { CustomTextField } from '../../../components/text-field/text-field.component';
@@ -19,6 +19,7 @@ export function NewAddressView({
   errors,
   onChange,
   onSubmit,
+  isCepLoading
 }) {
   const navigate = useNavigate();
 
@@ -59,8 +60,7 @@ export function NewAddressView({
             error={errors.nomeEndereco}
             helperText={errors.nomeEndereco}
           />
-          {/* Campo CEP */}
-          <CustomTextField
+          <CepField
             label='CEP'
             type='text'
             value={fields.cep}
@@ -68,7 +68,6 @@ export function NewAddressView({
             error={errors.cep}
             helperText={errors.cep}
           />
-          {/* Campo RUA */}
           <CustomTextField
             label='Logradouro'
             type='text'
@@ -77,7 +76,6 @@ export function NewAddressView({
             error={errors.logradouro}
             helperText={errors.logradouro}
           />
-          {/* Campo BAIRRO */}
           <CustomTextField
             label='Bairro'
             type='text'
@@ -97,7 +95,6 @@ export function NewAddressView({
               helperText={errors.cidade}
               fullWidth
             />
-            {/* Campo ESTADO */}
             <CustomTextField
               label='Estado'
               type='text'
@@ -110,7 +107,6 @@ export function NewAddressView({
             />
           </Stack>
 
-          {/* Campo NÚMERO */}
           <CustomTextField
             label='Número'
             type='text'
@@ -119,7 +115,6 @@ export function NewAddressView({
             error={errors.numero}
             helperText={errors.numero}
           />
-          {/* Campo COMPLEMENTO */}
           <CustomTextField
             label='Complemento (Opcional)'
             type='text'
@@ -128,7 +123,6 @@ export function NewAddressView({
             error={errors.complemento}
             helperText={errors.complemento}
           />
-          {/* Campo PONTO DE REFERENCIA */}
           <CustomTextField
             label='Ponto de Referência (Opcional)'
             type='text'

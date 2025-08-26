@@ -48,7 +48,6 @@ export function AddressMenuController() {
   function handleSelectAddress(id) { // att estado quando um card é clicado
     if (id !== undefined) {
       setSelectedAddressId(id);
-      console.log("Endereço selecionado com o ID:", id);
     } else {
       console.error("Tentativa de selecionar endereço com ID undefined!");
     }
@@ -62,11 +61,9 @@ export function AddressMenuController() {
   }
 
   function handleAddNewAddress() { // ir pra página de add endereço
-    console.log('CLIQUE DETECTADO! Tentando navegar para:', ROUTES_PATHS.ADD_ADDRESS);
     navigate(ROUTES_PATHS.NEW_ADDRESS);
   }
 
-  // Se ainda estiver carregando, você pode mostrar uma mensagem
   if (loading) {
     return <p>Carregando endereços...</p>;
   }
