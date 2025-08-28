@@ -13,8 +13,12 @@ import { NavigationProvider } from './hooks/use-navigation/navigation-provider.j
 import { AddressMenuController } from './pages/address-menu/index.page';
 import { NewAddressController } from './pages/new-address/index.page';
 import { CartController } from './pages/cart/index.page.jsx';
+<<<<<<< HEAD
 import { NumeroConvidadosController } from './pages/numero-convidados/controller/numeroConvidados.controller.jsx';
 
+=======
+import { CalendarUserController } from './pages/calendar-user/controller/calendar-user.controller.jsx';
+>>>>>>> origin/develop
 
 
 export default function AppRoutes() {
@@ -48,8 +52,13 @@ export default function AppRoutes() {
       element: <CartController />,
     },
     {
+<<<<<<< HEAD
       path: ROUTES_PATHS.NUMERO_CONVIDADOS,
       element: <NumeroConvidadosController />,
+=======
+      path: ROUTES_PATHS.CALENDAR_USER,
+      element: <CalendarUserController />,
+>>>>>>> origin/develop
     }
   ];
 

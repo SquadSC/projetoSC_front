@@ -10,7 +10,7 @@ export function NumeroConvidadosView({ fields, errors, onChange, onSubmit }) {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', p: 1 }}>
             <PageHeader titulo='' showBackButton={true} />
-            <PageHeader titulo='Número de Convidados' showBackButton={false} />
+            <PageHeader titulo='' showBackButton={false} />
 
             <Container sx={{ p: 3 }}>
                 <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
