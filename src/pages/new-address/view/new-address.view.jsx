@@ -2,7 +2,7 @@ import { Button, Container, Stack, Typography, Box } from '@mui/material';
 import { PageHeader } from '../../../components/header-jornada/header-jornada-component';
 import { StepperComponent } from '../../../components/stepper/stepper-component';
 import { request } from '../../../utils/request';
-import { CepField } from '../../../utils/cep-field/cep-field';
+import { CepField } from '../components/cep-formatter';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import { CustomTextField } from '../../../components/text-field/text-field.component';
