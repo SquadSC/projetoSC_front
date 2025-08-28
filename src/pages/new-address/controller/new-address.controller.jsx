@@ -4,7 +4,7 @@ import { request } from '../../../utils/request';
 import { getUserData } from '../../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
-import { fetchCep } from '../../../services/cep-service';
+import { fetchCep } from '../../../hooks/use-cep/cep-service';
 
 export function NewAddressController() {
   const navigate = useNavigate();
