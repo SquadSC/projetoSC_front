@@ -12,9 +12,9 @@ import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
 import { NavigationProvider } from './hooks/use-navigation/navigation-provider.jsx';
 import { AddressMenuController } from './pages/address-menu/index.page';
 import { NewAddressController } from './pages/new-address/index.page';
+import { CustomOrderController } from './pages/custom-order/index.page.jsx';
+import { CalendarUserController } from './pages/calendar-user/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
-import { CalendarUserController } from './pages/calendar-user/controller/calendar-user.controller.jsx';
-
 
 export default function AppRoutes() {
   const routes = [
@@ -43,13 +43,18 @@ export default function AppRoutes() {
       element: <NewAddressController />,
     },
     {
-      path: ROUTES_PATHS.CART,
-      element: <CartController />,
+      path: ROUTES_PATHS.CUSTOM_ORDER,
+      element: <CustomOrderController />,
     },
     {
       path: ROUTES_PATHS.CALENDAR_USER,
       element: <CalendarUserController />,
-    }
+    },
+    {
+      path: ROUTES_PATHS.CART,
+      element: <CartController />,
+    },
+
   ];
 
   return (
