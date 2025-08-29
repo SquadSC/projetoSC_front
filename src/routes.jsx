@@ -15,6 +15,7 @@ import { NewAddressController } from './pages/new-address/index.page';
 import { CustomOrderController } from './pages/custom-order/index.page.jsx';
 import { CalendarUserController } from './pages/calendar-user/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
+import { OrderUserController } from './pages/order-user/controller/order-user.controle.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -54,6 +55,10 @@ export default function AppRoutes() {
       path: ROUTES_PATHS.CART,
       element: <CartController />,
     },
+    {
+      path: ROUTES_PATHS.ORDER_USER,
+      element: <OrderUserController />,
+    }
 
   ];
 
