@@ -1,9 +1,8 @@
 import { Button, Container, Stack, Typography, Box } from '@mui/material';
 import { AddressCard } from '../../../components/address-card/address-card';
 import { PageHeader } from '../../../components/header-jornada/header-jornada-component';
-import { StepperComponent } from '../../../components/stepper/stepper-component'; 
-
-const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3'];
+import { StepperComponent } from '../../../components/stepper/stepper-component';
+import * as React from 'react';
 
 // A View agora recebe a lista de 'addresses' e uma função 'onSelectAddress'
 export function AddressMenuView({
@@ -13,6 +12,9 @@ export function AddressMenuView({
   onAddNewAddress,
   onConfirm,
 }) {
+  const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3'];
+  const [activeStep, setActiveStep] = React.useState(0);
+
   return (
     // Box principal
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -30,8 +32,9 @@ export function AddressMenuView({
         }}
       >
         <StepperComponent
-          steps={['Etapa 1', 'Etapa 2', 'Etapa 3']}
-          activeStep={2}
+          steps={steps}
+          activeStep={activeStep}
+          onStepChange={setActiveStep}
         />
 
         <Typography variant='body1' sx={{ mb: 2 }}>
