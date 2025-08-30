@@ -1,7 +1,8 @@
-import { NavbarComponent } from "../../../components/navbar/navbar.component"
-export default function OrderUserView() {
+import { NavbarComponent } from '../../../components/navbar/navbar.component';
+export function OrderUserView() {
+  return (
     <>
-        <NavbarComponent></NavbarComponent>
-
+      <NavbarComponent></NavbarComponent>
     </>
+  );
 }

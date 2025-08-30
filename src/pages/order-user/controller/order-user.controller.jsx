@@ -1,4 +1,4 @@
-import OrderUserView from "../view/order-user.view";
+import { OrderUserView } from '../view/order-user.view';
 
 export function OrderUserController() {
   return (

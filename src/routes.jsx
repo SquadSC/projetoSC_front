@@ -5,17 +5,18 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { ROUTES_PATHS } from './utils/enums/routes-url';
-import { HomeController } from './pages/home/index.page';
-import { RegisterUserController } from './pages/register-user/index.page';
-import { LoginController } from './pages/login/controller/login.controller.jsx';
-import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
 import { NavigationProvider } from './hooks/use-navigation/navigation-provider.jsx';
+import { HomeController } from './pages/home/index.page';
+import { LoginController } from './pages/login/index.page.jsx';
+import { RegisterUserController } from './pages/register-user/index.page';
+import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
 import { AddressMenuController } from './pages/address-menu/index.page';
 import { NewAddressController } from './pages/new-address/index.page';
 import { CustomOrderController } from './pages/custom-order/index.page.jsx';
 import { CalendarUserController } from './pages/calendar-user/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
-import { OrderUserController } from './pages/order-user/controller/order-user.controle.jsx';
+import { SchedulingOrderController } from './pages/scheduling-order/index.page.jsx';
+import { OrderUserController } from './pages/order-user/index.page.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -58,8 +59,11 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.ORDER_USER,
       element: <OrderUserController />,
-    }
-
+    },
+    {
+      path: ROUTES_PATHS.SCHEDULING_ORDER,
+      element: <SchedulingOrderController />,
+    },
   ];
 
   return (

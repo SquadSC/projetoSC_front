@@ -1,23 +1,26 @@
-import { Box, Step, StepButton, Stepper } from "@mui/material";
-import { useState } from "react";
+import { Box, Step, StepButton, Stepper } from '@mui/material';
 
-export function StepperComponent({ steps, initialStep = 0 }) {
-  const [activeStep, setActiveStep] = useState(initialStep);
-
-  const handleStepClick = (index) => {
-    if (index <= activeStep) {
-      setActiveStep(index);
+export function StepperComponent({
+  steps,
+  activeStep,
+  maxStepReached,
+  onStepChange,
+}) {
+  const handleStepClick = index => {
+    if (index <= maxStepReached) {
+      onStepChange(index);
     }
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => (
           <Step key={label}>
             <StepButton
-              color="inherit"
+              color='inherit'
               onClick={() => handleStepClick(index)}
+              disabled={index > maxStepReached}
             >
               {label}
             </StepButton>
