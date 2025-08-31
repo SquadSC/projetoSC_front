@@ -9,13 +9,13 @@ import { styleCalendar } from './style';
 dayjs.extend(updateLocale);
 dayjs.updateLocale("pt-br", {
     weekdaysMin: ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"],
-    weekStart: 1, // deixe 1 (segunda) ou 0 (domingo) conforme seu layout
+    weekStart: 0, // deixe 1 (segunda) ou 0 (domingo) conforme seu layout
 });
 dayjs.locale("pt-br");
 
 export function CalendarComponent() {
     return (
-        <Container sx={{width: '100%', p:0, height: '46vh', backgroundColor:'white'}}>
+        <Container sx={{width: '345px', p:0, height: '388px'}}>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <DateCalendar
                     showDaysOutsideCurrentMonth
