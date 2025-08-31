@@ -15,6 +15,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx';
 import bgCakeImage from '../../../assets/cake-images/bg-cake.png';
 import { CakeCarousel } from '../components/cake-carousel.component';
+import IconRestaurant from '../../../assets/cake-images/icon-restaurant.svg';
 
 const mockCakes = [
   {
@@ -99,13 +100,12 @@ export function HomeView() {
               variant='contained'
               color='primary'
               onClick={() => navigate(ROUTES_PATHS.NUMERO_CONVIDADOS)}
-              // Alteração 2: Ajustes de largura e margem no próprio botão
               sx={{
-                width: { xs: '80%', sm: '60%', md: '50%' }, // O botão será mais largo
-                py: 1.5, // Aumenta a altura do botão (padding vertical)
+                width: { xs: '80%', sm: '60%', md: '50%' },
+                py: 1.5,
               }}
             >
-              Personalizar bolo
+              Personalizar Pedido
             </Button>
           </Box>
         </Stack>
@@ -121,7 +121,6 @@ export function HomeView() {
           textAlign: 'center',
         }}
       >
-
         <Stack // referencias
           sx={{
             gap: 2,
@@ -134,6 +133,174 @@ export function HomeView() {
         </Stack>
       </Container>
       <CakeCarousel cakes={mockCakes} />
+
+      <Container
+        sx={{
+          marginTop: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between', // psd
+          textAlign: 'center',
+          height: '630px',
+        }}
+      >
+        <Stack // pq ele doces
+          sx={{
+            gap: 2,
+          }}
+        >
+          <Typography variant='body1'>Confeitaria</Typography>
+          <Typography variant='h5' fontWeight={600}>
+            Por que escolher a Elê Doces?
+          </Typography>
+        </Stack>
+
+        <Stack // cima
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              // height: '50%',
+              p: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Box>
+              <img
+                src={IconRestaurant}
+                alt='Ícone de restaurante'
+                style={{ width: '100%' }}
+              />
+            </Box>
+            <Typography variant='h6' fontWeight={600}>
+              Feito Sob Encomenda
+            </Typography>
+            <Typography variant='body1'>
+              Cada pedido é único, feito especialmente para você, com atenção
+              aos detalhes e ao que você imagina.
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              width: '100%',
+              // height: '50%',
+              p: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Box>
+              <img
+                src={IconRestaurant}
+                alt='Ícone de restaurante'
+                style={{ width: '100%' }}
+              />
+            </Box>
+            <Typography variant='h6' fontWeight={600}>
+              100% Artesanal
+            </Typography>
+            <Typography variant='body1'>
+              Produzimos de forma artesanal, com cuidado e carinho em cada
+              etapa.
+            </Typography>
+          </Box>
+        </Stack>
+
+        <Stack // baixo
+          sx={{
+            gap: 2,
+            flexDirection: 'row',
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              // height: '50%',
+              p: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Box>
+              <img
+                src={IconRestaurant}
+                alt='Ícone de restaurante'
+                style={{ width: '100%' }}
+              />
+            </Box>
+            <Typography variant='h6' fontWeight={600}>
+              Ingredientes de Qualidade
+            </Typography>
+            <Typography variant='body1'>
+              Só usamos ingredientes frescos e selecionados. Aqui não tem massa
+              pronta, tudo é feito do zero.
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              width: '100%',
+              // height: '50%',
+              p: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Box>
+              <img
+                src={IconRestaurant}
+                alt='Ícone de restaurante'
+                style={{ width: '100%' }}
+              />
+            </Box>
+            <Typography variant='h6' fontWeight={600}>
+              Personalização Total
+            </Typography>
+            <Typography variant='body1'>
+              Você escolhe sabores, tamanhos, recheios e pode enviar referências
+              de decoração para deixar do seu jeitinho.
+            </Typography>
+          </Box>
+        </Stack>
+      </Container>
+
+      <Container
+        sx={{
+          p: '3, 3, 0',
+          marginTop: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          height: '630px',
+        }}
+      >
+        <Stack // avaliações
+          sx={{
+            gap: 2,
+          }}
+        >
+          <Typography variant='body1'>Avaliações</Typography>
+          <Typography variant='h5' fontWeight={600}>
+            Quem já pediu, recomenda!
+          </Typography>
+        </Stack>
+      </Container>
 
       {/* <Container sx={{ p: 3 }}>
         <Button
