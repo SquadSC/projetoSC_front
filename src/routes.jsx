@@ -10,13 +10,10 @@ import { HomeController } from './pages/home/index.page';
 import { LoginController } from './pages/login/index.page.jsx';
 import { RegisterUserController } from './pages/register-user/index.page';
 import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
-import { AddressMenuController } from './pages/address-menu/index.page';
-import { NewAddressController } from './pages/new-address/index.page';
 import { CustomOrderController } from './pages/custom-order/index.page.jsx';
-import { CalendarUserController } from './pages/calendar-user/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
-import { SchedulingOrderController } from './pages/scheduling-order/index.page.jsx';
 import { OrderUserController } from './pages/order-user/index.page.jsx';
+import { OrderDeliveryController } from './pages/order-delivery/index.page.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -37,20 +34,8 @@ export default function AppRoutes() {
       element: <ErrorGenericController />,
     },
     {
-      path: ROUTES_PATHS.ADDRESS_MENU,
-      element: <AddressMenuController />,
-    },
-    {
-      path: ROUTES_PATHS.NEW_ADDRESS,
-      element: <NewAddressController />,
-    },
-    {
       path: ROUTES_PATHS.CUSTOM_ORDER,
       element: <CustomOrderController />,
-    },
-    {
-      path: ROUTES_PATHS.CALENDAR_USER,
-      element: <CalendarUserController />,
     },
     {
       path: ROUTES_PATHS.CART,
@@ -61,8 +46,8 @@ export default function AppRoutes() {
       element: <OrderUserController />,
     },
     {
-      path: ROUTES_PATHS.SCHEDULING_ORDER,
-      element: <SchedulingOrderController />,
+      path: ROUTES_PATHS.ORDER_DELIVERY,
+      element: <OrderDeliveryController />,
     },
   ];
 

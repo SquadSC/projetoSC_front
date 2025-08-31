@@ -1,27 +1,19 @@
-import { Button, Container, Stack, Typography, Box } from '@mui/material';
-import { AddressCard } from '../../../components/address-card/address-card';
-import { PageHeader } from '../../../components/header-jornada/header-jornada-component';
-import { StepperComponent } from '../../../components/stepper/stepper-component';
 import * as React from 'react';
+import { Button, Container, Stack, Typography, Box } from '@mui/material';
+import { AddressCard } from '../../../../components/address-card/address-card';
 
 // A View agora recebe a lista de 'addresses' e uma função 'onSelectAddress'
-export function AddressMenuView({
+export function AddressMenuComponent({
   addresses,
   selectedAddressId,
   onSelectAddress,
   onAddNewAddress,
   onConfirm,
 }) {
-  const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3'];
-  const [activeStep, setActiveStep] = React.useState(0);
 
   return (
     // Box principal
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <PageHeader titulo='' showBackButton={true} />
-      <PageHeader titulo='Entrega do Pedido' showBackButton={false} />
-
-      {/* Container principal que ocupa o espaço disponível */}
       <Container
         sx={{
           pt: 0,
@@ -31,11 +23,6 @@ export function AddressMenuView({
           mb: '96px' /* Margem no fundo para não sobrepor o botão fixo */,
         }}
       >
-        <StepperComponent
-          steps={steps}
-          activeStep={activeStep}
-          onStepChange={setActiveStep}
-        />
 
         <Typography variant='body1' sx={{ mb: 2 }}>
           Endereços de entregas cadastrados

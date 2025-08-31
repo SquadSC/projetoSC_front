@@ -10,6 +10,7 @@ export const styleCalendar = (theme) => ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        fontSize: '0.875rem',
         // ou height: 500 se quiser fixar exatamente
     },
     '& .MuiDayCalendar-weekDayLabel': {
@@ -37,7 +38,7 @@ export const styleCalendar = (theme) => ({
         textTransform: 'capitalize',
         color: theme.palette.primary.main,
         fontWeight: 'bold',
-        fontSize: '1.50rem',
+        fontSize: '1.40rem',
 
     },
     '& .MuiDayCalendar-weekContainer': { margin: 0 },
