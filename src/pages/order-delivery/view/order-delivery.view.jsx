@@ -4,6 +4,7 @@ import { StepperComponent } from '../../../components/stepper/stepper-component'
 import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
 import { CalendarUserComponent } from '../components/calendar-user/calendar-user.component';
 import { DeliveryLocationComponent } from '../components/delivery-location/delivery-location.component';
+import { DeliveryMethodComponent } from '../components/delivery-method/delivery-method.component';
 
 export function OrderDeliveryView({
   addresses,
@@ -35,7 +36,7 @@ export function OrderDeliveryView({
       case 0:
         return <CalendarUserComponent nextStep={handleNext} />;
       case 1:
-        return <CalendarUserComponent nextStep={handleNext} />;
+        return <DeliveryMethodComponent nextStep={handleNext} />;
       case 2:
         return <DeliveryLocationComponent
           addresses={addresses}
@@ -50,8 +51,6 @@ export function OrderDeliveryView({
           onChange={onChange}
           onSubmit={onSubmit}
         />;
-      default:
-        return null;
     }
   };
 
