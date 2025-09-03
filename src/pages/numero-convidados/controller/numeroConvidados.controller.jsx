@@ -14,6 +14,8 @@ export function NumeroConvidadosController() {
         quantidade: '',
     });
 
+    const [resultado, setResultado] = useState(null);
+
     const validate = () => {
         let valid = true;
         let newErrors = { quantidade: '' };
@@ -38,17 +40,32 @@ export function NumeroConvidadosController() {
     const onSubmit = (e) => {
         e.preventDefault();
         if (validate()) {
-            // Navega para a próxima página ou realiza outra ação
-            navigate(ROUTES_PATHS.CART);
+            const qtd = Number(fields.quantidade);
+
+            // regras de cálculo
+            const boloKg = (qtd * 0.12).toFixed(1); // 120g por pessoa
+            const salgados = qtd * 7;
+            const doces = qtd * 5;
+
+            setResultado({
+                boloKg,
+                salgados,
+                doces,
+                qtd
+            });
+
+            // limpa o campo de quantidade
+            setFields({ quantidade: '' });
         }
     };
 
     return (
-        <NumeroConvidadosView
-            fields={fields}
-            errors={errors}
-            onChange={onChange}
-            onSubmit={onSubmit}
-        />
-    );
+    <NumeroConvidadosView
+        fields={fields}
+        errors={errors}
+        onChange={onChange}
+        onSubmit={onSubmit}
+        resultado={resultado}
+    />
+);
 }

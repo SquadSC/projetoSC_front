@@ -6,9 +6,6 @@ export const ROUTES_PATHS = {
     ADDRESS_MENU: '/address-menu',
     NEW_ADDRESS:'/new-address',
     CART: '/cart',
-<<<<<<< HEAD
     NUMERO_CONVIDADOS: '/numero-convidados',
-=======
     CALENDAR_USER: '/calendar-user',
->>>>>>> origin/develop
 }

@@ -1,1 +1,1 @@
-export {NumeroConvidadosController} from '../numero-convidados/controller/numero-convidados.controller';
+export {NumeroConvidadosController} from './controller/numeroConvidados.controller.jsx';
