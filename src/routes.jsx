@@ -48,10 +48,6 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.ORDER_DELIVERY,
       element: <OrderDeliveryController />,
-    },
-    {
-      path: ROUTES_PATHS.CALENDAR_USER,
-      element: <CalendarUserController />,
     }
   ];
 

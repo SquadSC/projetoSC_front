@@ -1,6 +1,6 @@
-import { Box, Container, Stack } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
-export function OrderUserView(idPedido, tipoPedido, dataPedido, horarioPedido) {
+export function OrderUserView({idPedido, tipoPedido, dataPedido, horarioPedido}) {
   return (
     <>
       <NavbarComponent></NavbarComponent>
