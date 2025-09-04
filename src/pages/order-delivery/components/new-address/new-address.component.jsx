@@ -1,48 +1,25 @@
 import { Button, Container, Stack, Typography, Box } from '@mui/material';
-import { PageHeader } from '../../../components/header-jornada/header-jornada-component';
-import { StepperComponent } from '../../../components/stepper/stepper-component';
-import { request } from '../../../utils/request';
-import { CepField } from '../components/cep-formatter';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
-import { CustomTextField } from '../../../components/text-field/text-field.component';
+import { CustomTextField } from '../../../../components/text-field/text-field.component';
+import { CepField } from '../cep-field/cep-field.component';
 
-const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3'];
-
-export function NewAddressView({
-  addresses,
-  selectedAddressId,
-  onSelectAddress,
-  onAddNewAddress,
-  onConfirm,
+export function NewAddressComponent({
   fields,
   errors,
   onChange,
   onSubmit,
-  isCepLoading
 }) {
-  const navigate = useNavigate();
 
   return (
-    // Box principal
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <PageHeader titulo='' showBackButton={true} />
-      <PageHeader titulo='Entrega do Pedido' showBackButton={false} />
-
-      {/* Container principal que ocupa o espaço disponível */}
       <Container
         sx={{
           pt: 0,
           px: 3,
           pb: 3,
           flexGrow: 1,
-          mb: '96px' /* Margem no fundo para não sobrepor o botão fixo */,
+          mb: '96px'
         }}
       >
-        <StepperComponent
-          steps={['Etapa 1', 'Etapa 2', 'Etapa 3']}
-          activeStep={2}
-        />
         <Typography variant='body1' sx={{ mb: 2 }}>
           Adicionando endereço de entrega
         </Typography>

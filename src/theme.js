@@ -18,11 +18,23 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Poppins, Arial, sans-serif',
-    body1: { fontSize: '0.875rem',
-      // color: '#38090D'
-     },
-    body2: { fontSize: '0.75rem' },
+    fontWeightThin: 100,
+    fontWeightExtraLight: 200,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightSemiBold: 600,
+    fontWeightBold: 700,
+    fontWeightExtraBold: 800,
+    fontWeightBlack: 900,
+    body1: {
+      fontSize: '0.875rem',
+    },
+    body2: {
+      fontSize: '0.75rem',
+    },
   },
+
   components: {
     MuiButton: {
       styleOverrides: {

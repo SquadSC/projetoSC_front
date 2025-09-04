@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Typography, Container, MenuItem, FormControl, InputLabel, Select, Button } from '@mui/material';
-import { CalendarComponent } from '../../../components/calendar/calendar-component';
-import theme from '../../../theme';
+import { CalendarComponent } from '../../../../components/calendar/calendar-component';
+import theme from '../../../../theme';
 
-export default function CalendarUserView() {
+export function CalendarUserComponent( { nextStep } ) {
   const [horario, setHorario] = useState('');
 
   const handleChange = (event) => {
@@ -13,12 +13,13 @@ export default function CalendarUserView() {
   return (
     <>
       <Container sx={{ p: 2 }}>
-        <Typography variant='subtitle1' mb={2} fontWeight='bold' pl={2} color={theme.palette.primary.main}>
+        <Typography variant='subtitle2' mb={1} fontWeight='bold' pl={2} color={theme.palette.primary.main}>
           Escolha a data de entrega
         </Typography>
+        
         <CalendarComponent />
 
-        <Typography variant='subtitle2' fontWeight='bold' pl={1} mt={2} mb={1} color={theme.palette.primary.main}>
+        <Typography variant='subtitle2' fontWeight='bold' pl={1} mt={3} mb={1} color={theme.palette.primary.main}>
           Informe o horário de entrega
         </Typography>
 
@@ -53,6 +54,7 @@ export default function CalendarUserView() {
           color='primary'
           type='submit'
           sx={{ width: '100%', height: '48px', mt: 4 }}
+          onClick={nextStep}
         >
           Avançar
         </Button>
