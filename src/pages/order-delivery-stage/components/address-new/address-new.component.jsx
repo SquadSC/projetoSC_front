@@ -1,23 +1,13 @@
 import { Button, Container, Stack, Typography, Box } from '@mui/material';
 import { CustomTextField } from '../../../../components/text-field/text-field.component';
-import { CepField } from '../cep-field/cep-field.component';
+import { CepField } from '../../../order-delivery/components/cep-field/cep-field.component';
 
-export function NewAddressComponent({
-  fields,
-  errors,
-  onChange,
-  onSubmit,
-}) {
-
+export function NewAddressComponent({ fields, errors, onChange, onSubmit }) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column'}}>
       <Container
         sx={{
-          pt: 0,
-          px: 3,
-          pb: 3,
-          flexGrow: 1,
-          mb: '96px'
+          p: 3,
         }}
       >
         <Typography variant='body1' sx={{ mb: 2 }}>
@@ -111,7 +101,7 @@ export function NewAddressComponent({
           <Button
             type='submit'
             variant='contained'
-            sx={{ width: '100%', height: '48px', mt: 4 }}
+            sx={{ width: '100%', height: '48px', mt: 1 }}
           >
             Cadastrar Endereço
           </Button>

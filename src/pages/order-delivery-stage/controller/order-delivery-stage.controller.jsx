@@ -1,13 +1,20 @@
-import { OrderDeliveryView } from '../view/order-delivery.view';
-import { useState, useEffect } from 'react';
+import * as React from 'react';
+import { OrderDeliveryStageView } from '../view/order-delivery-stage.view';
 import { request } from '../../../utils/request';
 import { getUserData } from '../../../utils/auth';
 import { fetchCep } from '../../../hooks/use-cep/cep-service';
+import { useState, useEffect } from 'react';
 
-export function OrderDeliveryController() {
+export function OrderDeliveryStageController() {
+  const [activeStep, setActiveStep] = useState(0);
+  const [maxStepReached, setMaxStepReached] = useState(0);
+
+  const [methodDelivery, setMethodDelivery] = useState('');
+  const [addAddress, setAddAddress] = useState(false);
+
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [isAddingAddress, setIsAddingAddress] = useState(false); // Controla se está na tela de adicionar endereço
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [fields, setFields] = useState({
     nomeEndereco: '',
     cep: '',
@@ -21,6 +28,23 @@ export function OrderDeliveryController() {
   });
   const [errors, setErrors] = useState({});
   const [isCepLoading, setIsCepLoading] = useState(false);
+
+  const handleNext = () => {
+    const nextStep = activeStep + 1;
+    setActiveStep(nextStep);
+    if (nextStep > maxStepReached) {
+      setMaxStepReached(nextStep);
+    }
+  };
+
+  const driveMethodDelivery = method => {
+    setMethodDelivery(method);
+    if (method === 'delivery') {
+      setAddAddress(true);
+    } else {
+      setAddAddress(false);
+    }
+  };
 
   // Carregar endereços do usuário
   useEffect(() => {
@@ -114,18 +138,31 @@ export function OrderDeliveryController() {
   }
 
   return (
-    <OrderDeliveryView
-      addresses={addresses}
-      selectedAddressId={selectedAddressId}
-      isAddingAddress={isAddingAddress}
-      fields={fields}
-      errors={errors}
-      isCepLoading={isCepLoading}
-      onSelectAddress={handleSelectAddress}
-      onAddNewAddress={handleAddNewAddress}
-      onBackToAddressMenu={handleBackToAddressMenu}
-      onChange={handleChange}
-      onSubmit={handleSubmit}
+    <OrderDeliveryStageView
+      stepConfig={{
+        nextStep: handleNext,
+        activeStep,
+        maxStepReached,
+        setActiveStep,
+      }}
+      methodDeliveryConfig={{
+        methodDelivery,
+        driveMethodDelivery,
+        addAddress,
+      }}
+      addressConfig={{
+        addresses,
+        selectedAddressId,
+        isAddingAddress,
+        fields,
+        errors,
+        isCepLoading,
+        onSelectAddress: handleSelectAddress,
+        onAddNewAddress: handleAddNewAddress,
+        onBackToAddressMenu: handleBackToAddressMenu,
+        onChange: handleChange,
+        onSubmit: handleSubmit,
+      }}
     />
   );
 }
