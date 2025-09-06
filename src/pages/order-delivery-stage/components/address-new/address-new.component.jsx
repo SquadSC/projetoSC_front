@@ -1,6 +1,6 @@
 import { Button, Container, Stack, Typography, Box } from '@mui/material';
 import { CustomTextField } from '../../../../components/text-field/text-field.component';
-import { CepField } from '../../../order-delivery/components/cep-field/cep-field.component';
+import { CepField } from '../cep-field/cep-field.component';
 
 export function NewAddressComponent({ fields, errors, onChange, onSubmit }) {
   return (
