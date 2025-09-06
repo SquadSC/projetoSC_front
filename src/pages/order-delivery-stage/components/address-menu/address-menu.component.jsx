@@ -10,20 +10,14 @@ export function AddressMenuComponent({
   onAddNewAddress,
   onConfirm,
 }) {
-
   return (
     // Box principal
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Container
         sx={{
-          pt: 0,
-          px: 3,
-          pb: 3,
-          flexGrow: 1,
-          mb: '96px' /* Margem no fundo para não sobrepor o botão fixo */,
+            p: 3,
         }}
       >
-
         <Typography variant='body1' sx={{ mb: 2 }}>
           Endereços de entregas cadastrados
         </Typography>

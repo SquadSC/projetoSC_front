@@ -6,6 +6,5 @@ export const ROUTES_PATHS = {
   CUSTOM_ORDER: '/custom-order',
   ORDER_USER: '/order-user',
   CART: '/cart',
-  ORDER_DELIVERY: '/order-delivery',
-  CALENDAR_USER: '/calendar-user'
+  ORDER_DELIVERY_STAGE: '/order-delivery-stage',
 };

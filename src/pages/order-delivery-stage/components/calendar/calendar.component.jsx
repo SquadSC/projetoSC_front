@@ -13,7 +13,7 @@ export function CalendarUserComponent( { nextStep } ) {
   return (
     <>
       <Container sx={{ p: 2 }}>
-        <Typography variant='subtitle2' mb={1} fontWeight='bold' pl={2} color={theme.palette.primary.main}>
+        <Typography variant='subtitle2' mb={1} fontWeight='bold' pl={1} color={theme.palette.primary.main}>
           Escolha a data de entrega
         </Typography>
         

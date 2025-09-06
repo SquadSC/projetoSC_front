@@ -15,7 +15,7 @@ dayjs.locale("pt-br");
 
 export function CalendarComponent() {
     return (
-        <Container sx={{width: '345px', p:0, height: '388px'}}>
+        <Container sx={{width: '345px', p:0, height: '342px'}}>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <DateCalendar
                     showDaysOutsideCurrentMonth
