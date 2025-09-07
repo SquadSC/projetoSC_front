@@ -1,64 +1,110 @@
 import { useState } from 'react';
-import { Typography, Container, MenuItem, FormControl, InputLabel, Select, Button } from '@mui/material';
+import {
+  Typography,
+  Container,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  Button,
+  FormHelperText,
+} from '@mui/material';
 import { CalendarComponent } from '../../../../components/calendar/calendar-component';
 import theme from '../../../../theme';
+import dayjs from 'dayjs';
 
-export function CalendarUserComponent( { nextStep } ) {
+export function CalendarUserComponent({ nextStep }) {
   const [horario, setHorario] = useState('');
+  const [date, setDate] = useState(null);
+  const [errors, setErrors] = useState({});
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setHorario(event.target.value);
   };
 
+  const handleNext = () => {
+    const newErrors = {};
+    if (!date) newErrors.date = 'Selecione uma data de entrega';
+    if (!horario) newErrors.horario = 'Selecione um horário de entrega';
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      nextStep();
+    }
+  };
+
   return (
-    <>
-      <Container sx={{ p: 2 }}>
-        <Typography variant='subtitle2' mb={1} fontWeight='bold' pl={1} color={theme.palette.primary.main}>
-          Escolha a data de entrega
-        </Typography>
-        
-        <CalendarComponent />
+    <Container sx={{ p: 2 }}>
+      <Typography
+        variant='subtitle2'
+        mb={1}
+        fontWeight='bold'
+        pl={1}
+        color={theme.palette.primary.main}
+      >
+        Escolha a data de entrega
+      </Typography>
 
-        <Typography variant='subtitle2' fontWeight='bold' pl={1} mt={3} mb={1} color={theme.palette.primary.main}>
-          Informe o horário de entrega
-        </Typography>
+      <CalendarComponent value={date} onChange={setDate} />
+      {errors.date && <FormHelperText error>{errors.date}</FormHelperText>}
 
-        <FormControl sx={{ minWidth: '100%',  maxWidth: '100%'}} size="medium">
-          <InputLabel id="demo-select-small-label">Horário</InputLabel>
-          <Select
-            labelId="demo-select-small-label"
-            id="demo-select-small"
-            value={horario}
-            label="Horário"
-            onChange={handleChange}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={"09:00"}>9:00</MenuItem>
-            <MenuItem value={"10:00"}>10:00</MenuItem>
-            <MenuItem value={"11:00"}>11:00</MenuItem>
-            <MenuItem value={"12:00"}>12:00</MenuItem>
-            <MenuItem value={"13:00"}>13:00</MenuItem>
-            <MenuItem value={"14:00"}>14:00</MenuItem>
-            <MenuItem value={"15:00"}>15:00</MenuItem>
-            <MenuItem value={"16:00"}>16:00</MenuItem>
-            <MenuItem value={"17:00"}>17:00</MenuItem>
-            <MenuItem value={"18:00"}>18:00</MenuItem>
-            <MenuItem value={"19:00"}>19:00</MenuItem>
-            <MenuItem value={"20:00"}>20:00</MenuItem>
-          </Select>
-        </FormControl>
-        <Button
-          variant='contained'
-          color='primary'
-          type='submit'
-          sx={{ width: '100%', height: '48px', mt: 4 }}
-          onClick={nextStep}
+      <Typography
+        variant='subtitle2'
+        fontWeight='bold'
+        pl={1}
+        mt={3}
+        mb={1}
+        color={theme.palette.primary.main}
+      >
+        Informe o horário de entrega
+      </Typography>
+
+      <FormControl
+        sx={{ minWidth: '100%', maxWidth: '100%' }}
+        size='medium'
+        error={!!errors.horario}
+      >
+        <InputLabel id='horario-label'>Horário</InputLabel>
+        <Select
+          labelId='horario-label'
+          value={horario}
+          label='Horário'
+          onChange={handleChange}
         >
-          Avançar
-        </Button>
-      </Container>
-    </>
+          <MenuItem value=''>
+            <em>None</em>
+          </MenuItem>
+          {[
+            '09:00',
+            '10:00',
+            '11:00',
+            '12:00',
+            '13:00',
+            '14:00',
+            '15:00',
+            '16:00',
+            '17:00',
+            '18:00',
+            '19:00',
+            '20:00',
+          ].map(h => (
+            <MenuItem key={h} value={h}>
+              {h}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.horario && <FormHelperText>{errors.horario}</FormHelperText>}
+      </FormControl>
+
+      <Button
+        variant='contained'
+        color='primary'
+        sx={{ width: '100%', height: '48px', mt: 4 }}
+        onClick={handleNext}
+      >
+        Avançar
+      </Button>
+    </Container>
   );
 }
