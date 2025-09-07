@@ -1,84 +1,39 @@
+import React from 'react'; // 👈 Importe o React para usar a ref
 import Slider from 'react-slick';
-import { Box, IconButton } from '@mui/material';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { Box, Stack } from '@mui/material';
 import { CakeCard } from './cake-card.component';
-import { PrevArrow, NextArrow } from './carousel-arrows.component';
+import { PrevArrow, NextArrow } from './carousel-arrows.component'; // Suas setas reutilizáveis
 import PropTypes from 'prop-types';
 
-// // Componente para a seta "Anterior"
-// function PrevArrow(props) {
-//   const { className, style, onClick } = props;
-//   return (
-//     <IconButton
-//       onClick={onClick}
-//       sx={{
-//         position: 'absolute',
-//         top: '55%', // Alinha verticalmente ao meio
-//         left: '30%', // Posiciona à esquerda, fora da área dos cards
-//         zIndex: 2,
-//         transform: 'translateY(-50%)',
-//         color: theme => theme.palette.primary.main,
-//         border: theme => `2px solid ${theme.palette.primary.main}`,
-//       }}
-//     >
-//       <ArrowBackIosNewIcon />
-//     </IconButton>
-//   );
-// }
-
-// // Componente para a seta "Próximo"
-// function NextArrow(props) {
-//   const { className, style, onClick } = props;
-//   return (
-//     <IconButton
-//       onClick={onClick}
-//       sx={{
-//         position: 'absolute',
-//         top: '55%', // Alinha verticalmente ao meio
-//         right: '30%', // Posiciona à direita, fora da área dos cards
-//         zIndex: 2,
-//         transform: 'translateY(-50%)',
-//         color: theme => theme.palette.primary.main,
-//         border: theme => `2px solid ${theme.palette.primary.main}`
-//       }}
-//     >
-//       <ArrowForwardIosIcon />
-//     </IconButton>
-//   );
-// }
-
 export function CakeCarousel({ cakes }) {
+  const sliderRef = React.useRef(null);
+
+  const handlePrev = () => {
+    sliderRef.current.slickPrev();
+  };
+  const handleNext = () => {
+    sliderRef.current.slickNext();
+  };
+
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    centerMode: true, // Para dar o efeito de centralizado
-    variableWidth: true, // Importante para larguras diferentes
-    className: "center", // Adiciona uma classe para estilização customizada
-    centerPadding: "60px", // cria espaço nas laterais
-    nextArrow: <NextArrow/>,
-    prevArrow: <PrevArrow/>,
+    centerMode: true,
+    centerPadding: '60px',
+    arrows: false, // nao renderizar as setas padrao dele
   };
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        position: 'relative', //  ponto de referência para as setas
-        pb: 6, // padding embaixo para criar espaço para as setas
-        maxWidth: '400px',
-        height: '60dvh',
-        mx: 'auto',
-        py: 4,
-      }}
-    >
-      <Box sx={{ width: '100%', mx: 'auto', height: '100%', }}>
-        <Slider {...settings}>
+    // Um Stack principal para organizar o slider e as setas verticalmente
+    <Stack sx={{ width: '100%', alignItems: 'center' }}>
+      {/* Container do Slider */}
+      <Box sx={{ width: '100%', maxWidth: '500px' }}>
+        <Slider ref={sliderRef} {...settings}>
           {cakes.map(cake => (
-            <Box key={cake.id} sx={{ width: '280px !important' }}>
+            <Box key={cake.id}>
               <CakeCard
                 image={cake.image}
                 title={cake.title}
@@ -88,7 +43,18 @@ export function CakeCarousel({ cakes }) {
           ))}
         </Slider>
       </Box>
-    </Box>
+
+      {/* Renderizando as setas manualmente aqui embaixo */}
+      <Stack 
+        direction="row" 
+        spacing={2} 
+        justifyContent="center" 
+        sx={{ mt: 2 }} // Margem acima das setas
+      >
+        <PrevArrow onClick={handlePrev} />
+        <NextArrow onClick={handleNext} />
+      </Stack>
+    </Stack>
   );
 }
 

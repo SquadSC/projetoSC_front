@@ -6,17 +6,18 @@ import {
   Container,
   Stack,
   Typography,
-  Card,
-  CardContent,
-  IconButton,
 } from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx';
 import bgCakeImage from '../../../assets/cake-images/bg-cake.png';
+import CakeImage_Floral from '../../../assets/cake-images/cake-floral.png';
+import CakeImage_Azul from '../../../assets/cake-images/cake-azul.png';
+import CakeImage_Frutas from '../../../assets/cake-images/cake-frutas.png';
+
 import { CakeCarousel } from '../components/cake-carousel.component';
 import IconRestaurant from '../../../assets/cake-images/icon-restaurant.svg';
 import { FeedbackCarousel } from '../components/feedback-carousel.component';
+import React from 'react';
+import { PrevArrow, NextArrow } from '../components/carousel-arrows.component'; 
 
 
 const mockCakes = [
@@ -24,32 +25,34 @@ const mockCakes = [
     id: 1,
     title: 'Bolo Floral',
     description: 'Bolo de 2 andares com flores de açúcar',
-    image: bgCakeImage,
+    image: CakeImage_Floral,
   },
   {
     id: 2,
     title: 'Bolo Azul',
     description: 'Bolo decorado com buttercream azul e detalhes dourados',
-    image: bgCakeImage,
+    image: CakeImage_Azul,
   },
   {
     id: 3,
     title: 'Bolo de Frutas',
     description: 'Bolo com frutas vermelhas frescas e creme',
-    image: bgCakeImage,
+    image: CakeImage_Frutas,
   },
 ];
 
 const mockFeedbacks = [
   {
     id: 1,
-    quote: 'Tudo feito com muito amor, capricho e carinho para os clientes. Os melhores recheios, docinhos e salgados, sempre trazendo novidades para os clientes, um trabalho impecável!!',
+    quote:
+      'Tudo feito com muito amor, capricho e carinho para os clientes. Os melhores recheios, docinhos e salgados, sempre trazendo novidades para os clientes, um trabalho impecável!!',
     authorName: 'Gabriella Ramos',
     authorInfo: 'Muito bom',
   },
   {
     id: 2,
-    quote: 'O melhor bolo que já comi na vida! A entrega foi super rápida e o atendimento é excelente. Recomendo de olhos fechados!',
+    quote:
+      'O melhor bolo que já comi na vida! A entrega foi super rápida e o atendimento é excelente. Recomendo de olhos fechados!',
     authorName: 'João Silva',
     authorInfo: 'Excelente',
   },
@@ -57,12 +60,20 @@ const mockFeedbacks = [
 
 export function HomeView() {
   const navigate = useNavigate();
-
+  // config das setas de carrossel
+  const feedbackSliderRef = React.useRef(null);
+  const handleNextFeedback = () => {
+    feedbackSliderRef.current.slickNext();
+  };
+  const handlePrevFeedback = () => {
+    feedbackSliderRef.current.slickPrev();
+  };
   return (
     <>
       <NavbarComponent></NavbarComponent>
 
-      <Container // banner
+      {/* --- SEÇÃO DO BANNER INICIAL --- */}
+      <Container
         sx={{
           width: '100%',
           height: '55vh',
@@ -128,6 +139,8 @@ export function HomeView() {
         </Stack>
       </Container>
 
+      {/* --- SEÇÃO DE 'REFERÊNCIAS' --- */}
+
       <Container
         sx={{
           p: '3, 3, 0',
@@ -138,7 +151,7 @@ export function HomeView() {
           textAlign: 'center',
         }}
       >
-        <Stack // referencias
+        <Stack
           sx={{
             gap: 2,
           }}
@@ -149,8 +162,10 @@ export function HomeView() {
           </Typography>
         </Stack>
       </Container>
+
       <CakeCarousel cakes={mockCakes} />
 
+      {/* --- SEÇÃO DE 'POR QUE ESCOLHER A ELÊ DOCES' --- */}
       <Container
         sx={{
           marginTop: 4,
@@ -162,7 +177,7 @@ export function HomeView() {
           height: '630px',
         }}
       >
-        <Stack // pq ele doces
+        <Stack
           sx={{
             gap: 2,
           }}
@@ -294,18 +309,14 @@ export function HomeView() {
         </Stack>
       </Container>
 
+      {/* --- SEÇÃO DE 'FEEDBACKS/AVALIAÇÕES' --- */}
       <Container
         sx={{
-          p: '3, 3, 0',
           marginTop: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
           textAlign: 'center',
-          height: '630px',
         }}
       >
-        <Stack // avaliações
+        <Stack
           sx={{
             gap: 2,
           }}
@@ -315,11 +326,21 @@ export function HomeView() {
             Quem já pediu, recomenda!
           </Typography>
         </Stack>
-
-        <FeedbackCarousel feedbacks={mockFeedbacks} />
       </Container>
 
-      {/* <Container sx={{ p: 3 }}>
+      <Stack
+        direction='row'
+        alignItems='center'
+        justifyContent='center'
+        spacing={1}
+        sx={{ width: '100%', px: 1, my: 2 }}
+      >
+        <PrevArrow onClick={handlePrevFeedback} />
+        <FeedbackCarousel ref={feedbackSliderRef} feedbacks={mockFeedbacks} />
+        <NextArrow onClick={handleNextFeedback} />
+      </Stack>
+
+       {/* <Container sx={{ p: 3 }}>
         <Button
           variant='contained'
           color='primary'

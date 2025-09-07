@@ -1,73 +1,29 @@
+import React from 'react';
 import Slider from 'react-slick';
-import { Box, IconButton } from '@mui/material';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { Box } from '@mui/material';
 import { FeedbackCard } from './feedback-card.component';
 import PropTypes from 'prop-types';
 
-// Componente para a seta "Anterior" com novo estilo
-function PrevArrow({ onClick }) {
-  return (
-    <IconButton
-      onClick={onClick}
-      sx={{
-        position: 'absolute',
-        top: '65%', 
-        left: '30%', 
-        transform: 'translate(-50%, -50%)', 
-        zIndex: 2,
-        border: (theme) => `2px solid ${theme.palette.primary.main}`,
-        color: (theme) => theme.palette.primary.main,
-      }}
-    >
-      <ArrowBackIosNewIcon />
-    </IconButton>
-  );
-}
-
-// Componente para a seta "Próximo"
-function NextArrow({ onClick }) {
-  return (
-    <IconButton
-      onClick={onClick}
-      sx={{
-        position: 'absolute',
-        top: '65%',
-        right: '30%',
-        transform: 'translate(50%, -50%)',
-        zIndex: 2,
-        border: (theme) => `2px solid ${theme.palette.primary.main}`,
-        color: (theme) => theme.palette.primary.main,
-      }}
-    >
-      <ArrowForwardIosIcon />
-    </IconButton>
-  );
-}
-
-export function FeedbackCarousel({ feedbacks }) {
+export const FeedbackCarousel = React.forwardRef(({ feedbacks }, ref) => {
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 1, // Mostra só 1 slide
+    slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true, // Garante que as setas sejam renderizadas
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    arrows: false, // As setas serão controladas por fora
   };
 
   return (
     <Box 
       sx={{ 
-        position: 'relative',
-        width: '100%',
+        width: '75%',
         maxWidth: '350px', 
         mx: 'auto',
         my: 4,
       }}
     >
-      <Slider {...settings}>
+      <Slider ref={ref} {...settings}>
         {feedbacks.map((feedback) => (
           <Box key={feedback.id}>
             <FeedbackCard
@@ -80,8 +36,15 @@ export function FeedbackCarousel({ feedbacks }) {
       </Slider>
     </Box>
   );
-}
+});
 
 FeedbackCarousel.propTypes = {
-
+  feedbacks: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      quote: PropTypes.string.isRequired,
+      authorName: PropTypes.string.isRequired,
+      authorInfo: PropTypes.string,
+    })
+  ).isRequired,
 };
