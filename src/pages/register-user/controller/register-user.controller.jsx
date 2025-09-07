@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { RegisterUserView } from '../view/register-user.view';
 import { request } from '../../../utils/request';
+import { validateFields, validators } from '../../../utils/field-validator/field-validator.utils';
 
 export function RegisterUserController() {
   const [fields, setFields] = useState({
@@ -17,45 +18,7 @@ export function RegisterUserController() {
   }
 
   function validate() {
-    const newErrors = {};
-
-    const validators = {
-      name: [
-        { check: v => !!v, msg: 'Nome obrigatório' },
-        { check: v => /^[a-zA-Z\s]+$/.test(v), msg: 'Nome inválido' },
-        { check: v => v.length <= 45, msg: 'Nome muito longo' },
-      ],
-      phone: [
-        { check: v => !!v, msg: 'Telefone obrigatório' },
-        { check: v => v.length >= 15, msg: 'Informe seu telefone com DDD' },
-      ],
-      email: [
-        { check: v => !!v, msg: 'E-mail obrigatório' },
-        {
-          check: v => v.length >= 10,
-          msg: 'E-mail deve conter no mínimo 10 caracteres',
-        },
-        { check: v => v.length <= 150, msg: 'E-mail muito longo' },
-      ],
-      password: [
-        { check: v => !!v, msg: 'Senha obrigatória' },
-        {
-          check: v => v.length >= 8,
-          msg: 'Senha deve conter no mínimo 8 caracteres',
-        },
-        { check: v => v.length <= 60, msg: 'Senha muito longa' },
-      ],
-    };
-
-    for (const field in validators) {
-      const value = fields[field];
-      for (const { check, msg } of validators[field]) {
-        if (!check(value)) {
-          newErrors[field] = msg;
-          break;
-        }
-      }
-    }
+    const newErrors = validateFields(fields, validators);
 
     if (fields.password !== fields.confirmPassword) {
       newErrors.confirmPassword = 'Senhas não coincidem';

@@ -21,36 +21,5 @@ export function NavbarComponent() {
       <Box sx={lineGolden}></Box>
     </Box>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   );
 }

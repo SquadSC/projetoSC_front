@@ -1,25 +1,26 @@
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
-export function OrderUserView({idPedido, tipoPedido, dataPedido, horarioPedido}) {
+import theme from '../../../theme';
+import { OrderComponent } from '../../../components/order/order-component';
+export function OrderUserView({ idPedido, tipoPedido, dataPedido, horarioPedido }) {
   return (
     <>
       <NavbarComponent></NavbarComponent>
 
-      <Container>
-        <Stack direction="column">
-          <Box>
-            <Typography variant="h6">Ordem#{idPedido}</Typography>
-          </Box>
-          <Box>
-            <Typography variant="h6">{tipoPedido}</Typography>
-          </Box>
-        </Stack>
-        <Stack>
-          {dataPedido}
-        </Stack>
-        <Stack>
-          {horarioPedido}
-        </Stack>
+      <Container sx={{ mt: 4, p: 2 }}>
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: 600, color: theme.palette.primary.main }}>
+          Meus Pedidos
+        </Typography>
+
+        <Container sx={{ p: 0, display: 'flex', flexDirection: 'column'}}>
+           <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600, color: theme.palette.primary.main }}>
+          Pendentes:
+        </Typography>
+          <OrderComponent idPedido={idPedido} tipoPedido={tipoPedido} dataPedido={dataPedido} horarioPedido={horarioPedido} />
+        </Container>
+        
+
+
       </Container>
     </>
   );
