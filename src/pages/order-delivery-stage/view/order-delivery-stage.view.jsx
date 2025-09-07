@@ -62,7 +62,7 @@ export function OrderDeliveryStageView({
   return (
     <>
       <Container sx={{ p: 3 }}>
-        <PageHeader titulo='Etapas do Pedido' showBackButton={true} />
+        <PageHeader titulo='Entrega do Pedido' showBackButton={true} />
         <StepperComponent
           steps={steps}
           activeStep={activeStep}
