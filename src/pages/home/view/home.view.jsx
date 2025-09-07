@@ -16,6 +16,8 @@ import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx
 import bgCakeImage from '../../../assets/cake-images/bg-cake.png';
 import { CakeCarousel } from '../components/cake-carousel.component';
 import IconRestaurant from '../../../assets/cake-images/icon-restaurant.svg';
+import { FeedbackCarousel } from '../components/feedback-carousel.component';
+
 
 const mockCakes = [
   {
@@ -35,6 +37,21 @@ const mockCakes = [
     title: 'Bolo de Frutas',
     description: 'Bolo com frutas vermelhas frescas e creme',
     image: bgCakeImage,
+  },
+];
+
+const mockFeedbacks = [
+  {
+    id: 1,
+    quote: 'Tudo feito com muito amor, capricho e carinho para os clientes. Os melhores recheios, docinhos e salgados, sempre trazendo novidades para os clientes, um trabalho impecável!!',
+    authorName: 'Gabriella Ramos',
+    authorInfo: 'Muito bom',
+  },
+  {
+    id: 2,
+    quote: 'O melhor bolo que já comi na vida! A entrega foi super rápida e o atendimento é excelente. Recomendo de olhos fechados!',
+    authorName: 'João Silva',
+    authorInfo: 'Excelente',
   },
 ];
 
@@ -140,7 +157,7 @@ export function HomeView() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-between', // psd
+          justifyContent: 'space-between',
           textAlign: 'center',
           height: '630px',
         }}
@@ -192,7 +209,6 @@ export function HomeView() {
           <Box
             sx={{
               width: '100%',
-              // height: '50%',
               p: 1,
               display: 'flex',
               flexDirection: 'column',
@@ -253,7 +269,6 @@ export function HomeView() {
           <Box
             sx={{
               width: '100%',
-              // height: '50%',
               p: 1,
               display: 'flex',
               flexDirection: 'column',
@@ -300,6 +315,8 @@ export function HomeView() {
             Quem já pediu, recomenda!
           </Typography>
         </Stack>
+
+        <FeedbackCarousel feedbacks={mockFeedbacks} />
       </Container>
 
       {/* <Container sx={{ p: 3 }}>

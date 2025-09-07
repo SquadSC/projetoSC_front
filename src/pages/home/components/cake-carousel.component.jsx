@@ -3,49 +3,50 @@ import { Box, IconButton } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { CakeCard } from './cake-card.component';
+import { PrevArrow, NextArrow } from './carousel-arrows.component';
 import PropTypes from 'prop-types';
 
-// Componente para a seta "Anterior"
-function PrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <IconButton
-      onClick={onClick}
-      sx={{
-        position: 'absolute',
-        top: '55%', // Alinha verticalmente ao meio
-        left: '30%', // Posiciona à esquerda, fora da área dos cards
-        zIndex: 2,
-        transform: 'translateY(-50%)',
-        color: theme => theme.palette.primary.main,
-        border: theme => `2px solid ${theme.palette.primary.main}`,
-      }}
-    >
-      <ArrowBackIosNewIcon />
-    </IconButton>
-  );
-}
+// // Componente para a seta "Anterior"
+// function PrevArrow(props) {
+//   const { className, style, onClick } = props;
+//   return (
+//     <IconButton
+//       onClick={onClick}
+//       sx={{
+//         position: 'absolute',
+//         top: '55%', // Alinha verticalmente ao meio
+//         left: '30%', // Posiciona à esquerda, fora da área dos cards
+//         zIndex: 2,
+//         transform: 'translateY(-50%)',
+//         color: theme => theme.palette.primary.main,
+//         border: theme => `2px solid ${theme.palette.primary.main}`,
+//       }}
+//     >
+//       <ArrowBackIosNewIcon />
+//     </IconButton>
+//   );
+// }
 
-// Componente para a seta "Próximo"
-function NextArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <IconButton
-      onClick={onClick}
-      sx={{
-        position: 'absolute',
-        top: '55%', // Alinha verticalmente ao meio
-        right: '30%', // Posiciona à direita, fora da área dos cards
-        zIndex: 2,
-        transform: 'translateY(-50%)',
-        color: theme => theme.palette.primary.main,
-        border: theme => `2px solid ${theme.palette.primary.main}`
-      }}
-    >
-      <ArrowForwardIosIcon />
-    </IconButton>
-  );
-}
+// // Componente para a seta "Próximo"
+// function NextArrow(props) {
+//   const { className, style, onClick } = props;
+//   return (
+//     <IconButton
+//       onClick={onClick}
+//       sx={{
+//         position: 'absolute',
+//         top: '55%', // Alinha verticalmente ao meio
+//         right: '30%', // Posiciona à direita, fora da área dos cards
+//         zIndex: 2,
+//         transform: 'translateY(-50%)',
+//         color: theme => theme.palette.primary.main,
+//         border: theme => `2px solid ${theme.palette.primary.main}`
+//       }}
+//     >
+//       <ArrowForwardIosIcon />
+//     </IconButton>
+//   );
+// }
 
 export function CakeCarousel({ cakes }) {
   const settings = {
