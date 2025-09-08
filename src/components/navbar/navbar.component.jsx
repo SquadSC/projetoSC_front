@@ -7,14 +7,14 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 export function NavbarComponent() {
   return (
     <Box sx={{ bgcolor: 'secondary.main', width: '100%' }}>
-      <Box sx={{ p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <LogoComponent></LogoComponent>
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 4 }} >
             <IconButton>
-                <ShoppingCartOutlinedIcon sx={{ color: 'primary.main', fontSize: 28 }} />
+                <ShoppingCartOutlinedIcon sx={{ color: 'primary.main', fontSize: 26 }} />
             </IconButton>
             <IconButton>
-                <NotificationsNoneOutlinedIcon sx={{ color: 'primary.main', fontSize: 28 }} />
+                <NotificationsNoneOutlinedIcon sx={{ color: 'primary.main', fontSize: 26 }} />
             </IconButton>
         </Stack >
       </Box>
