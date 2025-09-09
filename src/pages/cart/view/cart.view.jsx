@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import { bottomAbsolute, lineGolden } from '../styles/cart.styles.js';
 import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx';
-import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component.jsx';
 
 export function CartView({ produtos }) {
   const navigate = useNavigate();
@@ -61,7 +60,6 @@ export function CartView({ produtos }) {
                 Monte seu Pedido
               </Button>
             </Stack>
-            <BottomNavigationComponent />
           </>
         ) : (
           <>
@@ -144,7 +142,6 @@ export function CartView({ produtos }) {
           </>
         )}
       </Container>
-      
     </>
   );
 }
