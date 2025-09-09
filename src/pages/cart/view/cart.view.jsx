@@ -61,6 +61,7 @@ export function CartView({ produtos }) {
                 Monte seu Pedido
               </Button>
             </Stack>
+            <BottomNavigationComponent />
           </>
         ) : (
           <>
@@ -143,7 +144,7 @@ export function CartView({ produtos }) {
           </>
         )}
       </Container>
-      <BottomNavigationComponent />
+      
     </>
   );
 }
