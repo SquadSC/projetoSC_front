@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import {
   Typography,
   Container,
@@ -11,27 +11,21 @@ import {
 } from '@mui/material';
 import { CalendarComponent } from '../../../../components/calendar/calendar-component';
 import theme from '../../../../theme';
-import dayjs from 'dayjs';
-
-export function CalendarUserComponent({ nextStep }) {
-  const [horario, setHorario] = useState('');
-  const [date, setDate] = useState(null);
-  const [errors, setErrors] = useState({});
-
+export function CalendarUserComponent({
+  nextStep,
+  date,
+  horario,
+  errors,
+  onDateChange,
+  onHorarioChange,
+  onNext,
+}) {
   const handleChange = event => {
-    setHorario(event.target.value);
+    onHorarioChange?.(event.target.value);
   };
 
   const handleNext = () => {
-    const newErrors = {};
-    if (!date) newErrors.date = 'Selecione uma data de entrega';
-    if (!horario) newErrors.horario = 'Selecione um horário de entrega';
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      nextStep();
-    }
+    (onNext ?? nextStep)?.();
   };
 
   return (
@@ -45,9 +39,8 @@ export function CalendarUserComponent({ nextStep }) {
       >
         Escolha a data de entrega
       </Typography>
-
-      <CalendarComponent value={date} onChange={setDate} />
-      {errors.date && <FormHelperText error>{errors.date}</FormHelperText>}
+      <CalendarComponent value={date} onChange={onDateChange} />
+      {errors?.date && <FormHelperText error>{errors.date}</FormHelperText>}
 
       <Typography
         variant='subtitle2'
@@ -94,9 +87,8 @@ export function CalendarUserComponent({ nextStep }) {
             </MenuItem>
           ))}
         </Select>
-        {errors.horario && <FormHelperText>{errors.horario}</FormHelperText>}
+        {errors?.horario && <FormHelperText>{errors.horario}</FormHelperText>}
       </FormControl>
-
       <Button
         variant='contained'
         color='primary'

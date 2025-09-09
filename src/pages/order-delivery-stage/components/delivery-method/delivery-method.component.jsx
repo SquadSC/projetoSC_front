@@ -1,12 +1,7 @@
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 
-export function DeliveryMethodComponent({
-  nextStep,
-  methodDelivery,
-  driveMethodDelivery,
-}) {
-
-  const handleDeliveryMethodChange = (method) => {
+export function DeliveryMethodComponent({ nextStep, driveMethodDelivery }) {
+  const handleDeliveryMethodChange = method => {
     driveMethodDelivery(method);
     nextStep();
   };
@@ -44,7 +39,7 @@ export function DeliveryMethodComponent({
             variant='contained'
             fullWidth
             sx={{ borderRadius: '24px', height: '48px' }}
-            onClick={() =>handleDeliveryMethodChange('pickup')}
+            onClick={() => handleDeliveryMethodChange('pickup')}
           >
             Retirar no Ateliê
           </Button>
@@ -52,7 +47,7 @@ export function DeliveryMethodComponent({
             variant='outlined'
             fullWidth
             sx={{ borderRadius: '24px', height: '48px' }}
-            onClick={() =>handleDeliveryMethodChange('delivery')}
+            onClick={() => handleDeliveryMethodChange('delivery')}
           >
             Entregar no meu Endereço
           </Button>
