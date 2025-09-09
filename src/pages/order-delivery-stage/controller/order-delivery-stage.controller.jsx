@@ -15,6 +15,10 @@ export function OrderDeliveryStageController() {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
+  // Persist calendar selections across navigation
+  const [deliveryDate, setDeliveryDate] = useState(null);
+  const [deliveryHorario, setDeliveryHorario] = useState('');
+  const [deliveryErrors, setDeliveryErrors] = useState({});
   const [fields, setFields] = useState({
     nomeEndereco: '',
     cep: '',
@@ -99,6 +103,26 @@ export function OrderDeliveryStageController() {
     }
   }
 
+  // Calendar handlers lifted to controller so selections persist
+  function handleSetDate(d) {
+    setDeliveryDate(d);
+  }
+
+  function handleSetHorario(h) {
+    setDeliveryHorario(h);
+  }
+
+  function handleCalendarNext() {
+    const newErrors = {};
+    if (!deliveryDate) newErrors.date = 'Selecione uma data de entrega';
+    if (!deliveryHorario) newErrors.horario = 'Selecione um horário de entrega';
+    setDeliveryErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      handleNext();
+    }
+  }
+
   function validate() {
     const newErrors = {};
     if (!fields.nomeEndereco) newErrors.nomeEndereco = 'Nome obrigatório';
@@ -128,8 +152,35 @@ export function OrderDeliveryStageController() {
       .post('/enderecos', newAddressData)
       .then(response => {
         alert('Endereço cadastrado com sucesso!');
-        setAddresses(prev => [...prev, response.data]);
+        // Atualiza a lista a partir do servidor para garantir consistência
+        const userId = userData.id;
+        request
+          .get(`/enderecos/usuario/${userId}`)
+          .then(resp => setAddresses(resp.data))
+          .catch(err => console.error('Erro ao atualizar endereços:', err));
+
+        // Fecha a view de cadastro e seleciona o novo endereço (se disponível)
         setIsAddingAddress(false);
+        const newId =
+          response.data.idEndereco ??
+          response.data.id ??
+          response.data.id_endereco ??
+          null;
+        if (newId) setSelectedAddressId(newId);
+
+        // Limpa formulário e erros
+        setFields({
+          nomeEndereco: '',
+          cep: '',
+          logradouro: '',
+          numero: '',
+          complemento: '',
+          bairro: '',
+          cidade: '',
+          estado: '',
+          pontoReferencia: '',
+        });
+        setErrors({});
       })
       .catch(error => {
         console.error('Erro ao cadastrar endereço:', error);
@@ -149,6 +200,14 @@ export function OrderDeliveryStageController() {
         methodDelivery,
         driveMethodDelivery,
         addAddress,
+      }}
+      calendarConfig={{
+        date: deliveryDate,
+        horario: deliveryHorario,
+        errors: deliveryErrors,
+        onDateChange: handleSetDate,
+        onHorarioChange: handleSetHorario,
+        onNext: handleCalendarNext,
       }}
       addressConfig={{
         addresses,

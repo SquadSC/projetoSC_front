@@ -10,6 +10,14 @@ import { AddressRedirectorComponent } from '../components/address-redirector/add
 export function OrderDeliveryStageView({
   stepConfig: { nextStep, activeStep, maxStepReached, setActiveStep },
   methodDeliveryConfig: { methodDelivery, driveMethodDelivery, addAddress },
+  calendarConfig: {
+    date,
+    horario,
+    errors: calendarErrors,
+    onDateChange,
+    onHorarioChange,
+    onNext,
+  },
   addressConfig: {
     addresses,
     selectedAddressId,
@@ -29,7 +37,17 @@ export function OrderDeliveryStageView({
   const getStepContent = step => {
     switch (step) {
       case 0:
-        return <CalendarUserComponent nextStep={nextStep} />;
+        return (
+          <CalendarUserComponent
+            nextStep={nextStep}
+            date={date}
+            horario={horario}
+            errors={calendarErrors}
+            onDateChange={onDateChange}
+            onHorarioChange={onHorarioChange}
+            onNext={onNext}
+          />
+        );
       case 1:
         return (
           <DeliveryMethodComponent
@@ -40,7 +58,7 @@ export function OrderDeliveryStageView({
         );
       case 2:
         return methodDelivery === 'delivery' && addAddress ? (
-          <AddressRedirectorComponent 
+          <AddressRedirectorComponent
             addresses={addresses}
             selectedAddressId={selectedAddressId}
             isAddingAddress={isAddingAddress}
