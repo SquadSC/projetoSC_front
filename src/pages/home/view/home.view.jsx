@@ -1,12 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
-import {
-  Box,
-  Button,
-  Container,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx';
 import bgCakeImage from '../../../assets/cake-images/bg-cake.png';
 import CakeImage_Floral from '../../../assets/cake-images/cake-floral.png';
@@ -17,8 +11,7 @@ import { CakeCarousel } from '../components/cake-carousel.component';
 import IconRestaurant from '../../../assets/cake-images/icon-restaurant.svg';
 import { FeedbackCarousel } from '../components/feedback-carousel.component';
 import React from 'react';
-import { PrevArrow, NextArrow } from '../components/carousel-arrows.component'; 
-
+import { PrevArrow, NextArrow } from '../components/carousel-arrows.component';
 
 const mockCakes = [
   {
@@ -76,7 +69,9 @@ export function HomeView() {
       <Container
         sx={{
           width: '100%',
-          height: '55vh',
+          height: '60dvh',
+          // md: '100vh',
+          maxHeight: '700px',
           p: 4,
           display: 'flex',
           flexDirection: 'column',
@@ -156,7 +151,7 @@ export function HomeView() {
             gap: 2,
           }}
         >
-          <Typography variant='body1'>Referências</Typography>
+          <Typography variant='body1' sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Referências</Typography>
           <Typography variant='h5' fontWeight={600}>
             Se inspire para seu pedido
           </Typography>
@@ -174,24 +169,27 @@ export function HomeView() {
           alignItems: 'center',
           justifyContent: 'space-between',
           textAlign: 'center',
-          height: '630px',
+          // height: '630px',
+          maxWidth: 'lg',
         }}
       >
         <Stack
           sx={{
             gap: 2,
+            mb: 4,
           }}
         >
-          <Typography variant='body1'>Confeitaria</Typography>
+          <Typography variant='body1' sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Confeitaria</Typography>
           <Typography variant='h5' fontWeight={600}>
             Por que escolher a Elê Doces?
           </Typography>
         </Stack>
 
-        <Stack // cima
+        <Stack // elementos
           sx={{
-            display: 'flex',
-            flexDirection: 'row',
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr 1fr', sm: '1fr 1fr' },
+            gap: 4,
           }}
         >
           <Box
@@ -212,10 +210,10 @@ export function HomeView() {
                 style={{ width: '100%' }}
               />
             </Box>
-            <Typography variant='h6' fontWeight={600}>
+            <Typography variant='h6' fontWeight={600} sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>
               Feito Sob Encomenda
             </Typography>
-            <Typography variant='body1'>
+            <Typography variant='body1' sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
               Cada pedido é único, feito especialmente para você, com atenção
               aos detalhes e ao que você imagina.
             </Typography>
@@ -238,22 +236,15 @@ export function HomeView() {
                 style={{ width: '100%' }}
               />
             </Box>
-            <Typography variant='h6' fontWeight={600}>
+            <Typography variant='h6' fontWeight={600} sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>
               100% Artesanal
             </Typography>
-            <Typography variant='body1'>
+            <Typography variant='body1' sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
               Produzimos de forma artesanal, com cuidado e carinho em cada
               etapa.
             </Typography>
           </Box>
-        </Stack>
-
-        <Stack // baixo
-          sx={{
-            gap: 2,
-            flexDirection: 'row',
-          }}
-        >
+       
           <Box
             sx={{
               width: '100%',
@@ -272,10 +263,10 @@ export function HomeView() {
                 style={{ width: '100%' }}
               />
             </Box>
-            <Typography variant='h6' fontWeight={600}>
+            <Typography variant='h6' fontWeight={600} sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>
               Ingredientes de Qualidade
             </Typography>
-            <Typography variant='body1'>
+            <Typography variant='body1' sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
               Só usamos ingredientes frescos e selecionados. Aqui não tem massa
               pronta, tudo é feito do zero.
             </Typography>
@@ -298,10 +289,10 @@ export function HomeView() {
                 style={{ width: '100%' }}
               />
             </Box>
-            <Typography variant='h6' fontWeight={600}>
+            <Typography variant='h6' fontWeight={600} sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>
               Personalização Total
             </Typography>
-            <Typography variant='body1'>
+            <Typography variant='body1' sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
               Você escolhe sabores, tamanhos, recheios e pode enviar referências
               de decoração para deixar do seu jeitinho.
             </Typography>
@@ -321,7 +312,7 @@ export function HomeView() {
             gap: 2,
           }}
         >
-          <Typography variant='body1'>Avaliações</Typography>
+          <Typography variant='body1' sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Avaliações</Typography>
           <Typography variant='h5' fontWeight={600}>
             Quem já pediu, recomenda!
           </Typography>
@@ -340,7 +331,7 @@ export function HomeView() {
         <NextArrow onClick={handleNextFeedback} />
       </Stack>
 
-       {/* <Container sx={{ p: 3 }}>
+      {/* <Container sx={{ p: 3 }}>
         <Button
           variant='contained'
           color='primary'
