@@ -7,6 +7,7 @@ import {
   validators,
 } from '../../../utils/field-validator/field-validator.utils';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import Swal from 'sweetalert2';
 
 export function RegisterUserController() {
   const navigate = useNavigate();
@@ -41,7 +42,6 @@ export function RegisterUserController() {
   }
 
   function handleSubmit(e) {
-    
     e.preventDefault();
 
     if (!validate()) return;
@@ -59,10 +59,21 @@ export function RegisterUserController() {
       .post('/usuarios', user)
       .then(response => {
         console.log('Usuário registrado com sucesso:', response.data);
-        alert('Usuário registrado com sucesso!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuário registrado com sucesso!',
+          showConfirmButton: false,
+          timer: 1500,
+        });
         navigate(ROUTES_PATHS.LOGIN);
       })
       .catch(error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao registrar usuário',
+          showConfirmButton: false,
+          timer: 1500,
+        });
         console.error('Erro ao registrar usuário:', error);
       });
   }

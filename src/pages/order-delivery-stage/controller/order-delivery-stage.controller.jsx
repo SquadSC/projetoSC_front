@@ -4,6 +4,7 @@ import { request } from '../../../utils/request';
 import { getUserData } from '../../../utils/auth';
 import { fetchCep } from '../../../hooks/use-cep/cep-service';
 import { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 export function OrderDeliveryStageController() {
   const [activeStep, setActiveStep] = useState(0);
@@ -151,7 +152,12 @@ export function OrderDeliveryStageController() {
     request
       .post('/enderecos', newAddressData)
       .then(response => {
-        alert('Endereço cadastrado com sucesso!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Endereço cadastrado com sucesso!',
+          showConfirmButton: false,
+          timer: 1500,
+        });
         // Atualiza a lista a partir do servidor para garantir consistência
         const userId = userData.id;
         request
@@ -184,7 +190,12 @@ export function OrderDeliveryStageController() {
       })
       .catch(error => {
         console.error('Erro ao cadastrar endereço:', error);
-        alert('Não foi possível cadastrar o endereço. Tente novamente.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao cadastrar endereço',
+          showConfirmButton: false,
+          timer: 1500,
+        });
       });
   }
 
