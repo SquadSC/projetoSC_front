@@ -25,7 +25,7 @@ export function CartView({ produtos }) {
     <>
       <NavbarComponent></NavbarComponent>
       <Container sx={{ p: 3 }}>
-        {!isEmpty ? (
+        {isEmpty ? (
           <>
             <Box
               sx={{

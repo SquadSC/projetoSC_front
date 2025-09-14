@@ -40,7 +40,6 @@ export function LoginController() {
 
     e.preventDefault();
     if (!validate()) return;
-    alert('Tentativa de login válida');
     request
       .post('/usuarios/login', login)
       .then(response => {

@@ -19,28 +19,28 @@ export function CakeCarousel({ cakes }) {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 1,
     slidesToScroll: 1,
     centerMode: true,
     centerPadding: '60px',
     arrows: false, // nao renderizar as setas padrao dele
 
-    responsive: [
-      {
-        breakpoint: 1024, // Para telas de até 1024px (tablets)
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 600, // Para telas de até 600px (celulares)
-        settings: {
-          slidesToShow: 1,
-          centerMode: true, // Reativamos o centerMode e padding só no celular
-          centerPadding: '40px',
-        },
-      },
-    ],
+    // responsive: [
+    //   {
+    //     breakpoint: 1024, // Para telas de até 1024px (tablets)
+    //     settings: {
+    //       slidesToShow: 2,
+    //     },
+    //   },
+    //   {
+    //     breakpoint: 600, // Para telas de até 600px (celulares)
+    //     settings: {
+    //       slidesToShow: 1,
+    //       centerMode: true, // Reativamos o centerMode e padding só no celular
+    //       centerPadding: '40px',
+    //     },
+    //   },
+    // ],
   };
 
   return (
