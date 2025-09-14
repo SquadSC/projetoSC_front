@@ -8,6 +8,7 @@ import {
   validateFields,
   validators,
 } from '../../../utils/field-validator/field-validator.utils';
+import Swal from 'sweetalert2';
 
 export function LoginController() {
   const navigate = useNavigate();
@@ -47,15 +48,30 @@ export function LoginController() {
         const userData = response.data;
         if (response.status === 200) {
           saveUserData(userData);
-          alert('Login bem-sucedido');
-          // Redireciona o usuário para a página principal
+          Swal.fire({
+            icon: 'success',
+            title: 'Login bem-sucedido',
+            showConfirmButton: false,
+            timer: 1500,
+          });
           navigate(ROUTES_PATHS.HOME);
         } else {
-          alert('Falha no login');
+          Swal.fire({
+            icon: 'error',
+            title: 'Falha no login',
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       })
       .catch(error => {
-        alert(error.message);
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao realizar login',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        console.error('Erro ao realizar login:', error);
       });
   }
 
