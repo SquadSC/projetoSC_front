@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LoginView } from '../view/login.view';
-import { request } from '../../../utils/request';
+import { request } from '../../../services/api';
 import { saveUserData } from '../../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
