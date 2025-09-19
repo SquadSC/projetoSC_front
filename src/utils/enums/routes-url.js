@@ -7,4 +7,5 @@ export const ROUTES_PATHS = {
   ORDER_USER: '/order-user',
   CART: '/cart',
   ORDER_DELIVERY_STAGE: '/order-delivery-stage',
+  ORDER_SUMMARY_CAKE: '/order-summary-cake',
 };

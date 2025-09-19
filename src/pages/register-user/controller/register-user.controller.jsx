@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RegisterUserView } from '../view/register-user.view';
-import { request } from '../../../utils/request';
+import { request } from '../../../services/api';
 import { useNavigate } from 'react-router-dom';
 import {
   validateFields,

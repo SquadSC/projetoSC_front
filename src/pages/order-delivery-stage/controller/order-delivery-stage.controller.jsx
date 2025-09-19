@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { OrderDeliveryStageView } from '../view/order-delivery-stage.view';
-import { request } from '../../../utils/request';
+import { request } from '../../../services/api';
 import { getUserData } from '../../../utils/auth';
 import { fetchCep } from '../../../hooks/use-cep/cep-service';
 import { useState, useEffect } from 'react';
