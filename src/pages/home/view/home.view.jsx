@@ -122,10 +122,14 @@ export function HomeView() {
             <Button
               variant='contained'
               color='primary'
-              onClick={() => navigate(ROUTES_PATHS.NUMERO_CONVIDADOS)}
+              onClick={() => navigate(ROUTES_PATHS.CUSTOM_ORDER)}
               sx={{
                 width: { xs: '80%', sm: '60%', md: '50%' },
                 py: 1.5,
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'none'
+                }
               }}
             >
               Personalizar Pedido
