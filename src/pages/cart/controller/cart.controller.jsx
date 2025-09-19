@@ -1,56 +1,20 @@
-import { CartView } from "../view/cart.view";
-
+import { CartView } from '../view/cart.view';
+import { request } from '../../../services/api';
+import { useState, useEffect } from 'react';
 
 export function CartController() {
-  
-  const produtos = [
-    {
-      nome: "Personalizado",
-      preco: 150.75,
-      descricao: "Bolo de 1Kg, 5x Brigadeiro Gourmet, 5x Salgados."
-    },
-    {
-      nome: "Personalizado",
-      preco: 280.75,
-      descricao: "Bolo de 1.5Kg, 10x Brigadeiro Gourmet, 30x Salgados."
-    },
-    {
-      nome: "Personalizado",
-      preco: 170.0,
-      descricao: "Bolo de 1Kg, 15x Brigadeiro Gourmet, 15x Salgados."
-    }, 
-    {
-      nome: "Personalizado",
-      preco: 150.75,
-      descricao: "Bolo de 1Kg, 5x Brigadeiro Gourmet, 5x Salgados."
-    },
-    {
-      nome: "Personalizado",
-      preco: 280.75,
-      descricao: "Bolo de 1.5Kg, 10x Brigadeiro Gourmet, 30x Salgados."
-    },
-    {
-      nome: "Personalizado",
-      preco: 170.0,
-      descricao: "Bolo de 1Kg, 15x Brigadeiro Gourmet, 15x Salgados."
-    },
-    {
-      nome: "Personalizado",
-      preco: 150.75,
-      descricao: "Bolo de 1Kg, 5x Brigadeiro Gourmet, 5x Salgados."
-    },
-    {
-      nome: "Personalizado",
-      preco: 280.75,
-      descricao: "Bolo de 1.5Kg, 10x Brigadeiro Gourmet, 30x Salgados."
-    },
-    {
-      nome: "Personalizado",
-      preco: 170.0,
-      descricao: "Bolo de 1Kg, 15x Brigadeiro Gourmet, 15x Salgados."
-    }
+  const [produtos, setProdutos] = useState([]);
 
-  ];
+  useEffect(() => {
+    request
+      .get('/produtos')
+      .then(response => {
+        setProdutos(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching cart data:', error);
+      });
+  }, []);
 
   return <CartView produtos={produtos} />;
 }

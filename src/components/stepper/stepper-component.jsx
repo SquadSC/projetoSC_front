@@ -1,39 +1,32 @@
-import { Stack, Typography, Box } from '@mui/material';
-import PropTypes from 'prop-types';
-import { GradientLine } from '../gradient-line/gradient-line-component';
+import { Box, Step, StepButton, Stepper } from '@mui/material';
 
-export function StepperComponent({ steps, activeStep }) {
+export function StepperComponent({
+  steps,
+  activeStep,
+  maxStepReached,
+  onStepChange,
+}) {
+  const handleStepClick = index => {
+    if (index <= maxStepReached) {
+      onStepChange(index);
+    }
+  };
+
   return (
-    <Stack
-      direction="row"
-      justifyContent="center"
-      spacing={8} // Espaçamento entre as etapas
-      sx={{ my: 2 }} // Margem vertical para dar espaço
-    >
-      {steps.map((label, index) => {
-        const isActive = index === activeStep;
-
-        return (
-          <Box key={label}>
-            <Typography
-              variant="body1"
-              sx={{
-                color: isActive ? 'text.primary' : 'text.disabled',
-                paddingBottom: '4px',
-                
-            }}
+    <Box sx={{ width: '100%' }}>
+      <Stepper activeStep={activeStep} alternativeLabel>
+        {steps.map((label, index) => (
+          <Step key={label}>
+            <StepButton
+              color='inherit'
+              onClick={() => handleStepClick(index)}
+              disabled={index > maxStepReached}
             >
               {label}
-            </Typography>
-            {isActive && <GradientLine />}
-          </Box>
-        );
-      })}
-    </Stack>
+            </StepButton>
+          </Step>
+        ))}
+      </Stepper>
+    </Box>
   );
 }
-
-StepperComponent.propTypes = {
-  steps: PropTypes.arrayOf(PropTypes.string).isRequired,
-  activeStep: PropTypes.number.isRequired,
-};

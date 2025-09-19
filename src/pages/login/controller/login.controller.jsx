@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { LoginView } from '../view/login.view';
-import { request } from '../../../utils/request';
+import { request } from '../../../services/api';
 import { saveUserData } from '../../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import {
+  validateFields,
+  validators,
+} from '../../../utils/field-validator/field-validator.utils';
+import Swal from 'sweetalert2';
 
 export function LoginController() {
   const navigate = useNavigate();
@@ -15,9 +20,11 @@ export function LoginController() {
   const [error, setError] = useState({});
 
   function validate() {
-    const newErrors = {};
-    if (!fields.email) newErrors.email = 'E-mail obrigatório';
-    if (!fields.password) newErrors.password = 'Senha obrigatória';
+    const loginValidators = {
+      email: validators.email,
+      password: validators.password,
+    };
+    const newErrors = validateFields(fields, loginValidators);
     setError(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -27,33 +34,45 @@ export function LoginController() {
   }
 
   function handleSubmit(e) {
-    e.preventDefault();
-    alert('Tentativa de login válida');
     const login = {
       email: fields.email,
       senha: fields.password,
     };
+
+    e.preventDefault();
+    if (!validate()) return;
     request
       .post('/usuarios/login', login)
       .then(response => {
         // armazenando a os dados do usuario do backend no localstorage
-        const userData = response.data
+        const userData = response.data;
         if (response.status === 200) {
-          saveUserData(userData)
-          alert('Login bem-sucedido');
-          // Redireciona o usuário para a página principal
+          saveUserData(userData);
+          Swal.fire({
+            icon: 'success',
+            title: 'Login bem-sucedido',
+            showConfirmButton: false,
+            timer: 1500,
+          });
           navigate(ROUTES_PATHS.HOME);
-
         } else {
-          alert('Falha no login');
+          Swal.fire({
+            icon: 'error',
+            title: 'Falha no login',
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       })
       .catch(error => {
-        alert(error.message);
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao realizar login',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        console.error('Erro ao realizar login:', error);
       });
-    if (validate()) {
-      // Perform login
-    }
   }
 
   return (

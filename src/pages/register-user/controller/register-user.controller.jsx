@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { RegisterUserView } from '../view/register-user.view';
-import { request } from '../../../utils/request';
+import { request } from '../../../services/api';
+import { useNavigate } from 'react-router-dom';
+import {
+  validateFields,
+  validators,
+} from '../../../utils/field-validator/field-validator.utils';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import Swal from 'sweetalert2';
 
 export function RegisterUserController() {
+  const navigate = useNavigate();
   const [fields, setFields] = useState({
     name: '',
     phone: '',
@@ -17,45 +25,13 @@ export function RegisterUserController() {
   }
 
   function validate() {
-    const newErrors = {};
-
-    const validators = {
-      name: [
-        { check: v => !!v, msg: 'Nome obrigatório' },
-        { check: v => /^[a-zA-Z\s]+$/.test(v), msg: 'Nome inválido' },
-        { check: v => v.length <= 45, msg: 'Nome muito longo' },
-      ],
-      phone: [
-        { check: v => !!v, msg: 'Telefone obrigatório' },
-        { check: v => v.length >= 15, msg: 'Informe seu telefone com DDD' },
-      ],
-      email: [
-        { check: v => !!v, msg: 'E-mail obrigatório' },
-        {
-          check: v => v.length >= 10,
-          msg: 'E-mail deve conter no mínimo 10 caracteres',
-        },
-        { check: v => v.length <= 150, msg: 'E-mail muito longo' },
-      ],
-      password: [
-        { check: v => !!v, msg: 'Senha obrigatória' },
-        {
-          check: v => v.length >= 8,
-          msg: 'Senha deve conter no mínimo 8 caracteres',
-        },
-        { check: v => v.length <= 60, msg: 'Senha muito longa' },
-      ],
+    const cadastroValidators = {
+      name: validators.name,
+      phone: validators.phone,
+      email: validators.email,
+      password: validators.password,
     };
-
-    for (const field in validators) {
-      const value = fields[field];
-      for (const { check, msg } of validators[field]) {
-        if (!check(value)) {
-          newErrors[field] = msg;
-          break;
-        }
-      }
-    }
+    const newErrors = validateFields(fields, cadastroValidators);
 
     if (fields.password !== fields.confirmPassword) {
       newErrors.confirmPassword = 'Senhas não coincidem';
@@ -67,9 +43,8 @@ export function RegisterUserController() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!validate()) return;
-    alert('Usuário válido!');
 
+    if (!validate()) return;
     const cleanPhone = fields.phone.replace(/\D/g, '');
 
     const user = {
@@ -79,13 +54,26 @@ export function RegisterUserController() {
       telefone: cleanPhone,
       admin: false,
     };
+
     request
       .post('/usuarios', user)
       .then(response => {
         console.log('Usuário registrado com sucesso:', response.data);
-        alert('Usuário registrado com sucesso!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuário registrado com sucesso!',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate(ROUTES_PATHS.LOGIN);
       })
       .catch(error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao registrar usuário',
+          showConfirmButton: false,
+          timer: 1500,
+        });
         console.error('Erro ao registrar usuário:', error);
       });
   }
