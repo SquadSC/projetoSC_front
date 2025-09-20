@@ -2,7 +2,7 @@ import React from 'react'; // 👈 Importe o React para usar a ref
 import Slider from 'react-slick';
 import { Box, Stack } from '@mui/material';
 import { CakeCard } from './cake-card.component';
-import { PrevArrow, NextArrow } from './carousel-arrows.component'; // Suas setas reutilizáveis
+import { PrevArrow, NextArrow } from './carousel-arrows.component';
 import PropTypes from 'prop-types';
 
 export function CakeCarousel({ cakes }) {
