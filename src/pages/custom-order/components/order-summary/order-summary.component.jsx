@@ -3,13 +3,7 @@ import { Button, Container, Typography, Box, Stack } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
-// Exemplo de imagens
-// const images = [
-//   './src/assets/cake-images/cake-floral.png',
-//   './src/assets/cake-images/cake-azul.png',
-//   './src/assets/cake-images/cake-frutas.png',
-// ];
+import { formatCurrencyBRL } from '../../../../utils/formatter/currency-formatter/currency-formatter';
 
 export function OrderSummary({ product, onSubmit }) {
   // Configuração do carrossel
@@ -30,10 +24,11 @@ export function OrderSummary({ product, onSubmit }) {
     : [];
 
   const valorTotal = Number(product.price) || 0;
-  const valor50 = valorTotal / 2;
+  const valorTotalFormatado = formatCurrencyBRL(valorTotal);
+  const valor50 = formatCurrencyBRL(valorTotal / 2)
 
   return (
-    <Container sx={{ display: 'flex', flexDirection: 'column', mt: 4, pb: 4 }}>
+    <Container sx={{ display: 'flex', flexDirection: 'column', mt: 4, pb: 4, color: 'primary.main' }}>
       <Typography variant='h6' fontWeight={600}>
         Resumo do pedido
       </Typography>
@@ -91,16 +86,16 @@ export function OrderSummary({ product, onSubmit }) {
         <Typography variant='h6' fontWeight={600} sx={{ mb: 1 }}>
           Valor do Pedido
         </Typography>
-        <Stack direction='row' justifyContent='space-between'>
-          <Typography variant='body1'>Valor total:</Typography>
-          <Typography variant='body1' fontWeight={600}>
-            R${valorTotal.toFixed(2)}
+        <Stack direction='row' justifyContent='space-between' sx={{ mb: 1 }}>
+          <Typography variant='body1' fontWeight={600}>Valor total:</Typography>
+          <Typography variant='body1' fontWeight={600} color='grey'>
+            {valorTotalFormatado}
           </Typography>
         </Stack>
-        <Stack direction='row' justifyContent='space-between'>
-          <Typography variant='body1'>50% do valor:</Typography>
-          <Typography variant='body1' fontWeight={600}>
-            R${valor50.toFixed(2)}
+        <Stack direction='row' justifyContent='space-between' sx={{ mb: 1 }}>
+          <Typography variant='body1' fontWeight={600}>50% do valor:</Typography>
+          <Typography variant='body1' fontWeight={600} color='grey'>
+            {valor50}
           </Typography>
         </Stack>
       </Box>
@@ -112,19 +107,19 @@ export function OrderSummary({ product, onSubmit }) {
         <Typography variant='subtitle1' fontWeight={600}>
           Bolo:
         </Typography>
-        <ul style={{ marginTop: 0, marginBottom: 8 }}>
-          {product.ingredientList?.map((ing, idx) => (
+        <ul style={{ marginTop: 1, marginBottom: 8, color: 'grey', gap: 4 }}>
+          {product.ingredientList?.map((ingred, idx) => (
             <li key={idx}>
-              {ing.type ? `${ing.type}: ` : ''}
-              {ing.name}
-              {ing.isPremium ? ' (premium)' : ''}
+              {ingred.type ? `${ingred.type}: ` : ''}
+              {ingred.name}
+              {ingred.isPremium ? ' (premium)' : ''}
             </li>
           ))}
         </ul>
         <Typography variant='subtitle1' fontWeight={600} sx={{ mt: 1 }}>
           Detalhes adicionais do pedido:
         </Typography>
-        <Typography variant='body2' sx={{ mt: 0.5 }}>
+        <Typography variant='body2' sx={{ mt: 1, color: 'grey' }}>
           {product.observation || 'Nenhuma observação adicional.'}
         </Typography>
       </Box>
