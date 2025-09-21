@@ -1,54 +1,50 @@
-import React from 'react'; // 👈 Importe o React para usar a ref
+import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, useTheme, useMediaQuery } from '@mui/material';
 import { CakeCard } from './cake-card.component';
 import { PrevArrow, NextArrow } from './carousel-arrows.component';
 import PropTypes from 'prop-types';
 
 export function CakeCarousel({ cakes }) {
   const sliderRef = React.useRef(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  
+  // Estado para forçar re-render quando o slider precisar ser atualizado
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    // Força um re-render do slider quando o tamanho da tela mudar
+    setKey(prevKey => prevKey + 1);
+  }, [isMobile, isTablet]);
 
   const handlePrev = () => {
-    sliderRef.current.slickPrev();
+    sliderRef.current?.slickPrev();
   };
   const handleNext = () => {
-    sliderRef.current.slickNext();
+    sliderRef.current?.slickNext();
   };
 
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: isMobile ? 1 : isTablet ? 2 : 3,
     slidesToScroll: 1,
-    centerMode: true,
-    centerPadding: '60px',
-    arrows: false, // nao renderizar as setas padrao dele
-
-    // responsive: [
-    //   {
-    //     breakpoint: 1024, // Para telas de até 1024px (tablets)
-    //     settings: {
-    //       slidesToShow: 2,
-    //     },
-    //   },
-    //   {
-    //     breakpoint: 600, // Para telas de até 600px (celulares)
-    //     settings: {
-    //       slidesToShow: 1,
-    //       centerMode: true, // Reativamos o centerMode e padding só no celular
-    //       centerPadding: '40px',
-    //     },
-    //   },
-    // ],
+    centerMode: isMobile,
+    centerPadding: isMobile ? '40px' : '0px',
+    arrows: false,
+    adaptiveHeight: true,
+    initialSlide: 0,
   };
 
   return (
     // Um Stack principal para organizar o slider e as setas verticalmente
     <Stack sx={{ width: '100%', alignItems: 'center' }}>
       {/* Container do Slider */}
-      <Box sx={{ width: '100%', maxWidth: '500px' }}>
-        <Slider ref={sliderRef} {...settings}>
+      <Box sx={{ width: '100%', maxWidth: isMobile ? '100%' : '800px' }}>
+        <Slider key={key} ref={sliderRef} {...settings}>
           {cakes.map(cake => (
             <Box key={cake.id}>
               <CakeCard
