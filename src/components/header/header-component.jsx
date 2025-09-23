@@ -8,7 +8,7 @@ export function HeaderComponent({ titulo, pagina }) {
       <Container sx={{ bgcolor: 'secondary.main', p: 3 }}>
         <LogoComponent />
         <Box mt={2}>
-          <Typography variant='h5' fontWeight={'medium'}>{titulo}</Typography>
+          <Typography variant='h5' fontWeight={'medium'} color='primary.main'>{titulo}</Typography>
           <Typography variant='body1' mt={1}>
             {pagina}
           </Typography>

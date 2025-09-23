@@ -77,7 +77,7 @@ export function HomeView() {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: 4,
+          // marginTop: 4,
 
           backgroundImage: `url(${bgCakeImage})`,
           backgroundSize: 'cover',
