@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { OrderSummaryCakeView } from '../view/order-summary-cake.view';
+import { useReferencesImages } from '../../../hooks/useReferencesImages/useReferencesImages';
 
 export function OrderSummaryCakeController() {
   const [activeStep, setActiveStep] = useState(0);
@@ -34,6 +35,8 @@ export function OrderSummaryCakeController() {
       },
     ],
   });
+
+  const { images, loading, error, refetch } = useReferencesImages();
 
   // Estados para upload de imagem
   const [file, setFile] = useState(null);

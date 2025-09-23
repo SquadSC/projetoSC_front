@@ -13,6 +13,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
 import { useRef } from 'react';
+import { CarouselReferenceComponent } from '../carousel-reference/carousel-refence.component';
 
 export function CakeInfoComponent({ nextStep, infoCake }) {
   const {
@@ -60,6 +61,10 @@ export function CakeInfoComponent({ nextStep, infoCake }) {
             fullWidth
           />
         </Stack>
+
+        <Box>
+          <CarouselReferenceComponent references={product.references} />
+        </Box>
 
         <Stack spacing={3} mt={4}>
           <Box>

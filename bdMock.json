@@ -1,0 +1,46 @@
+{
+    "produtos": [
+        {
+            "nome": "Personalizado",
+            "preco": 150.75,
+            "descricao": "Bolo de 1Kg, 5x Brigadeiro Gourmet, 5x Salgados."
+        },
+        {
+            "nome": "Personalizado",
+            "preco": 280.75,
+            "descricao": "Bolo de 1.5Kg, 10x Brigadeiro Gourmet, 30x Salgados."
+        },
+        {
+            "nome": "Personalizado",
+            "preco": 280.75,
+            "descricao": "Bolo de 1.5Kg, 10x Brigadeiro Gourmet, 30x Salgados."
+        },
+        {
+            "nome": "Personalizado",
+            "preco": 280.75,
+            "descricao": "Bolo de 1.5Kg, 10x Brigadeiro Gourmet, 30x Salgados."
+        },
+        {
+            "nome": "Personalizado",
+            "preco": 280.75,
+            "descricao": "Bolo de 1.5Kg, 10x Brigadeiro Gourmet, 30x Salgados."
+        }
+    ],
+    "referencias": [
+        {
+            "id_referencia": 1,
+            "nome_referencia": "Bolo de Chocolate",
+            "imagem_referencia": "data:image/jpeg;base64,..."
+        },
+        {
+            "id_referencia": 2,
+            "nome_referencia": "Bolo de Morango",
+            "imagem_referencia": "data:image/jpeg;base64,..."
+        },
+        {
+            "id_referencia": 3,
+            "nome_referencia": "Bolo de Abacaxi",
+            "imagem_referencia": "data:image/jpeg;base64,..."
+        }
+    ]
+}
