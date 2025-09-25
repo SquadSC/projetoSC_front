@@ -15,7 +15,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import { useRef } from 'react';
 import { CarouselReferenceComponent } from '../carousel-reference/carousel-refence.component';
 
-export function CakeInfoComponent({ nextStep, infoCake }) {
+export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
   const {
     product,
     setProduct,
@@ -63,7 +63,7 @@ export function CakeInfoComponent({ nextStep, infoCake }) {
         </Stack>
 
         <Box>
-          <CarouselReferenceComponent references={product.references} />
+          <CarouselReferenceComponent refImages={refImages} />
         </Box>
 
         <Stack spacing={3} mt={4}>

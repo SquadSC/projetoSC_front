@@ -36,13 +36,6 @@ export function OrderSummaryCakeController() {
     ],
   });
 
-  const { images, loading, error, refetch } = useReferencesImages();
-
-  // Estados para upload de imagem
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [uploading, setUploading] = useState(false);
-
   const handleNext = () => {
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
@@ -50,6 +43,13 @@ export function OrderSummaryCakeController() {
       setMaxStepReached(nextStep);
     }
   };
+
+  const { images, loading, error, refetch } = useReferencesImages();
+
+  // Estados para upload de imagem
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleFileChange = event => {
     const selectedFile = event.target.files[0];
@@ -129,5 +129,18 @@ export function OrderSummaryCakeController() {
     removeImage,
   };
 
-  return <OrderSummaryCakeView stepConfig={stepConfig} infoCake={infoCake} />;
+  const refImages = {
+    images,
+    loading,
+    error,
+    refetch,
+  };
+
+  return (
+    <OrderSummaryCakeView
+      stepConfig={stepConfig}
+      infoCake={infoCake}
+      refImages={refImages}
+    />
+  );
 }
