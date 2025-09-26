@@ -6,7 +6,7 @@ import 'swiper/css/grid';
 import 'swiper/css/pagination';
 
 export function CarouselReferenceComponent({ refImages }) {
-  const { images, loading, error, refetch } = refImages;
+  const { images, loading, error, refetch, userUploadedImage } = refImages;
 
   if (loading) {
     return (
@@ -40,17 +40,19 @@ export function CarouselReferenceComponent({ refImages }) {
   }
 
   return (
-    <Box sx={{
-      width: '100%',
-      mt: 2,
-      "& .swiper-pagination-bullet": {
-        backgroundColor: "#b2bec3",
-        opacity: 1,
-      },
-      "& .swiper-pagination-bullet-active": {
-        backgroundColor: "primary.main",
-      },
-    }}>
+    <Box
+      sx={{
+        width: '100%',
+        mt: 5,
+        '& .swiper-pagination-bullet': {
+          backgroundColor: '#b2bec3',
+          opacity: 1,
+        },
+        '& .swiper-pagination-bullet-active': {
+          backgroundColor: 'primary.main',
+        },
+      }}
+    >
       <Typography
         variant='subtitle1'
         fontWeight={'fontWeightSemiBold'}
@@ -69,54 +71,85 @@ export function CarouselReferenceComponent({ refImages }) {
         style={{
           width: '100%',
           height: '380px',
-          paddingBottom: '40px', // espaço p/ bullets
+          paddingBottom: '40px',
         }}
       >
-        {images.map((ref, index) => (
-          <SwiperSlide key={ref.id_anexo || index}>
-            <Box
-              sx={{
-                width: '100%', // deixa o Swiper calcular a largura
-                height: '100%',
-                border: '1px solid #ddd',
-                borderRadius: 2,
-                overflow: 'hidden',
-                cursor: 'pointer',
-                transition: 'transform 0.2s',
-                display: 'flex',
-                flexDirection: 'column',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                },
-              }}
-            >
-              <img
-                src={ref.imagem_anexo}
-                alt={ref.nome_arquivo}
-                style={{
-                  width: '100%',
-                  height: '80%',
-                  objectFit: 'cover',
-                }}
-                onError={e => {
-                  e.target.style.display = 'none';
-                }}
-              />
-              <Typography
-                variant='caption'
+        {images.map((ref, index) => {
+          const isUserImage = ref.isUserUpload;
+
+          return (
+            <SwiperSlide key={ref.id_anexo || index}>
+              <Box
                 sx={{
-                  p: 0.5,
-                  fontSize: '0.7rem',
-                  textAlign: 'center',
-                  height: '20%',
+                  width: '100%',
+                  height: '100%',
+                  border: isUserImage ? '2px solid' : '1px solid #ddd',
+                  borderColor: isUserImage ? 'primary.main' : '#ddd',
+                  borderRadius: 2,
                   overflow: 'hidden',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  },
                 }}
               >
-                {ref.nome_arquivo}
-              </Typography>
-            </Box>
-          </SwiperSlide>
-        ))}
+                {isUserImage && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 4,
+                      right: 4,
+                      backgroundColor: 'primary.main',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: 20,
+                      height: 20,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.7rem',
+                      fontWeight: 'bold',
+                      zIndex: 1,
+                    }}
+                  >
+                    ✓
+                  </Box>
+                )}
+
+                <img
+                  src={ref.imagem_anexo}
+                  alt={ref.nome_arquivo}
+                  style={{
+                    width: '100%',
+                    height: '80%',
+                    objectFit: 'cover',
+                  }}
+                  onError={e => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+                <Typography
+                  variant='caption'
+                  sx={{
+                    p: 0.5,
+                    fontSize: '0.7rem',
+                    textAlign: 'center',
+                    height: '20%',
+                    overflow: 'hidden',
+                    fontWeight: isUserImage ? 'bold' : 'normal',
+                    color: isUserImage ? 'primary.main' : 'text.primary',
+                  }}
+                >
+                  {isUserImage ? 'Sua Referência' : ref.nome_arquivo}
+                </Typography>
+              </Box>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </Box>
   );
