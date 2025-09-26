@@ -27,7 +27,9 @@ export function ProductsView({
 
   return (
     <Box
-      sx={{ backgroundColor: 'background.default', minHeight: '100vh', p: 3 }}
+      sx={{ 
+        backgroundColor: 'background.default',
+        minHeight: '100vh', p: 3 }}
     >
     {/* Header */}
       <Box
@@ -63,7 +65,9 @@ export function ProductsView({
           ></AddCircleOutlineIcon>
         </Box>
       </Box>
-      <Container sx={{ p: 3, pt:0
+
+      {/* Conteúdo da pagina */}
+      <Container sx={{  p:0
       }}>
 
         {/* Search Bar */}
@@ -80,15 +84,16 @@ export function ProductsView({
             ),
           }}
           sx={{
-            backgroundColor: '#FFF',
-            borderRadius: '24px',
+            backgroundColor: 'background.default',
+            borderRadius: '8px',
             '& .MuiOutlinedInput-root': {
-              borderRadius: '24px',
+              borderRadius: '8px',
             },
           }}
         />
+
         <Box>
-            <Typography variant='h6' fontWeight={600} sx={{ mt: 4, color: 'primary.main' }}>
+            <Typography variant='h5' fontWeight={600} sx={{ mt: 4, color: 'primary.main' }}>
             Produtos Cadastrados
             </Typography>
         </Box>
