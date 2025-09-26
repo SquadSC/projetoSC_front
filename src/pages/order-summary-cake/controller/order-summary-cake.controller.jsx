@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { OrderSummaryCakeView } from '../view/order-summary-cake.view';
+import { useReferencesImages } from '../../../hooks/useReferencesImages/useReferencesImages';
 
 export function OrderSummaryCakeController() {
   const [activeStep, setActiveStep] = useState(0);
@@ -35,11 +36,6 @@ export function OrderSummaryCakeController() {
     ],
   });
 
-  // Estados para upload de imagem
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [uploading, setUploading] = useState(false);
-
   const handleNext = () => {
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
@@ -47,6 +43,14 @@ export function OrderSummaryCakeController() {
       setMaxStepReached(nextStep);
     }
   };
+
+  const { images, loading, error, refetch } = useReferencesImages();
+
+  // Estados para upload de imagem
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [userUploadedImage, setUserUploadedImage] = useState(null);
 
   const handleFileChange = event => {
     const selectedFile = event.target.files[0];
@@ -78,12 +82,19 @@ export function OrderSummaryCakeController() {
 
     reader.onload = () => {
       const base64String = reader.result;
-      setPreview(base64String); // preview da imagem
+      setPreview(base64String);
 
-      // Salva no product (você pode salvar com ou sem o prefixo data:image)
+      const userImage = {
+        id_anexo: 'user-upload',
+        nome_arquivo: selectedFile.name.split('.')[0],
+        imagem_anexo: base64String,
+        isUserUpload: true,
+      };
+
+      setUserUploadedImage(userImage);
+
       setProduct(prev => ({ ...prev, attachment: base64String }));
 
-      // Limpa erros
       setErrors(prev => ({ ...prev, attachment: '' }));
       setUploading(false);
     };
@@ -96,12 +107,13 @@ export function OrderSummaryCakeController() {
       setUploading(false);
     };
 
-    reader.readAsDataURL(selectedFile); // lê como base64
+    reader.readAsDataURL(selectedFile);
   };
 
   const removeImage = () => {
     setFile(null);
     setPreview(null);
+    setUserUploadedImage(null);
     setProduct(prev => ({ ...prev, attachment: '' }));
     setErrors(prev => ({ ...prev, attachment: '' }));
   };
@@ -126,5 +138,23 @@ export function OrderSummaryCakeController() {
     removeImage,
   };
 
-  return <OrderSummaryCakeView stepConfig={stepConfig} infoCake={infoCake} />;
+  const combinedImages = userUploadedImage
+    ? [userUploadedImage, ...images]
+    : images;
+
+  const refImages = {
+    images: combinedImages,
+    loading,
+    error,
+    refetch,
+    userUploadedImage,
+  };
+
+  return (
+    <OrderSummaryCakeView
+      stepConfig={stepConfig}
+      infoCake={infoCake}
+      refImages={refImages}
+    />
+  );
 }
