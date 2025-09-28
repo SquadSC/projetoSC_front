@@ -6,6 +6,8 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -20,18 +22,22 @@ export function ProductsView({
   searchQuery, // termo de busca atual
   onSearch, // função para atualizar busca
   onEditProduct, // função para editar produto
-  onDeleteProduct, // função para excluir produto
+  onToggleStatus, // remover produto
+  showInactive,
+  onShowInactiveChange,
 }) {
   // hook para navegação entre rotas
   const navigate = useNavigate();
 
   return (
     <Box
-      sx={{ 
+      sx={{
         backgroundColor: 'background.default',
-        minHeight: '100vh', p: 3 }}
+        minHeight: '100vh',
+        p: 3,
+      }}
     >
-    {/* Header */}
+      {/* Header */}
       <Box
         sx={{
           display: 'flex',
@@ -67,9 +73,7 @@ export function ProductsView({
       </Box>
 
       {/* Conteúdo da pagina */}
-      <Container sx={{  p:0
-      }}>
-
+      <Container sx={{ p: 0 }}>
         {/* Search Bar */}
         <TextField
           fullWidth
@@ -91,11 +95,27 @@ export function ProductsView({
             },
           }}
         />
+{/* checkbox de filtro por produtos inativos */}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={showInactive}
+              onChange={onShowInactiveChange}
+              color="primary"
+            />
+          }
+          label="Mostrar itens inativos"
+          sx={{ mt: 1, color: 'text.secondary' }}
+        />
 
         <Box>
-            <Typography variant='h5' fontWeight={600} sx={{ mt: 4, color: 'primary.main' }}>
+          <Typography
+            variant='h5'
+            fontWeight={600}
+            sx={{ mt: 4, color: 'primary.main' }}
+          >
             Produtos Cadastrados
-            </Typography>
+          </Typography>
         </Box>
 
         {/* Product List */}
@@ -107,7 +127,7 @@ export function ProductsView({
           <ProductList
             products={products}
             onEditProduct={onEditProduct}
-            onDeleteProduct={onDeleteProduct}
+            onDeleteProduct={onToggleStatus}
           />
         ) : (
           <Typography

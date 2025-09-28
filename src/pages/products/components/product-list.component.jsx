@@ -31,45 +31,44 @@ export function ProductList({
     };
 
     products.forEach(item => {
-      console.log('Processando item:', item);
-      if (item.isIngredient === true) {
-        // Ingredientes do bolo
-        const tipoId = item.tipoIngrediente?.id_tipo_ingrediente;
-        const tipoNome = item.tipoIngrediente?.descricao?.toLowerCase();
-        console.log('Tipo do ingrediente:', tipoNome, 'ID:', tipoId);
+      // Padroniza o item para garantir que 'is_premium' sempre exista
+      const normalizedItem = {
+        ...item,
+        is_premium: item.is_premium || false,
+      };
+
+      if (normalizedItem.isIngredient === true) {
+        // --- LÓGICA PARA INGREDIENTES ---
+
+        const tipoId = normalizedItem.tipoIngrediente?.idTipoIngrediente;
+        const tipoNome = normalizedItem.tipoIngrediente?.descricao?.toLowerCase();
+
+        // Atribui um preço apenas se o ingrediente não tiver um
+        if (normalizedItem.preco === undefined) {
+          normalizedItem.preco = normalizedItem.is_premium ? 8 : 5;
+        }
 
         if (tipoId === 1 || tipoNome === 'massa') {
-          groups['Componentes do Bolo']['Massas'].push({
-            ...item,
-            nome: item.nome || item.descricao,
-            preco: item.is_premium ? 10 : 0,
-          });
+          groups['Componentes do Bolo']['Massas'].push(normalizedItem);
         } else if (tipoId === 2 || tipoNome === 'recheio') {
-          groups['Componentes do Bolo']['Recheios'].push({
-            ...item,
-            nome: item.nome || item.descricao,
-            preco: item.is_premium ? 10 : 0,
-          });
+          groups['Componentes do Bolo']['Recheios'].push(normalizedItem);
         } else if (tipoId === 3 || tipoNome === 'adicional') {
-          groups['Componentes do Bolo']['Adicionais'].push({
-            ...item,
-            nome: item.nome || item.descricao,
-            preco: item.is_premium ? 8 : 5,
-          });
+          groups['Componentes do Bolo']['Adicionais'].push(normalizedItem);
         }
+
       } else {
-        // Produtos normais
-        const categoria = item.categoria?.toLowerCase();
+        // --- LÓGICA PARA PRODUTOS  ---
+        const categoria = normalizedItem.categoria?.toLowerCase();
+
         if (categoria === 'salgados') {
-          groups['Itens Complementares']['Salgados'].push(item);
+          groups['Itens Complementares']['Salgados'].push(normalizedItem);
         } else if (categoria === 'doces') {
-          groups['Itens Complementares']['Doces'].push(item);
+          groups['Itens Complementares']['Doces'].push(normalizedItem);
         } else if (categoria === 'sobremesas') {
-          groups['Itens Complementares']['Sobremesas'].push(item);
+          groups['Itens Complementares']['Sobremesas'].push(normalizedItem);
         }
       }
     });
-
     // Remove categorias vazias
     Object.keys(groups).forEach(mainGroup => {
       Object.keys(groups[mainGroup]).forEach(subGroup => {
@@ -97,14 +96,14 @@ export function ProductList({
               display: 'none',
             },
             mb: 2,
-            backgroundColor: '#FFF5F5',
+            backgroundColor: 'background.default',
           }}
         >
           {/* item expansível de componente bolo / itens complementares */}
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             sx={{
-              backgroundColor: '#FFF5F5',
+              backgroundColor: 'background.default',
               borderRadius: '8px',
               padding: 0,
               '&.Mui-expanded': {
@@ -123,7 +122,12 @@ export function ProductList({
 
           {/* contém todas as subcategorias, alinhados um abaixo do outro */}
           <AccordionDetails
-            sx={{ p: 0, margin: 0, '& .MuiAccordion-root': { px: 0 }, backgroundColor: '#FFF5F5' }}
+            sx={{
+              p: 0,
+              margin: 0,
+              '& .MuiAccordion-root': { px: 0 },
+              backgroundColor: 'background.default',
+            }}
           >
             {Object.entries(subGroups).map(([subGroup, items]) => (
               // cada subcategoria (massas, recheios, etc) é um accordion separado
@@ -137,7 +141,7 @@ export function ProductList({
                     display: 'none',
                   },
                   p: 0,
-                  backgroundColor: '#FFF5F5',
+                  backgroundColor: 'background.default',
                 }}
               >
                 <AccordionSummary
@@ -170,21 +174,21 @@ export function ProductList({
                 <AccordionDetails
                   sx={{
                     p: 2,
-                    backgroundColor: '#FFF5F5',
+                    backgroundColor: 'background.default',
                   }}
                 >
-                  {items.map(item => (
+                  {items.map((item, index) => (
                     <ProductCard
-                      key={item.idProduto || item.id_ingrediente || item.id}
+                      key={`${item.isIngredient ? 'ingredient' : 'product'}-${item.idProduto || item.id_ingrediente || item.id || index}`}
                       name={item.nome || item.descricao}
                       weight={item.peso}
-                      price={item.preco || item.preco_unitario}
+                      price={item.preco || item.preco_unitario || item.precoUnitario}
                       onEdit={() => onEditProduct(item)}
-                      onDelete={() =>
-                        onDeleteProduct(
-                          item.idProduto || item.id_ingrediente || item.id,
-                        )
-                      }
+                      onDelete={() => onDeleteProduct(item)}
+                      isIngredient={item.isIngredient}
+                      unidadeMedida={item.unidade_medida}
+                      ativo={item.ativo}
+                      is_premium={item.is_premium}
                     />
                   ))}
                 </AccordionDetails>

@@ -9,4 +9,5 @@ export const ROUTES_PATHS = {
   ORDER_DELIVERY_STAGE: '/order-delivery-stage',
   ORDER_SUMMARY_CAKE: '/order-summary-cake',
   PRODUCTS: '/products',
+  EDIT_PRODUCT: '/products/edit/:id',
 };
