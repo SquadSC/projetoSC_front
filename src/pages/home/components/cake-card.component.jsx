@@ -49,7 +49,7 @@ export function CakeCard({ image, title, description }) {
               variant="contained"
               color="primary"
               sx={{ mt: 1, borderRadius: '24px', py: 1 }}
-              onClick={() => navigate(ROUTES_PATHS.CUSTOM_ORDER)}
+              onClick={() => navigate(ROUTES_PATHS.ORDER_SUMMARY_CAKE)}
             >
               Quero algo assim
             </Button>
