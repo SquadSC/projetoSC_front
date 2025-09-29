@@ -78,7 +78,7 @@ export function HomeView() {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: 4,
+          // marginTop: 4,
 
           backgroundImage: `url(${bgCakeImage})`,
           backgroundSize: 'cover',
@@ -123,7 +123,7 @@ export function HomeView() {
             <Button
               variant='contained'
               color='primary'
-              onClick={() => navigate(ROUTES_PATHS.CUSTOM_ORDER)}
+              onClick={() => navigate(ROUTES_PATHS.ORDER_SUMMARY_CAKE)}
               sx={{
                 width: { xs: '80%', sm: '60%', md: '50%' },
                 py: 1.5,

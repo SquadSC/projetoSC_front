@@ -7,8 +7,11 @@ import {
   Stack,
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 
 export function CakeCard({ image, title, description }) {
+    const navigate = useNavigate();
   return (
     <Box sx={{ p: 2.5 }}> {/* Adiciona um padding para a sombra do card aparecer */}
       <Card
@@ -46,6 +49,7 @@ export function CakeCard({ image, title, description }) {
               variant="contained"
               color="primary"
               sx={{ mt: 1, borderRadius: '24px', py: 1 }}
+              onClick={() => navigate(ROUTES_PATHS.ORDER_SUMMARY_CAKE)}
             >
               Quero algo assim
             </Button>

@@ -10,12 +10,14 @@ import { HomeController } from './pages/home/index.page';
 import { LoginController } from './pages/login/index.page.jsx';
 import { RegisterUserController } from './pages/register-user/index.page';
 import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
-import { CustomOrderController } from './pages/custom-order/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
 import { OrderUserController } from './pages/order-user/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
 import  EditOrderController  from './pages/edit-order-details/controller/edit-order.controller.jsx';
+import { ProductsController } from './pages/products/index.page.jsx';
+import { EditProductController } from './pages/edit-product/index.page.jsx';
+
 
 export default function AppRoutes() {
   const routes = [
@@ -36,10 +38,6 @@ export default function AppRoutes() {
       element: <ErrorGenericController />,
     },
     {
-      path: ROUTES_PATHS.CUSTOM_ORDER,
-      element: <CustomOrderController />,
-    },
-    {
       path: ROUTES_PATHS.CART,
       element: <CartController />,
     },
@@ -57,7 +55,15 @@ export default function AppRoutes() {
     },
     {
       path: ROUTES_PATHS.EDIT_ORDER,
-      element: <EditOrderController />,  
+      element: <EditOrderController />,
+    },
+    {
+      path: ROUTES_PATHS.PRODUCTS,
+      element: <ProductsController />,
+    },
+    {
+      path: ROUTES_PATHS.EDIT_PRODUCT,
+      element: <EditProductController />,
     },
   ];
 
