@@ -15,7 +15,8 @@ import { OrderUserController } from './pages/order-user/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
 import { ProductsController } from './pages/products/index.page.jsx';
-import { EditProductController } from './pages/edit-product/index.page.jsx';
+import { EditProductController } from './pages/edit-product/index.page.jsx';  
+import { AddProductController } from './pages/add-product/index.page.jsx';
 
 
 export default function AppRoutes() {
@@ -59,6 +60,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.EDIT_PRODUCT,
       element: <EditProductController />,
+    },
+    {
+      path: ROUTES_PATHS.ADD_PRODUCT,
+      element: <AddProductController />,
     },
   ];
 

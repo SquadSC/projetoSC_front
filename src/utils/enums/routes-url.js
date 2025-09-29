@@ -9,4 +9,5 @@ export const ROUTES_PATHS = {
   ORDER_SUMMARY_CAKE: '/order-summary-cake',
   PRODUCTS: '/products',
   EDIT_PRODUCT: '/products/edit/:id',
+  ADD_PRODUCT: '/add-product',
 };
