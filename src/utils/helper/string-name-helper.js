@@ -10,3 +10,10 @@ export function getInitials(name = '') {
   const last = words.length > 1 ? words[words.length - 1][0] : '';
   return `${first}${last}`.toUpperCase();
 }
+
+export function getInitialsToUpper(name = ''){
+   if (name.length === 0) return '';
+   const firstLetter = name[0].toUpperCase()
+   const endWord = name.slice(1)
+  return firstLetter + endWord
+}
