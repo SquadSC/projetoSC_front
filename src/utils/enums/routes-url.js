@@ -8,4 +8,5 @@ export const ROUTES_PATHS = {
   CART: '/cart',
   ORDER_DELIVERY_STAGE: '/order-delivery-stage',
   ORDER_SUMMARY_CAKE: '/order-summary-cake',
+  EDIT_ORDER: '/edit-order-details',
 };

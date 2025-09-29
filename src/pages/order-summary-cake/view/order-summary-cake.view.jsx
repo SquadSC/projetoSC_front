@@ -3,6 +3,7 @@ import { PageHeader } from '../../../components/header-jornada/header-jornada.co
 import { StepperComponent } from '../../../components/stepper/stepper-component';
 import { ModelComponent } from '../components/model/model.component';
 import { CakeInfoComponent } from '../components/cake-info/cake-info.component';
+import { AdditionalDetailsComponent } from '../components/detail/add-detail.component';
 
 export function OrderSummaryCakeView({
   stepConfig,
@@ -18,7 +19,7 @@ export function OrderSummaryCakeView({
       case 1:
         return <CakeInfoComponent nextStep={nextStep} infoCake={infoCake} />;
       case 2:
-        return <ModelComponent nextStep={nextStep} />;
+        return <AdditionalDetailsComponent nextStep={nextStep} infoCake={infoCake} />;
       case 3:
         return <ModelComponent nextStep={nextStep} />;
     }

@@ -15,6 +15,7 @@ import { CartController } from './pages/cart/index.page.jsx';
 import { OrderUserController } from './pages/order-user/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
+import  EditOrderController  from './pages/edit-order-details/controller/edit-order.controller.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -53,6 +54,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.ORDER_SUMMARY_CAKE,
       element: <OrderSummaryCakeController />,
+    },
+    {
+      path: ROUTES_PATHS.EDIT_ORDER,
+      element: <EditOrderController />,  
     },
   ];
 

@@ -1,4 +1,4 @@
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography, Button } from '@mui/material';
 import { CustomTextField } from '../../../../components/text-field/text-field.component';
 
 export function CakeInfoComponent({ nextStep, infoCake }) {
@@ -36,6 +36,26 @@ export function CakeInfoComponent({ nextStep, infoCake }) {
           />
         </Stack>
       </Container>
+
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          p: 2,
+          backgroundColor: 'background.default',
+        }}
+      >
+        <Button
+          variant='contained'
+          fullWidth
+          sx={{ borderRadius: '24px', height: '48px' }}
+          onClick={nextStep}
+        >
+          Avançar
+        </Button>
+      </Box>
     </Box>
   );
 }
