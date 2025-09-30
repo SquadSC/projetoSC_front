@@ -10,4 +10,5 @@ export const ROUTES_PATHS = {
   EDIT_ORDER: '/edit-order-details',
   PRODUCTS: '/products',
   EDIT_PRODUCT: '/products/edit/:id',
+  CUSTOM_CAKE: '/custom-cake',
 };

@@ -1,42 +1,22 @@
-import { Container, Typography, Box, Select, MenuItem } from "@mui/material";
+import { Typography, Box, IconButton, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { useState, useEffect } from "react";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
-function SectionComponent({ title, items }) {
+export default function IngredientComponent({ id , item }) {
+    const [active, setActive] = useState(false);
+
+    const handleToggle = () => {
+        setActive(!active);
+    };
+    
     return (
-        <>
-            <Box display="flex" alignItems="center" mb={2}>
-                <img src={icon} alt={name} style={{ width: 32, height: 32, marginRight: 16 }} />
-                <Typography sx={{ flex: 1 }}>{name}</Typography>
-                <Select
-                    value={option}
-                    onChange={onChange}
-                    size="small"
-                    sx={{ minWidth: 100 }}
-                >
-                    {options.map((opt) => (
-                        <MenuItem key={opt} value={opt}>{opt}</MenuItem>
-                    ))}
-                </Select>
-            </Box>
-        </>
+        <Box display="flex" alignItems="center" mb={2} sx={{ opacity: active ? 1 : 0.5 }}>
+            {console.log(item)}
+            <Typography sx={{ flex: 1 }}>{item.nome}</Typography>
+            <IconButton onClick={handleToggle}>
+                {active ? <CheckCircleIcon /> : <CancelIcon />}
+            </IconButton>
+        </Box>
     );
-}
-
-export function SectionComponent({ title, items }) {
-  return (
-    <>
-      <Typography variant="h6" mb={2}>{title}</Typography>
-      <Container>
-        {items.map((item, idx) => (
-          <HorizontalItem
-            key={idx}
-            icon={item.icon}
-            name={item.name}
-            option={item.option}
-            options={item.options}
-            onChange={item.onChange}
-          />
-        ))}
-      </Container>
-    </>
-  );
 }
