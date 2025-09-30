@@ -51,6 +51,7 @@ export function CarouselReferenceComponent({ refImages }) {
         '& .swiper-pagination-bullet-active': {
           backgroundColor: 'primary.main',
         },
+        zIndex: 0,
       }}
     >
       <Typography

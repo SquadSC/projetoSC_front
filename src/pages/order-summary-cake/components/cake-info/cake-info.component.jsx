@@ -207,6 +207,7 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
           right: 0,
           p: 2,
           backgroundColor: 'background.default',
+          zIndex: 1000
         }}
       >
         <Button
