@@ -38,5 +38,5 @@ export function getUserRole() {
   if (!userData) {
     return null;
   }
-  return userData.userRole || 'confeiteira'; // valor padrão 'cliente' se userRole não estiver definido
+  return userData.tipo || 'cliente'; // valor padrão 'cliente' se tipo não estiver definido
 }
