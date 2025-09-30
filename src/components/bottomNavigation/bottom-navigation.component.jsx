@@ -29,7 +29,8 @@ export function BottomNavigationComponent() {
     { label: "Perfil", icon: <PersonIcon sx={iconStyle} />, path: ROUTES_PATHS.PROFILE },
   ];
 
-  const tabs = userRole === "confeiteira" ? confeiteiraTabs : clienteTabs;
+  const tabs = userRole === "cliente" ? clienteTabs : confeiteiraTabs;
+  console.log('User Role:', userRole);
 
   return (
     <Box
