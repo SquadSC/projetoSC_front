@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { OrderSummaryCakeView } from '../view/order-summary-cake.view';
 import { useReferencesImages } from '../../../hooks/useReferencesImages/useReferencesImages';
+import { request } from '../../../services/api';
 
 export function OrderSummaryCakeController() {
   const [activeStep, setActiveStep] = useState(0);
@@ -132,6 +133,21 @@ export function OrderSummaryCakeController() {
     setErrors(prev => ({ ...prev, attachment: '' }));
   };
 
+  // Personalizar bolo
+     const [ingredients, setIngredients] = useState([]);
+
+  useEffect(() => {
+    try {
+      request.get('/ingredientes?ativos=true')
+        .then(response => {
+          console.log('response.data:', response.data); // <-- Veja se aparece aqui
+          setIngredients(response.data);
+        });
+    } catch (error) {
+      console.error('Error fetching ingredients:', error);
+    }
+  }, []);
+
   const stepConfig = {
     nextStep: handleNext,
     activeStep,
@@ -171,6 +187,7 @@ export function OrderSummaryCakeController() {
       stepConfig={stepConfig}
       infoCake={infoCake}
       refImages={refImages}
+      ingredients={ingredients}
     />
   );
 }

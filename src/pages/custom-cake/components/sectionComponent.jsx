@@ -1,76 +1,70 @@
-import { Container, Typography, Box } from "@mui/material";
-import { slimLineGolden } from "../../../components/header/header-component.style";
-import { useEffect, useState } from "react";
+import { Typography, Box, IconButton, Container } from "@mui/material";
+import { useState } from "react";
 import IngredientComponent from "./IngredientComponent";
-import { grey } from "@mui/material/colors";
+import theme from '../../../theme'
 
-export function SectionComponent({ IngredientType, items }) {
-    const [products, setProducts] = useState([]);
+export function SectionComponent({ IngredientType, items, maxQuantity = 0, weight = 1 }) {
+    const [selectedIngredients, setSelectedIngredients] = useState({});
 
-    useEffect(() => {
-        setProducts(items);
-    }, [items]);
+    const handleToggle = (id) => {
+        setSelectedIngredients(prev => {
+            const newSelected = { ...prev };
+            const isCurrentlySelected = newSelected[id];
+            const currentCount = Object.keys(newSelected).filter(key => newSelected[key]).length;
+
+            if (isCurrentlySelected) {
+                delete newSelected[id];
+            } else {
+
+                if (maxQuantity === 0 || currentCount < maxQuantity) {
+                    newSelected[id] = true;
+                }
+            }
+
+            console.log(newSelected)
+            return newSelected;
+        });
+    };
+
+    const currentCount = Object.keys(selectedIngredients).filter(key => selectedIngredients[key]).length;
+    const limitReached = currentCount >= maxQuantity && maxQuantity != 0;
+
+    const totalPrice = items
+        ? items
+            .filter(item => selectedIngredients[item.idIngrediente])
+            .reduce((total, item) => total + (5.5 * weight), 0)
+        : 0;
+
     return (
         <>
 
+            <Container  sx={{width: '100%', padding: 0, marginBottom: 1}}>
+                <Typography sx={{ fontWeight: 'bold', color: theme.palette.primary.main }} >
+                    {IngredientType}
+                    {maxQuantity > 0 && ` (Máximo: ${maxQuantity})`}
+                </Typography>
 
-            {checkIngredientType(IngredientType)}
-            <Container>
-                <Box>
-                    {
-                        products && products.map(item =>
-                            <IngredientComponent id={item.idIngrediente} item={item} />
-                        )
+                <Typography variant="caption">
+                    {maxQuantity > 0
+                        ? ''
+                        : totalPrice > 0
+                            ? `Adicional: +R$ ${totalPrice.toFixed(2)}`
+                            : 'Nenhum adicional selecionado'
                     }
-                </Box>
+                </Typography>
             </Container>
-            <Box sx={slimLineGolden} />
+
+            {items && items.map(item => (
+                <IngredientComponent
+                    key={item.idIngrediente}
+                    id={item.idIngrediente}
+                    item={item}
+                    active={!!selectedIngredients[item.idIngrediente]}
+                    onToggle={handleToggle}
+                    disabled={limitReached && !selectedIngredients[item.idIngrediente]}
+                />
+            ))}
+            
         </>
     );
-}
-
-function checkIngredientType(ingredient) {
-    console.log(ingredient)
-    if (ingredient == 'Massa') {
-        return (
-            <>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography sx={{ fontWeight: 'bold' }}>Qual a Massa do Bolo?</Typography>
-                <Box
-                sx={{
-                    display: 'inline-block',
-                    px: 1.5,
-                    py: 0.5,
-                    backgroundColor: '#efebeb',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    color: grey[800],
-                    ml: 2, // Espaço à esquerda
-                }}
-                >
-                Obrigatório
-                </Box>
-            </Box>
-            <Typography sx={{ fontWeight: 'bold', color: 'grey', fontSize: '10px' }}>Escolha 1 opção</Typography>
-            </>
-        )
-        
-    }
-    else if (ingredient == 'Cobertura') {
-        return (
-            <>
-            <Typography sx={{ fontWeight: 'bold' }}>Qual o Recheio do Bolo</Typography>
-            <Typography sx={{ fontWeight: 'bold', color: 'grey', fontSize: '10px' }}>Escolha até 2 opções</Typography>
-            </>
-        );
-    }
-    else if (ingredient == 'Adicionais') {
-        return (
-            <>
-                <Typography sx={{ fontWeight: 'bold' }}>Deseja colocar adicionais?</Typography>
-                <Typography sx={{ fontWeight: 'bold', color: 'grey', fontSize: '10px' }}>+R$5.50 Por Quilo</Typography>
-            </>
-        );
-    }
 }

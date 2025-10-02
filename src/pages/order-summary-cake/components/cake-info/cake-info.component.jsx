@@ -199,26 +199,6 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
         </Stack>
       </Container>
 
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          p: 2,
-          backgroundColor: 'background.default',
-          zIndex: 1000
-        }}
-      >
-        <Button
-          variant='contained'
-          fullWidth
-          sx={{ borderRadius: '24px', height: '48px' }}
-          onClick={nextStep}
-        >
-          Avançar
-        </Button>
-      </Box>
     </Box>
   );
 }
