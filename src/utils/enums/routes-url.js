@@ -10,4 +10,5 @@ export const ROUTES_PATHS = {
   PRODUCTS: '/products',
   EDIT_PRODUCT: '/products/edit/:id',
   ADD_PRODUCT: '/add-product',
+  DASHBOARD: '/dashboard',
 };

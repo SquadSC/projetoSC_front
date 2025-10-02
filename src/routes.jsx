@@ -17,6 +17,7 @@ import { OrderSummaryCakeController } from './pages/order-summary-cake/index.pag
 import { ProductsController } from './pages/products/index.page.jsx';
 import { EditProductController } from './pages/edit-product/index.page.jsx';  
 import { AddProductController } from './pages/add-product/index.page.jsx';
+import { DashboardController } from './pages/dashboard/index.page.jsx';
 
 
 export default function AppRoutes() {
@@ -64,6 +65,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.ADD_PRODUCT,
       element: <AddProductController />,
+    },
+    {
+      path: ROUTES_PATHS.DASHBOARD,
+      element: <DashboardController />,
     },
   ];
 
