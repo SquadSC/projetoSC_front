@@ -47,6 +47,21 @@ export function LoginController() {
         // armazenando a os dados do usuario do backend no localstorage
         const userData = response.data;
         if (response.status === 200) {
+          let userRole = 'cliente';
+          if (userData.tipo && userData.tipo.toLowerCase() === "confeiteira") {
+            userRole = "confeiteira";
+          }
+          const normalizedUserData = {
+            id: userData.id,
+            nome: userData.nome,
+            email: userData.email,
+            telefone: userData.telefone,
+            tipo: userData.tipo,
+            logado: true,
+            userRole: userRole,
+          };
+
+          saveUserData(normalizedUserData);
           saveUserData(userData);
           Swal.fire({
             icon: 'success',

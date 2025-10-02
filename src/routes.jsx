@@ -14,11 +14,12 @@ import { CartController } from './pages/cart/index.page.jsx';
 import { OrderUserController } from './pages/order-user/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
+import EditOrderController from './pages/edit-order-details/controller/edit-order.controller.jsx';
 import { ProductsController } from './pages/products/index.page.jsx';
-import { EditProductController } from './pages/edit-product/index.page.jsx';  
+import { EditProductController } from './pages/edit-product/index.page.jsx';
 import { AddProductController } from './pages/add-product/index.page.jsx';
 import { DashboardController } from './pages/dashboard/index.page.jsx';
-
+import { CustomCakeController } from './pages/custom-cake/controller/custom-cake.controller.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -55,6 +56,10 @@ export default function AppRoutes() {
       element: <OrderSummaryCakeController />,
     },
     {
+      path: ROUTES_PATHS.EDIT_ORDER,
+      element: <EditOrderController />,
+    },
+    {
       path: ROUTES_PATHS.PRODUCTS,
       element: <ProductsController />,
     },
@@ -69,6 +74,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.DASHBOARD,
       element: <DashboardController />,
+    },
+    {
+      path: ROUTES_PATHS.CUSTOM_CAKE,
+      element: <CustomCakeController />,
     },
   ];
 

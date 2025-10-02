@@ -51,6 +51,7 @@ export function OrderSummaryCakeController() {
   const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [userUploadedImage, setUserUploadedImage] = useState(null);
+  const [selectedReferenceImage, setSelectedReferenceImage] = useState(null);
 
   const handleFileChange = event => {
     const selectedFile = event.target.files[0];
@@ -93,8 +94,6 @@ export function OrderSummaryCakeController() {
 
       setUserUploadedImage(userImage);
 
-      setProduct(prev => ({ ...prev, attachment: base64String }));
-
       setErrors(prev => ({ ...prev, attachment: '' }));
       setUploading(false);
     };
@@ -110,10 +109,25 @@ export function OrderSummaryCakeController() {
     reader.readAsDataURL(selectedFile);
   };
 
+  const handleImageSelection = imageRef => {
+    if (selectedReferenceImage?.id_anexo === imageRef.id_anexo) {
+      setSelectedReferenceImage(null);
+      setProduct(prev => ({ ...prev, attachment: '' }));
+    } else {
+      setSelectedReferenceImage(imageRef);
+      setProduct(prev => ({ ...prev, attachment: imageRef.imagem_anexo }));
+    }
+  };
+
   const removeImage = () => {
     setFile(null);
     setPreview(null);
     setUserUploadedImage(null);
+
+    if (selectedReferenceImage?.isUserUpload) {
+      setSelectedReferenceImage(null);
+    }
+
     setProduct(prev => ({ ...prev, attachment: '' }));
     setErrors(prev => ({ ...prev, attachment: '' }));
   };
@@ -148,6 +162,8 @@ export function OrderSummaryCakeController() {
     error,
     refetch,
     userUploadedImage,
+    selectedReferenceImage,
+    setSelectedReferenceImage: handleImageSelection,
   };
 
   return (

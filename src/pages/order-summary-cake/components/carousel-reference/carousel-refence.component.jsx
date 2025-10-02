@@ -6,7 +6,15 @@ import 'swiper/css/grid';
 import 'swiper/css/pagination';
 
 export function CarouselReferenceComponent({ refImages }) {
-  const { images, loading, error, refetch, userUploadedImage } = refImages;
+  const {
+    images,
+    loading,
+    error,
+    refetch,
+    userUploadedImage,
+    selectedReferenceImage,
+    setSelectedReferenceImage,
+  } = refImages;
 
   if (loading) {
     return (
@@ -51,6 +59,7 @@ export function CarouselReferenceComponent({ refImages }) {
         '& .swiper-pagination-bullet-active': {
           backgroundColor: 'primary.main',
         },
+        zIndex: 0,
       }}
     >
       <Typography
@@ -75,7 +84,7 @@ export function CarouselReferenceComponent({ refImages }) {
         }}
       >
         {images.map((ref, index) => {
-          const isUserImage = ref.isUserUpload;
+          const isSelected = selectedReferenceImage?.id_anexo === ref.id_anexo;
 
           return (
             <SwiperSlide key={ref.id_anexo || index}>
@@ -83,8 +92,8 @@ export function CarouselReferenceComponent({ refImages }) {
                 sx={{
                   width: '100%',
                   height: '100%',
-                  border: isUserImage ? '2px solid' : '1px solid #ddd',
-                  borderColor: isUserImage ? 'primary.main' : '#ddd',
+                  border: isSelected ? '2px solid' : '1px solid #ddd',
+                  borderColor: isSelected ? 'primary.main' : '#ddd',
                   borderRadius: 2,
                   overflow: 'hidden',
                   cursor: 'pointer',
@@ -92,12 +101,12 @@ export function CarouselReferenceComponent({ refImages }) {
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
-                  '&:hover': {
-                    transform: 'scale(1.05)',
-                  },
+                }}
+                onClick={() => {
+                  setSelectedReferenceImage(ref);
                 }}
               >
-                {isUserImage && (
+                {isSelected && (
                   <Box
                     sx={{
                       position: 'absolute',
@@ -125,27 +134,13 @@ export function CarouselReferenceComponent({ refImages }) {
                   alt={ref.nome_arquivo}
                   style={{
                     width: '100%',
-                    height: '80%',
+                    height: '100%',
                     objectFit: 'cover',
                   }}
                   onError={e => {
                     e.target.style.display = 'none';
                   }}
                 />
-                <Typography
-                  variant='caption'
-                  sx={{
-                    p: 0.5,
-                    fontSize: '0.7rem',
-                    textAlign: 'center',
-                    height: '20%',
-                    overflow: 'hidden',
-                    fontWeight: isUserImage ? 'bold' : 'normal',
-                    color: isUserImage ? 'primary.main' : 'text.primary',
-                  }}
-                >
-                  {isUserImage ? 'Sua Referência' : ref.nome_arquivo}
-                </Typography>
               </Box>
             </SwiperSlide>
           );

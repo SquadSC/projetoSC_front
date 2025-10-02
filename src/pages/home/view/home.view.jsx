@@ -12,6 +12,7 @@ import IconRestaurant from '../../../assets/cake-images/icon-restaurant.svg';
 import { FeedbackCarousel } from '../components/feedback-carousel.component';
 import React from 'react';
 import { PrevArrow, NextArrow } from '../components/carousel-arrows.component';
+import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component.jsx';
 
 const mockCakes = [
   {
@@ -328,12 +329,14 @@ export function HomeView() {
         alignItems='center'
         justifyContent='center'
         spacing={1}
-        sx={{ width: '100%', px: 1, my: 2 }}
+        sx={{ width: '100%', px: 1, my: 2, marginBottom: 10 }}
       >
         <PrevArrow onClick={handlePrevFeedback} />
         <FeedbackCarousel ref={feedbackSliderRef} feedbacks={mockFeedbacks} />
         <NextArrow onClick={handleNextFeedback} />
       </Stack>
+
+      <BottomNavigationComponent></BottomNavigationComponent>
 
       {/* <Container sx={{ p: 3 }}>
         <Button
