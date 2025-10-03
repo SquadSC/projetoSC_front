@@ -21,6 +21,7 @@ import { AddProductController } from './pages/add-product/index.page.jsx';
 import { DashboardController } from './pages/dashboard/index.page.jsx';
 import { CustomCakeController } from './pages/custom-cake/controller/custom-cake.controller.jsx';
 
+
 export default function AppRoutes() {
   const routes = [
     {

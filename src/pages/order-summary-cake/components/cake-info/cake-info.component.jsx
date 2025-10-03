@@ -94,7 +94,7 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
                     mb: 1,
                   }}
                 >
-                  <Typography variant='body2' color='text.secondary'>
+                  <Typography variant='textLittleBold' color='text.secondary'>
                     Referência anexada:
                   </Typography>
                   <IconButton size='small' color='error' onClick={removeImage}>
@@ -198,27 +198,6 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
           </Button>
         </Stack>
       </Container>
-
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          p: 2,
-          backgroundColor: 'background.default',
-          zIndex: 1000
-        }}
-      >
-        <Button
-          variant='contained'
-          fullWidth
-          sx={{ borderRadius: '24px', height: '48px' }}
-          onClick={nextStep}
-        >
-          Avançar
-        </Button>
-      </Box>
     </Box>
   );
 }

@@ -17,8 +17,14 @@ export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
       />
       <Container sx={{ p: 3 }}>
         <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
-          <Typography variant='h5' fontWeight={'fontWeightMedium'}> Crie sua conta! </Typography>
-          <Typography variant='body1'> Rápido, fácil e gratuito. </Typography>
+          <Typography variant='h5' fontWeight={'fontWeightMedium'}>
+            {' '}
+            Crie sua conta!{' '}
+          </Typography>
+          <Typography variant='textBold'>
+            {' '}
+            Rápido, fácil e gratuito.{' '}
+          </Typography>
         </Stack>
 
         <Box

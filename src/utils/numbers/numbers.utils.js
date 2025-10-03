@@ -10,6 +10,12 @@ export function parseCurrencyToNumber(value) {
     value.replace(/[^\d,-]/g, "").replace(",", ".")
   );
 }
+export function formatNumber(value) {
+  String(value).replace(".", ",")
+
+  return value
+  ;
+}
 
 export function calculatePricePerKg(weightKg, price) {
   if (weightKg <= 0) return 0;

@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 
 export function FeedbackCard({ quote, authorName, authorInfo }) {
   return (
-    <Box 
-      sx={{ 
+    <Box
+      sx={{
         p: 1, // Padding externo para o espaçamento do carrossel
       }}
     >
       <Stack
         spacing={2}
         sx={{
-          border: (theme) => `2px solid ${theme.palette.primary.main}`,
+          border: theme => `2px solid ${theme.palette.primary.main}`,
           borderRadius: '24px',
           p: 3, // Padding interno do card
           height: '100%',
@@ -20,19 +20,19 @@ export function FeedbackCard({ quote, authorName, authorInfo }) {
           justifyContent: 'space-between',
         }}
       >
-        <Typography variant="body1" sx={{ fontStyle: 'italic' }}>
+        <Typography variant='textBold' sx={{ fontStyle: 'italic' }}>
           "{quote}"
         </Typography>
 
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction='row' alignItems='center' spacing={2}>
           <Avatar sx={{ bgcolor: 'grey.300' }}>
-            <PersonIcon sx={{ color: 'grey.600' }}/>
+            <PersonIcon sx={{ color: 'grey.600' }} />
           </Avatar>
           <Box>
-            <Typography variant="subtitle1" fontWeight="bold">
+            <Typography variant='subtitle1' fontWeight='bold'>
               {authorName}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant='textLittleBold' color='text.secondary'>
               {authorInfo}
             </Typography>
           </Box>

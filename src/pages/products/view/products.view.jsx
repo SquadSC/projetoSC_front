@@ -96,16 +96,16 @@ export function ProductsView({
             },
           }}
         />
-{/* checkbox de filtro por produtos inativos */}
+        {/* checkbox de filtro por produtos inativos */}
         <FormControlLabel
           control={
             <Checkbox
               checked={showInactive}
               onChange={onShowInactiveChange}
-              color="primary"
+              color='primary'
             />
           }
-          label="Mostrar itens inativos"
+          label='Mostrar itens inativos'
           sx={{ mt: 1, color: 'text.secondary' }}
         />
 
@@ -132,7 +132,7 @@ export function ProductsView({
           />
         ) : (
           <Typography
-            variant='body1'
+            variant='textBold'
             sx={{ textAlign: 'center', mt: 4, color: 'text.secondary' }}
           >
             {searchQuery

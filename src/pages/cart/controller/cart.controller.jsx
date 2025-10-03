@@ -7,7 +7,7 @@ export function CartController() {
 
   useEffect(() => {
     request
-      .get('/produtos')
+      .get('http://localhost:3001/produtos')
       .then(response => {
         setProdutos(response.data);
       })
