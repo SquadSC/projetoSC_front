@@ -16,7 +16,7 @@ export function DeliveryMethodComponent({ nextStep, driveMethodDelivery }) {
         >
           Método de Entrega
         </Typography>
-        <Typography variant='body1'>
+        <Typography variant='textBold'>
           Caso opte pela entrega em seu endereço, ela será realizada por meio de
           um aplicativo de entrega onde será necessário alinhar com a
           confeiteira o frete dá entrega.
