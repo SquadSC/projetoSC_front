@@ -24,7 +24,11 @@ export function ProductCard({
       sx={{
         py: 2,
         px: 1,
-        border: is_premium ? '2px solid #CDA243' : ativo ? '2px solid #38090D' : '2px solid #666666',
+        border: is_premium
+          ? '2px solid #CDA243'
+          : ativo
+          ? '2px solid #38090D'
+          : '2px solid #666666',
         borderRadius: '4px',
         mb: 2,
         backgroundColor: ativo ? 'background.default' : '#E0E0E0',
@@ -52,21 +56,27 @@ export function ProductCard({
           }}
         >
           {/* lado esquerdo: descricao dos produtos */}
-          <Typography variant='body1' component='h3' sx={{ fontWeight: 500 }}>
+          <Typography
+            variant='textBold'
+            component='h3'
+            sx={{ fontWeight: 500 }}
+          >
             {name}
           </Typography>
 
           {/* lado direito: botoes de editar e excluir */}
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <Box
+            sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+          >
             <IconButton
               size='small'
               onClick={onEdit}
-              sx={{ 
+              sx={{
                 mr: 0,
                 color: '#38090D',
                 '&:hover': {
                   backgroundColor: '#F4E1D7',
-                }
+                },
               }}
               aria-label='editar produto'
             >
@@ -90,7 +100,11 @@ export function ProductCard({
                 height: 22,
               }}
             >
-              {ativo ? <RemoveIcon fontSize='small' /> : <CheckIcon fontSize='small' />}
+              {ativo ? (
+                <RemoveIcon fontSize='small' />
+              ) : (
+                <CheckIcon fontSize='small' />
+              )}
             </IconButton>
           </Box>
         </Box>
@@ -114,11 +128,11 @@ export function ProductCard({
             width: '98%',
           }}
         >
-          <Typography variant='body1' component='h3' sx={{ fontWeight: 500 }}>
+          <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
             {isIngredient ? 'Peso(g):' : unidadeMedida === 'kg' ? 'Peso(g):' : 'Unidade: '}
           </Typography>
 
-          <Typography variant='body1' component='h3' sx={{ fontWeight: 500 }}>
+          <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
             {isIngredient || unidadeMedida === 'kg' ? weight : weight || 1}
           </Typography>
         </Box>
@@ -140,10 +154,18 @@ export function ProductCard({
             width: '98%',
           }}
         >
-          <Typography variant='body1' component='h3' sx={{ fontWeight: 500 }}>
+          <Typography
+            variant='textBold'
+            component='h3'
+            sx={{ fontWeight: 500 }}
+          >
             Preço:
           </Typography>
-          <Typography variant='body1' component='h3' sx={{ fontWeight: 500 }}>
+          <Typography
+            variant='textBold'
+            component='h3'
+            sx={{ fontWeight: 500 }}
+          >
             R$ {(price || 0).toFixed(2)}
           </Typography>
         </Box>

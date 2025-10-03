@@ -94,7 +94,7 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
                     mb: 1,
                   }}
                 >
-                  <Typography variant='body2' color='text.secondary'>
+                  <Typography variant='textLittleBold' color='text.secondary'>
                     Referência anexada:
                   </Typography>
                   <IconButton size='small' color='error' onClick={removeImage}>
@@ -198,7 +198,6 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
           </Button>
         </Stack>
       </Container>
-
     </Box>
   );
 }

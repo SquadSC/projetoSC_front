@@ -18,6 +18,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Poppins, Arial, sans-serif',
+    // -- Font Weights --
     fontWeightThin: 100,
     fontWeightExtraLight: 200,
     fontWeightLight: 300,
@@ -27,10 +28,26 @@ const theme = createTheme({
     fontWeightBold: 700,
     fontWeightExtraBold: 800,
     fontWeightBlack: 900,
-    body1: {
+    // -- Font Sizes --
+    title: {
+      fontSize: '3rem',
+    },
+    subTitle: {
+      fontSize: '1.5rem',
+    },
+    subTitleLittleBold: {
+      fontSize: '1rem',
+    },
+    textBold: {
       fontSize: '0.875rem',
     },
-    body2: {
+    textLittleBold: {
+      fontSize: '0.75rem',
+    },
+    textBold: {
+      fontSize: '0.875rem',
+    },
+    textLittleBold: {
       fontSize: '0.75rem',
     },
   },

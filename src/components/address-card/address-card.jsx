@@ -10,40 +10,39 @@ export function AddressCard({ address, onSelect, isSelected }) {
     <Box
       onClick={() => onSelect(address.idEndereco)}
       sx={{
-        border: (theme) => `1px solid ${theme.palette.primary.main}`,
+        border: theme => `1px solid ${theme.palette.primary.main}`,
         borderRadius: '10px',
         p: 2,
         cursor: 'pointer',
         transition: 'background-color 0.3s', // Adiciona uma transição suave
 
-        backgroundColor: isSelected 
-          ? (theme) => theme.palette.action.selected // Cor para item selecionado (cinza escuro)
+        backgroundColor: isSelected
+          ? theme => theme.palette.action.selected // Cor para item selecionado (cinza escuro)
           : 'transparent',
-
       }}
     >
-      <Stack direction="row" alignItems="center" spacing={2}>
+      <Stack direction='row' alignItems='center' spacing={2}>
         {/* Ícone de Localização */}
-        <LocationOnIcon 
-          sx={{ 
-            color: (theme) => theme.palette.primary.main
-          }} 
+        <LocationOnIcon
+          sx={{
+            color: theme => theme.palette.primary.main,
+          }}
         />
 
         {/* Textos do Endereço */}
         <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="body1" fontWeight="bold">
+          <Typography variant='textBold' fontWeight='bold'>
             {`Endereço: ${address.nomeEndereco}`}
           </Typography>
-          <Typography variant="body2">{addressText}</Typography>
-          <Typography variant="body2">{cityAndCep}</Typography>
+          <Typography variant='textLittleBold'>{addressText}</Typography>
+          <Typography variant='textLittleBold'>{cityAndCep}</Typography>
         </Box>
 
         {/* Ícone de Seta */}
         {/* Opcional: usar uma cor do tema para a seta também */}
-        <ArrowForwardIosIcon 
-          fontSize="small" 
-          sx={{ color: (theme) => theme.palette.text.secondary }} 
+        <ArrowForwardIosIcon
+          fontSize='small'
+          sx={{ color: theme => theme.palette.text.secondary }}
         />
       </Stack>
     </Box>

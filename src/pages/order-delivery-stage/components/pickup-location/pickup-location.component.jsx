@@ -20,7 +20,7 @@ export function PickupLocationComponent() {
           >
             CEP:
           </Typography>
-          <Typography variant='body1'>08343-190</Typography>
+          <Typography variant='textBold'>08343-190</Typography>
         </Box>
         <Box>
           <Typography
@@ -30,7 +30,7 @@ export function PickupLocationComponent() {
           >
             Bairro:
           </Typography>
-          <Typography variant='body1'>Jardim da Conquista</Typography>
+          <Typography variant='textBold'>Jardim da Conquista</Typography>
         </Box>
         <Box>
           <Typography
@@ -40,7 +40,7 @@ export function PickupLocationComponent() {
           >
             Rua:
           </Typography>
-          <Typography variant='body1'>Trav. La Paloma, 23</Typography>
+          <Typography variant='textBold'>Trav. La Paloma, 23</Typography>
         </Box>
         <Box>
           <Typography
@@ -50,7 +50,7 @@ export function PickupLocationComponent() {
           >
             Telefone para contato:
           </Typography>
-          <Typography variant='body1'>(11) 99673-3647</Typography>
+          <Typography variant='textBold'>(11) 99673-3647</Typography>
         </Box>
       </Stack>
       <Box

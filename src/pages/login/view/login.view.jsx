@@ -4,7 +4,7 @@ import { CustomTextField } from '../../../components/text-field/text-field.compo
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import { useNavigate } from 'react-router-dom';
 export function LoginView({ fields, error, onSubmit, onChange }) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <>
       <HeaderComponent
@@ -14,8 +14,10 @@ export function LoginView({ fields, error, onSubmit, onChange }) {
       />
       <Container sx={{ p: 3 }}>
         <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
-          <Typography variant='h5' fontWeight={'fontWeightMedium'}>Que bom te ver de novo!</Typography>
-          <Typography variant='body1'>
+          <Typography variant='h5' fontWeight={'fontWeightMedium'}>
+            Que bom te ver de novo!
+          </Typography>
+          <Typography variant='textBold'>
             Entre e continue adoçando seus dias com a gente
           </Typography>
         </Stack>
@@ -40,7 +42,11 @@ export function LoginView({ fields, error, onSubmit, onChange }) {
             error={error.password}
             helperText={error.password}
           />
-          <Link variant='body2' sx={{ alignSelf: 'flex-end' }} onClick={() => navigate(ROUTES_PATHS.HOME)}>
+          <Link
+            variant='textLittleBold'
+            sx={{ alignSelf: 'flex-end' }}
+            onClick={() => navigate(ROUTES_PATHS.HOME)}
+          >
             Esqueceu sua senha?
           </Link>
 

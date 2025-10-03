@@ -16,7 +16,7 @@ export function NewAddressComponent({
           p: 3,
         }}
       >
-        <Typography variant='body1' sx={{ mb: 2 }}>
+        <Typography variant='textBold' sx={{ mb: 2 }}>
           Adicionando endereço de entrega
         </Typography>
 
