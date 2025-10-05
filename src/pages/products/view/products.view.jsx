@@ -14,6 +14,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { ProductList } from '../components/product-list.component';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 
 // componente principal da tela de produtos
 export function ProductsView({
@@ -59,7 +60,7 @@ export function ProductsView({
         >
           <AddCircleOutlineIcon
             color='primary'
-            onClick={() => navigate('/products/new-product')}
+            onClick={() => navigate(ROUTES_PATHS.ADD_PRODUCT)}
             aria-label='adicionar produto'
             sx={{
               width: 34, // aumenta o tamanho do botão

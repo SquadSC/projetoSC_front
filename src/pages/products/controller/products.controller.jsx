@@ -40,9 +40,10 @@ export function ProductsController() {
         ...productsResponse.data.map(prod => ({
           ...prod,
           isIngredient: false,
-          unidade_medida: prod.unidade_medida || 'unidade',
+          unidade_medida: prod.unidadeMedida || 'unidade', // Campo correto do banco
           is_premium: prod.premium || false, // Mapeia premium para is_premium
           preco: prod.precoUnitario, // Mapeia precoUnitario para preco para compatibilidade
+          isPriceTable: prod.categoria === 'Tabela de Preços', // Identifica produtos da tabela de preços
         })),
         // Ingredientes
         ...ingredientsResponse.data.map(ing => {
