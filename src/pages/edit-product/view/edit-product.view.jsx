@@ -18,11 +18,13 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
   const mainCategoryOptions = [
     { value: 'componente-bolo', label: 'Componente de Bolo' },
     { value: 'itens-complementares', label: 'Itens Complementares' },
+    { value: 'tabela-precos', label: 'Tabela de Preços' },
   ];
 
   const subCategoryOptions = {
     'componente-bolo': ['Massa', 'Recheio', 'Adicional'],
     'itens-complementares': ['Doces', 'Salgados', 'Sobremesas'],
+    'tabela-precos': ['Bolo Standard', 'Bolo Premium', 'Adicionais'],
   };
 
   if (isLoading) {
@@ -65,8 +67,8 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
             </Select>
           </FormControl>
 
-          {/* Select Secundário (Condicional) */}
-          {fields.mainCategory && (
+          {/* Select Secundário (Condicional) - não aparece para tabela de preços */}
+          {fields.mainCategory && fields.mainCategory !== 'tabela-precos' && (
             <FormControl fullWidth>
               <InputLabel id="sub-category-label">Tipo / Categoria Específica</InputLabel>
               <Select
@@ -101,6 +103,23 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
             onChange={onChange}
             fullWidth
           />
+
+          {/* Campo Unidade - aparece para itens complementares e tabela de preços */}
+          {(fields.mainCategory === 'itens-complementares' || fields.mainCategory === 'tabela-precos') && (
+            <FormControl fullWidth>
+              <InputLabel id="unidade-label">Unidade de Medida</InputLabel>
+              <Select
+                labelId="unidade-label"
+                name="unidade"
+                value={fields.unidade}
+                label="Unidade de Medida"
+                onChange={onChange}
+              >
+                <MenuItem value="kg">kg</MenuItem>
+                <MenuItem value="unidade">unidade</MenuItem>
+              </Select>
+            </FormControl>
+          )}
 
           <FormControlLabel
             control={

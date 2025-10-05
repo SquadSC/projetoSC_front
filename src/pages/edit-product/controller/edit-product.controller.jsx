@@ -19,6 +19,7 @@ export function EditProductController() {
     name: '',
     isPremium: false,
     price: '',
+    unidade: '', // Campo para unidade de medida dos itens complementares
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,6 +68,8 @@ export function EditProductController() {
     const loadItemIntoForm = (item) => {
       // Detectar se é ingrediente baseado nos dados do item
       const isIngredient = item.nome !== undefined || item.tipoIngrediente !== undefined || item.idIngrediente !== undefined;
+      // Detectar se é da tabela de preços
+      const isPriceTable = item.isPriceTable === true;
       
       // Mapeia os dados do item para o estado do formulário
       if (isIngredient) {
@@ -92,6 +95,17 @@ export function EditProductController() {
           name: item.nome,
           isPremium: item.premium || false,
           price: item.preco || '', // Ingredientes podem não ter preço direto
+          unidade: '', // Ingredientes não têm unidade
+        });
+      } else if (isPriceTable) {
+        // É um item da TABELA DE PREÇOS
+        setFields({
+          mainCategory: 'tabela-precos',
+          subCategory: item.descricao, // Nome do produto como subcategoria
+          name: item.descricao, // Campo descricao do banco
+          isPremium: false, // Itens da tabela não são premium
+          price: item.preco || item.precoUnitario || '',
+          unidade: item.unidadeMedida || 'kg', // Carrega unidade real do banco
         });
       } else {
         setFields({
@@ -100,6 +114,7 @@ export function EditProductController() {
           name: item.descricao,
           isPremium: item.premium || false,
           price: item.precoUnitario || '',
+          unidade: item.unidade_medida || item.unidadeMedida || '', // Carrega unidade existente
         });
       }
       setIsLoading(false);
@@ -131,6 +146,8 @@ export function EditProductController() {
     
     // Detectar se é ingrediente baseado nos dados do item
     const isIngredient = item?.nome !== undefined || item?.tipoIngrediente !== undefined || item?.idIngrediente !== undefined;
+    // Detectar se é da tabela de preços
+    const isPriceTable = item?.isPriceTable === true;
     
     if (isIngredient) {
       // É um INGREDIENTE
@@ -141,6 +158,17 @@ export function EditProductController() {
         ativo: item?.ativo ?? true, // Incluir o status ativo do ingrediente
         idTipoIngrediente: item?.tipoIngrediente?.idTipoIngrediente, // Incluir o ID do tipo de ingrediente
       };
+    } else if (isPriceTable) {
+      // É um item da TABELA DE PREÇOS
+      endpoint = `/produtos/${id}`;
+      payload = {
+        descricao: fields.name,
+        precoUnitario: parseFloat(fields.price),
+        categoria: 'Tabela de Preços', // Manter categoria fixa para tabela de preços
+        unidadeMedida: fields.unidade || 'kg', // Usar unidade do formulário ou padrão kg
+        ativo: item?.ativo ?? true,
+        temIngrediente: false, // Itens da tabela não têm ingredientes
+      };
     } else {
       // É um PRODUTO
       endpoint = `/produtos/${id}`;
@@ -148,7 +176,7 @@ export function EditProductController() {
         descricao: fields.name,
         precoUnitario: parseFloat(fields.price),
         categoria: fields.subCategory,
-        unidadeMedida: 'unidade',
+        unidadeMedida: fields.unidade || 'unidade', // Usar unidade do formulário ou padrão
         ativo: item?.ativo ?? true, // Incluir o status ativo do produto
         temIngrediente: item?.temIngrediente ?? false, // Incluir se tem ingrediente
         // Remover campo 'premium' que não existe no ProdutoRequest

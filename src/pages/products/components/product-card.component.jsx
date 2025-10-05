@@ -16,6 +16,7 @@ export function ProductCard({
   unidadeMedida, // 'kg' ou 'unidade'
   ativo,
   is_premium,
+  isPriceTable, // se é da tabela de preços
 }) {
   return (
     // container principal do cartão com borda leve e sem elevação
@@ -109,66 +110,55 @@ export function ProductCard({
           </Box>
         </Box>
 
-        <Box // linha divisória
-          sx={{
-            width: '100%',
-            height: '1px',
-            backgroundColor: is_premium ? '#CDA243' : '#38090D',
-            my: 0.5,
-            mx: 0.5,
-          }}
-        />
+        {/* Linha divisória - só aparece se não for ingrediente */}
+        {!isIngredient && (
+          <Box
+            sx={{
+              width: '100%',
+              height: '1px',
+              backgroundColor: is_premium ? '#CDA243' : '#38090D',
+              my: 0.5,
+              mx: 0.5,
+            }}
+          />
+        )}
 
-        {/* TODO: validar se vamos inserir o peso / unidade dos produtos ou se foi removido */}
+        {/* Exibe informações baseadas no tipo de produto */}
+        {!isIngredient && (isPriceTable || unidadeMedida) && (
+          <>
+            {/* Unidade - só para produtos da tabela de preços e complementares */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '98%' }}>
+              <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+                Unidade:
+              </Typography>
+              <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+                {unidadeMedida || '1 unidade'}
+              </Typography>
+            </Box>
 
-        {/* <Box // alinhando a chave e o valor nas pontas
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '98%',
-          }}
-        >
-          <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
-            {isIngredient ? 'Peso(g):' : unidadeMedida === 'kg' ? 'Peso(g):' : 'Unidade: '}
-          </Typography>
+            <Box // linha divisória
+              sx={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: is_premium ? '#CDA243' : '#38090D',
+                my: 0.5,
+                mx: 0.5,
+              }}
+            />
+          </>
+        )}
 
-          <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
-            {isIngredient || unidadeMedida === 'kg' ? weight : weight || 1}
-          </Typography>
-        </Box>
-
-        <Box // linha divisória
-          sx={{
-            width: '100%',
-            height: '1px',
-            backgroundColor: is_premium ? '#CDA243' : '#38090D',
-            my: 0.5,
-            mx: 0.5,
-          }}
-        /> */}
-
-        <Box // alinhando a chave e o valor nas pontas
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '98%',
-          }}
-        >
-          <Typography
-            variant='textBold'
-            component='h3'
-            sx={{ fontWeight: 500 }}
-          >
-            Preço:
-          </Typography>
-          <Typography
-            variant='textBold'
-            component='h3'
-            sx={{ fontWeight: 500 }}
-          >
-            R$ {(price || 0).toFixed(2)}
-          </Typography>
-        </Box>
+        {/* Preço - só para produtos da tabela de preços e complementares */}
+        {!isIngredient && price && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '98%' }}>
+            <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+              Preço:
+            </Typography>
+            <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+              R$ {(price || 0).toFixed(2)}
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Paper>
   );

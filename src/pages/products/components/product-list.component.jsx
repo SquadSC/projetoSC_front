@@ -18,6 +18,7 @@ export function ProductList({
   // agrupa produtos e ingredientes por tipo usando memoização para performance
   const groupedItems = React.useMemo(() => {
     const groups = {
+      'Tabela de Preços': [],
       'Componentes do Bolo': {
         Massas: [],
         Recheios: [],
@@ -30,6 +31,9 @@ export function ProductList({
       },
     };
 
+    // Os produtos da tabela de preços agora vêm do banco de dados
+    // Não precisamos mais de produtos mockados
+
     products.forEach(item => {
       // Padroniza o item para garantir que 'is_premium' sempre exista
       const normalizedItem = {
@@ -38,15 +42,11 @@ export function ProductList({
       };
 
       if (normalizedItem.isIngredient === true) {
-        // --- LÓGICA PARA INGREDIENTES ---
+        // --- LÓGICA PARA INGREDIENTES (COMPONENTES DO BOLO) ---
+        // Ingredientes agora só mostram o nome, sem unidade e preço
 
         const tipoId = normalizedItem.tipoIngrediente?.idTipoIngrediente;
         const tipoNome = normalizedItem.tipoIngrediente?.descricao?.toLowerCase();
-
-        // Atribui um preço apenas se o ingrediente não tiver um
-        if (normalizedItem.preco === undefined) {
-          normalizedItem.preco = normalizedItem.is_premium ? 8 : 5;
-        }
 
         if (tipoId === 1 || tipoNome === 'massa') {
           groups['Componentes do Bolo']['Massas'].push(normalizedItem);
@@ -57,27 +57,41 @@ export function ProductList({
         }
 
       } else {
-        // --- LÓGICA PARA PRODUTOS  ---
-        const categoria = normalizedItem.categoria?.toLowerCase();
+        // --- LÓGICA PARA PRODUTOS ---
+        if (normalizedItem.isPriceTable) {
+          // Produtos da Tabela de Preços
+          groups['Tabela de Preços'].push(normalizedItem);
+        } else {
+          // Produtos complementares mantêm unidade e preço
+          const categoria = normalizedItem.categoria?.toLowerCase();
 
-        if (categoria === 'salgados') {
-          groups['Itens Complementares']['Salgados'].push(normalizedItem);
-        } else if (categoria === 'doces') {
-          groups['Itens Complementares']['Doces'].push(normalizedItem);
-        } else if (categoria === 'sobremesas') {
-          groups['Itens Complementares']['Sobremesas'].push(normalizedItem);
+          if (categoria === 'salgados') {
+            groups['Itens Complementares']['Salgados'].push(normalizedItem);
+          } else if (categoria === 'doces') {
+            groups['Itens Complementares']['Doces'].push(normalizedItem);
+          } else if (categoria === 'sobremesas') {
+            groups['Itens Complementares']['Sobremesas'].push(normalizedItem);
+          }
         }
       }
     });
     // Remove categorias vazias
     Object.keys(groups).forEach(mainGroup => {
-      Object.keys(groups[mainGroup]).forEach(subGroup => {
-        if (groups[mainGroup][subGroup].length === 0) {
-          delete groups[mainGroup][subGroup];
+      if (Array.isArray(groups[mainGroup])) {
+        // Para arrays (como Tabela de Preços), remove se estiver vazio
+        if (groups[mainGroup].length === 0) {
+          delete groups[mainGroup];
         }
-      });
-      if (Object.keys(groups[mainGroup]).length === 0) {
-        delete groups[mainGroup];
+      } else {
+        // Para objetos com subcategorias
+        Object.keys(groups[mainGroup]).forEach(subGroup => {
+          if (groups[mainGroup][subGroup].length === 0) {
+            delete groups[mainGroup][subGroup];
+          }
+        });
+        if (Object.keys(groups[mainGroup]).length === 0) {
+          delete groups[mainGroup];
+        }
       }
     });
 
@@ -129,71 +143,94 @@ export function ProductList({
               backgroundColor: 'background.default',
             }}
           >
-            {Object.entries(subGroups).map(([subGroup, items]) => (
-              // cada subcategoria (massas, recheios, etc) é um accordion separado
-              <Accordion
-                key={subGroup}
-                defaultExpanded
-                elevation={0}
-                sx={{
-                  mb: 2,
-                  '&:before': {
-                    display: 'none',
-                  },
-                  p: 0,
-                  backgroundColor: 'background.default',
-                }}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+            {Array.isArray(subGroups) ? (
+              // Para Tabela de Preços (array simples)
+              <Box sx={{ p: 2, backgroundColor: 'background.default' }}>
+                {subGroups.map((item, index) => (
+                  <ProductCard
+                    key={`${item.isIngredient ? 'ingredient' : 'product'}-${item.idProduto || item.id_ingrediente || item.id || index}`}
+                    name={item.nome || item.descricao}
+                    weight={item.peso}
+                    price={item.preco || item.preco_unitario || item.precoUnitario}
+                    onEdit={() => onEditProduct(item)}
+                    onDelete={() => onDeleteProduct(item)}
+                    isIngredient={item.isIngredient}
+                    unidadeMedida={item.unidade_medida}
+                    ativo={item.ativo}
+                    is_premium={item.is_premium}
+                    isPriceTable={item.isPriceTable}
+                  />
+                ))}
+              </Box>
+            ) : (
+              // Para outras categorias (objetos com subcategorias)
+              Object.entries(subGroups).map(([subGroup, items]) => (
+                // cada subcategoria (massas, recheios, etc) é um accordion separado
+                <Accordion
+                  key={subGroup}
+                  defaultExpanded
+                  elevation={0}
                   sx={{
-                    backgroundColor: 'rgba(74, 4, 4, 0.03)',
-                    borderRadius: '4px',
-                    '&.Mui-expanded': {
-                      borderBottomLeftRadius: 0,
-                      borderBottomRightRadius: 0,
+                    mb: 2,
+                    '&:before': {
+                      display: 'none',
                     },
-                    '& .MuiAccordionSummary-content': {
-                      m: 0,
-                    },
-                  }}
-                >
-                  <Typography
-                    variant='subtitle1'
-                    sx={{
-                      color: 'primary.main',
-                      fontWeight: 'medium',
-                      pl: 2,
-                      borderLeft: '2.5px solid',
-                      borderColor: 'primary.main',
-                    }}
-                  >
-                    {subGroup}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails
-                  sx={{
-                    p: 2,
+                    p: 0,
                     backgroundColor: 'background.default',
                   }}
                 >
-                  {items.map((item, index) => (
-                    <ProductCard
-                      key={`${item.isIngredient ? 'ingredient' : 'product'}-${item.idProduto || item.id_ingrediente || item.id || index}`}
-                      name={item.nome || item.descricao}
-                      weight={item.peso}
-                      price={item.preco || item.preco_unitario || item.precoUnitario}
-                      onEdit={() => onEditProduct(item)}
-                      onDelete={() => onDeleteProduct(item)}
-                      isIngredient={item.isIngredient}
-                      unidadeMedida={item.unidade_medida}
-                      ativo={item.ativo}
-                      is_premium={item.is_premium}
-                    />
-                  ))}
-                </AccordionDetails>
-              </Accordion>
-            ))}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    sx={{
+                      backgroundColor: 'rgba(74, 4, 4, 0.03)',
+                      borderRadius: '4px',
+                      '&.Mui-expanded': {
+                        borderBottomLeftRadius: 0,
+                        borderBottomRightRadius: 0,
+                      },
+                      '& .MuiAccordionSummary-content': {
+                        m: 0,
+                      },
+                    }}
+                  >
+                    <Typography
+                      variant='subtitle1'
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 'medium',
+                        pl: 2,
+                        borderLeft: '2.5px solid',
+                        borderColor: 'primary.main',
+                      }}
+                    >
+                      {subGroup}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails
+                    sx={{
+                      p: 2,
+                      backgroundColor: 'background.default',
+                    }}
+                  >
+                    {items.map((item, index) => (
+                      <ProductCard
+                        key={`${item.isIngredient ? 'ingredient' : 'product'}-${item.idProduto || item.id_ingrediente || item.id || index}`}
+                        name={item.nome || item.descricao}
+                        weight={item.peso}
+                        price={item.preco || item.preco_unitario || item.precoUnitario}
+                        onEdit={() => onEditProduct(item)}
+                        onDelete={() => onDeleteProduct(item)}
+                        isIngredient={item.isIngredient}
+                        unidadeMedida={item.unidade_medida}
+                        ativo={item.ativo}
+                        is_premium={item.is_premium}
+                        isPriceTable={item.isPriceTable}
+                      />
+                    ))}
+                  </AccordionDetails>
+                </Accordion>
+              ))
+            )}
           </AccordionDetails>
         </Accordion>
       ))}
