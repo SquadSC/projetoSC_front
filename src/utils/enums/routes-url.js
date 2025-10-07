@@ -12,5 +12,5 @@ export const ROUTES_PATHS = {
   EDIT_PRODUCT: '/products/edit/:id',
   ADD_PRODUCT: '/add-product',
   DASHBOARD: '/dashboard',
-  CUSTOM_CAKE: '/custom-cake',
+  DETAIL_ORDER: '/detail-order',
 };
