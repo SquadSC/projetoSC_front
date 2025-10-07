@@ -157,7 +157,7 @@ export function HomeView() {
           }}
         >
           <Typography
-            variant='textBold'
+            variant='text'
             sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
           >
             Referências
@@ -190,7 +190,7 @@ export function HomeView() {
           }}
         >
           <Typography
-            variant='textBold'
+            variant='text'
             sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
           >
             Confeitaria
@@ -233,7 +233,7 @@ export function HomeView() {
               Feito Sob Encomenda
             </Typography>
             <Typography
-              variant='textBold'
+              variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
               Cada pedido é único, feito especialmente para você, com atenção
@@ -266,7 +266,7 @@ export function HomeView() {
               100% Artesanal
             </Typography>
             <Typography
-              variant='textBold'
+              variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
               Produzimos de forma artesanal, com cuidado e carinho em cada
@@ -300,7 +300,7 @@ export function HomeView() {
               Ingredientes de Qualidade
             </Typography>
             <Typography
-              variant='textBold'
+              variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
               Só usamos ingredientes frescos e selecionados. Aqui não tem massa
@@ -333,7 +333,7 @@ export function HomeView() {
               Personalização Total
             </Typography>
             <Typography
-              variant='textBold'
+              variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
               Você escolhe sabores, tamanhos, recheios e pode enviar referências
@@ -356,7 +356,7 @@ export function HomeView() {
           }}
         >
           <Typography
-            variant='textBold'
+            variant='text'
             sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
           >
             Avaliações

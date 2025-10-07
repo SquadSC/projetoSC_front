@@ -17,59 +17,63 @@ export function MetricCard({ title, value, trend, isPositive }) {
       }}
     >
       {/* Conteúdo interno do card com padding */}
-      <CardContent sx={{ p: 2,}}>
+      <CardContent sx={{ p: 2 }}>
         {/* LINHA 1: Título e ícone indicador de tendência */}
-        <Box sx={{ 
-          display: 'flex',                           // Layout flexível
-          justifyContent: 'space-between',           // Espaço entre os elementos
-          alignItems: 'flex-start',                  // Alinhamento no topo para permitir quebra de linha
-          mb: 1.5, 
-        }}>
+        <Box
+          sx={{
+            display: 'flex', // Layout flexível
+            justifyContent: 'space-between', // Espaço entre os elementos
+            alignItems: 'flex-start', // Alinhamento no topo para permitir quebra de linha
+            mb: 1.5,
+          }}
+        >
           {/* Título da métrica com cor marrom da marca e fonte do theme */}
-          <Typography 
-            variant='textBold' 
+          <Typography
+            variant='text'
             sx={{
-              color: '#38090D',                       // Cor marrom da marca
-              fontSize: 'textLittleBold',                   // textLittleBold do theme
-              fontWeight: 'fontWeightSemiBold',                       // fontWeightSemiBold
-              width: '60%',                              // Ocupa espaço disponível
-              mr: 1                                 // Margem direita
+              color: '#38090D', // Cor marrom da marca
+              fontSize: 'textLittle', // textLittle do theme
+              fontWeight: 'semiBold', // semiBold
+              width: '60%', // Ocupa espaço disponível
+              mr: 1, // Margem direita
             }}
           >
             {title}
           </Typography>
-          
+
           {/* Ícone de tendência*/}
           {isPositive ? (
-            <TrendingUp sx={{ color: 'green', fontSize: 40 }} /> 
+            <TrendingUp sx={{ color: 'green', fontSize: 40 }} />
           ) : (
-            <TrendingDown sx={{ color: 'red', fontSize: 40 }} />  
+            <TrendingDown sx={{ color: 'red', fontSize: 40 }} />
           )}
         </Box>
-        
+
         {/* LINHA 2: Valor numérico e percentual de tendência */}
-        <Box sx={{ 
-          display: 'flex',                           // Layout flexível
-          justifyContent: 'space-between',           // Espaço entre os elementos
-          alignItems: 'center'                       // Alinhamento vertical central
-        }}>
+        <Box
+          sx={{
+            display: 'flex', // Layout flexível
+            justifyContent: 'space-between', // Espaço entre os elementos
+            alignItems: 'center', // Alinhamento vertical central
+          }}
+        >
           {/* Valor principal da métrica com cor cinza escura */}
           <Typography
-            variant='h4'                             // Tamanho grande de fonte
+            variant='h4' // Tamanho grande de fonte
             sx={{
-              fontWeight: 'bold',                    // Texto em negrito
-              color: '#2C2C2C',                      // Cor cinza escura quase preto
+              fontWeight: 'bold', // Texto em negrito
+              color: '#2C2C2C', // Cor cinza escura quase preto
             }}
           >
             {value}
           </Typography>
-          
+
           {/* Percentual de tendência */}
           <Typography
             sx={{
-              color: isPositive ? 'green' : 'red',   // Verde se positivo, vermelho se negativo
-              fontWeight: 'fontWeightBold',                  // Peso da fonte médio
-              fontSize: 'textBold',                 // Tamanho maior para a taxa
+              color: isPositive ? 'green' : 'red', // Verde se positivo, vermelho se negativo
+              fontWeight: 'bold', // Peso da fonte médio
+              fontSize: 'text', // Tamanho maior para a taxa
             }}
           >
             {trend}

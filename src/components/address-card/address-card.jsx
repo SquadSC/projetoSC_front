@@ -31,11 +31,11 @@ export function AddressCard({ address, onSelect, isSelected }) {
 
         {/* Textos do Endereço */}
         <Box sx={{ flexGrow: 1 }}>
-          <Typography variant='textBold' fontWeight='bold'>
+          <Typography variant='text' fontWeight='bold'>
             {`Endereço: ${address.nomeEndereco}`}
           </Typography>
-          <Typography variant='textLittleBold'>{addressText}</Typography>
-          <Typography variant='textLittleBold'>{cityAndCep}</Typography>
+          <Typography variant='textLittle'>{addressText}</Typography>
+          <Typography variant='textLittle'>{cityAndCep}</Typography>
         </Box>
 
         {/* Ícone de Seta */}
