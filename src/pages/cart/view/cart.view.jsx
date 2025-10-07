@@ -86,10 +86,7 @@ export function CartView({ produtos }) {
                       <Typography variant='subtitle1' fontWeight='bold'>
                         {item.nome}
                       </Typography>
-                      <Typography
-                        variant='textLittleBold'
-                        color='text.secondary'
-                      >
+                      <Typography variant='textLittle' color='text.secondary'>
                         {item.descricao}
                       </Typography>
                     </Box>
@@ -117,24 +114,24 @@ export function CartView({ produtos }) {
 
                 <Stack spacing={1}>
                   <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='textBold'>Valor Total:</Typography>
-                    <Typography variant='textBold' fontWeight='bold'>
+                    <Typography variant='text'>Valor Total:</Typography>
+                    <Typography variant='text' fontWeight='bold'>
                       R${valorTotal.toFixed(2)}
                     </Typography>
                   </Box>
                   <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='textLittleBold'>
+                    <Typography variant='textLittle'>
                       Data de Entrega:
                     </Typography>
-                    <Typography variant='textLittleBold'>
+                    <Typography variant='textLittle'>
                       16 Setembro, 2025
                     </Typography>
                   </Box>
                   <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='textLittleBold'>
+                    <Typography variant='textLittle'>
                       Horário de Entrega:
                     </Typography>
-                    <Typography variant='textLittleBold'>11:54 PM</Typography>
+                    <Typography variant='textLittle'>11:54 PM</Typography>
                   </Box>
                 </Stack>
 

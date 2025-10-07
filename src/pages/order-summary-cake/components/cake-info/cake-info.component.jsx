@@ -41,7 +41,7 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
         <Stack spacing={2}>
           <Typography
             variant='subtitle1'
-            fontWeight={'fontWeightSemiBold'}
+            fontWeight={'semiBold'}
             color='primary.main'
           >
             Qual vai ser o tema?
@@ -69,7 +69,7 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
           <Box>
             <Typography
               variant='subtitle1'
-              fontWeight={'fontWeightSemiBold'}
+              fontWeight={'semiBold'}
               color='primary.main'
               mb={2}
             >
@@ -94,7 +94,7 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
                     mb: 1,
                   }}
                 >
-                  <Typography variant='textLittleBold' color='text.secondary'>
+                  <Typography variant='textLittle' color='text.secondary'>
                     Referência anexada:
                   </Typography>
                   <IconButton size='small' color='error' onClick={removeImage}>

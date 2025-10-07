@@ -64,7 +64,7 @@ export function CarouselReferenceComponent({ refImages }) {
     >
       <Typography
         variant='subtitle1'
-        fontWeight={'fontWeightSemiBold'}
+        fontWeight={'semiBold'}
         color='primary.main'
         mb={2}
       >

@@ -34,10 +34,10 @@ export function CakeCard({ image, title, description }) {
           }}
         >
           <Stack spacing={1}>
-            <Typography variant='textBold' fontWeight='bold' color='primary'>
+            <Typography variant='text' fontWeight='bold' color='primary'>
               {title}
             </Typography>
-            <Typography variant='textLittleBold' color='text.secondary'>
+            <Typography variant='textLittle' color='text.secondary'>
               {description}
             </Typography>
             <Button

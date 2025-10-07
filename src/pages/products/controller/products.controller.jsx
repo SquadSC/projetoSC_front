@@ -25,7 +25,7 @@ export function ProductsController() {
     if (isLoadingRef.current) {
       return;
     }
-    
+
     try {
       isLoadingRef.current = true;
       setIsLoading(true);
@@ -72,9 +72,9 @@ export function ProductsController() {
   };
 
   // TODO: handler para edição de produto
-  const handleEditProduct = (item) => {
+  const handleEditProduct = item => {
     const isIngredient = item.isIngredient === true;
-    
+
     // Corrigir a lógica de IDs - usar os IDs corretos do backend
     let itemId;
     if (isIngredient) {
@@ -84,9 +84,9 @@ export function ProductsController() {
       // Para produtos, usar idProduto se disponível, senão id
       itemId = item.idProduto || item.id;
     }
-    
+
     const path = ROUTES_PATHS.EDIT_PRODUCT.replace(':id', itemId);
-    
+
     // 👇 PASSE O ESTADO 'isIngredient' DURANTE A NAVEGAÇÃO
     navigate(path, { state: { isIngredient, item } });
   };
@@ -100,7 +100,7 @@ export function ProductsController() {
   const handleToggleStatus = async item => {
     const isCurrentlyActive = item.ativo;
     const actionText = isCurrentlyActive ? 'desativar' : 'reativar';
-    
+
     // Corrigir a lógica de IDs - usar os IDs corretos do backend
     let itemId;
     if (item.isIngredient) {
@@ -110,7 +110,7 @@ export function ProductsController() {
       // Para produtos, usar idProduto se disponível, senão id
       itemId = item.idProduto || item.id;
     }
-    
+
     const endpoint = item.isIngredient
       ? `/ingredientes/${itemId}`
       : `/produtos/${itemId}`;
@@ -124,8 +124,8 @@ export function ProductsController() {
       cancelButtonText: 'Cancelar',
       confirmButtonText: `Sim, ${actionText}!`,
       customClass: {
-        cancelButton: 'swal-cancel-button'
-      }
+        cancelButton: 'swal-cancel-button',
+      },
     });
 
     if (result.isConfirmed) {
@@ -141,10 +141,14 @@ export function ProductsController() {
           timerProgressBar: true,
           showConfirmButton: false,
           allowOutsideClick: false,
-          allowEscapeKey: false
+          allowEscapeKey: false,
         });
       } catch (error) {
-        Swal.fire('Erro!', `Não foi possível ${actionText} o item. Tente novamente.`, 'error');
+        Swal.fire(
+          'Erro!',
+          `Não foi possível ${actionText} o item. Tente novamente.`,
+          'error',
+        );
       }
     }
   };

@@ -44,34 +44,34 @@ export function DashboardView({ data }) {
         sx={{
           mb: 4,
           width: '100%',
-          py: 2, 
+          py: 2,
           display: 'flex',
           gap: 2,
         }}
       >
-          {/* Card de Pedidos */}
-          <Box sx={{ flex: 1 }}>
-            <MetricCard
-              title='Pedidos' // Título do card
-              value={data.metrics.orders.value} // Valor numérico (38)
-              trend={data.metrics.orders.trend} // Tendência (+7%)
-              isPositive={data.metrics.orders.isPositive} // Se a tendência é positiva
-            />
-          </Box>
-
-          {/* Card de Clientes Fidelizados */}
-          <Box sx={{ flex: 1 }}>
-            <MetricCard
-              title='Clientes fidelizados' // Título do card
-              value={data.metrics.loyalCustomers.value} // Valor numérico (24)
-              trend={data.metrics.loyalCustomers.trend} // Tendência (-2%)
-              isPositive={data.metrics.loyalCustomers.isPositive} // Se a tendência é positiva
-            />
-          </Box>
+        {/* Card de Pedidos */}
+        <Box sx={{ flex: 1 }}>
+          <MetricCard
+            title='Pedidos' // Título do card
+            value={data.metrics.orders.value} // Valor numérico (38)
+            trend={data.metrics.orders.trend} // Tendência (+7%)
+            isPositive={data.metrics.orders.isPositive} // Se a tendência é positiva
+          />
         </Box>
 
-        {/* Container responsivo com largura máxima para mobile */}
-        <Container maxWidth='sm' sx={{ mt: 0, p: 0 }}>
+        {/* Card de Clientes Fidelizados */}
+        <Box sx={{ flex: 1 }}>
+          <MetricCard
+            title='Clientes fidelizados' // Título do card
+            value={data.metrics.loyalCustomers.value} // Valor numérico (24)
+            trend={data.metrics.loyalCustomers.trend} // Tendência (-2%)
+            isPositive={data.metrics.loyalCustomers.isPositive} // Se a tendência é positiva
+          />
+        </Box>
+      </Box>
+
+      {/* Container responsivo com largura máxima para mobile */}
+      <Container maxWidth='sm' sx={{ mt: 0, p: 0 }}>
         {/* SEÇÃO "MAIS VENDIDOS" - Card principal com produtos mais vendidos */}
         <Card
           sx={{

@@ -132,7 +132,7 @@ export function ProductsView({
           />
         ) : (
           <Typography
-            variant='textBold'
+            variant='text'
             sx={{ textAlign: 'center', mt: 4, color: 'text.secondary' }}
           >
             {searchQuery

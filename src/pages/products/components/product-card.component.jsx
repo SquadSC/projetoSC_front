@@ -57,11 +57,7 @@ export function ProductCard({
           }}
         >
           {/* lado esquerdo: descricao dos produtos */}
-          <Typography
-            variant='textBold'
-            component='h3'
-            sx={{ fontWeight: 500 }}
-          >
+          <Typography variant='text' component='h3' sx={{ fontWeight: 500 }}>
             {name}
           </Typography>
 
@@ -127,11 +123,25 @@ export function ProductCard({
         {!isIngredient && (isPriceTable || unidadeMedida) && (
           <>
             {/* Unidade - só para produtos da tabela de preços e complementares */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '98%' }}>
-              <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '98%',
+              }}
+            >
+              <Typography
+                variant='text'
+                component='h3'
+                sx={{ fontWeight: 500 }}
+              >
                 Unidade:
               </Typography>
-              <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+              <Typography
+                variant='text'
+                component='h3'
+                sx={{ fontWeight: 500 }}
+              >
                 {unidadeMedida || '1 unidade'}
               </Typography>
             </Box>
@@ -150,11 +160,17 @@ export function ProductCard({
 
         {/* Preço - só para produtos da tabela de preços e complementares */}
         {!isIngredient && price && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '98%' }}>
-            <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '98%',
+            }}
+          >
+            <Typography variant='text' component='h3' sx={{ fontWeight: 500 }}>
               Preço:
             </Typography>
-            <Typography variant='textBold' component='h3' sx={{ fontWeight: 500 }}>
+            <Typography variant='text' component='h3' sx={{ fontWeight: 500 }}>
               R$ {(price || 0).toFixed(2)}
             </Typography>
           </Box>

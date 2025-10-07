@@ -100,18 +100,18 @@ export function OrderSummary({ product, onSubmit }) {
           Valor do Pedido
         </Typography>
         <Stack direction='row' justifyContent='space-between' sx={{ mb: 1 }}>
-          <Typography variant='textBold' fontWeight={600}>
+          <Typography variant='text' fontWeight={600}>
             Valor total:
           </Typography>
-          <Typography variant='textBold' fontWeight={600} color='grey'>
+          <Typography variant='text' fontWeight={600} color='grey'>
             {valorTotalFormatado}
           </Typography>
         </Stack>
         <Stack direction='row' justifyContent='space-between' sx={{ mb: 1 }}>
-          <Typography variant='textBold' fontWeight={600}>
+          <Typography variant='text' fontWeight={600}>
             50% do valor:
           </Typography>
-          <Typography variant='textBold' fontWeight={600} color='grey'>
+          <Typography variant='text' fontWeight={600} color='grey'>
             {valor50}
           </Typography>
         </Stack>
@@ -136,7 +136,7 @@ export function OrderSummary({ product, onSubmit }) {
         <Typography variant='subtitle1' fontWeight={600} sx={{ mt: 1 }}>
           Detalhes adicionais do pedido:
         </Typography>
-        <Typography variant='textLittleBold' sx={{ mt: 1, color: 'grey' }}>
+        <Typography variant='textLittle' sx={{ mt: 1, color: 'grey' }}>
           {product.observation || 'Nenhuma observação adicional.'}
         </Typography>
       </Box>

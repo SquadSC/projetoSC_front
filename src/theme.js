@@ -19,15 +19,15 @@ const theme = createTheme({
   typography: {
     fontFamily: 'Poppins, Arial, sans-serif',
     // -- Font Weights --
-    fontWeightThin: 100,
-    fontWeightExtraLight: 200,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 500,
-    fontWeightSemiBold: 600,
-    fontWeightBold: 700,
-    fontWeightExtraBold: 800,
-    fontWeightBlack: 900,
+    thin: 100,
+    extraLight: 200,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semiBold: 600,
+    bold: 700,
+    extraBold: 800,
+    black: 900,
     // -- Font Sizes --
     title: {
       fontSize: '3rem',
@@ -35,19 +35,13 @@ const theme = createTheme({
     subTitle: {
       fontSize: '1.5rem',
     },
-    subTitleLittleBold: {
+    subTitleLittle: {
       fontSize: '1rem',
     },
-    textBold: {
+    text: {
       fontSize: '0.875rem',
     },
-    textLittleBold: {
-      fontSize: '0.75rem',
-    },
-    textBold: {
-      fontSize: '0.875rem',
-    },
-    textLittleBold: {
+    textLittle: {
       fontSize: '0.75rem',
     },
   },

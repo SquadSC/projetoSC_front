@@ -20,7 +20,7 @@ export function FeedbackCard({ quote, authorName, authorInfo }) {
           justifyContent: 'space-between',
         }}
       >
-        <Typography variant='textBold' sx={{ fontStyle: 'italic' }}>
+        <Typography variant='text' sx={{ fontStyle: 'italic' }}>
           "{quote}"
         </Typography>
 
@@ -32,7 +32,7 @@ export function FeedbackCard({ quote, authorName, authorInfo }) {
             <Typography variant='subtitle1' fontWeight='bold'>
               {authorName}
             </Typography>
-            <Typography variant='textLittleBold' color='text.secondary'>
+            <Typography variant='textLittle' color='text.secondary'>
               {authorInfo}
             </Typography>
           </Box>
