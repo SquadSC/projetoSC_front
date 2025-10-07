@@ -1,48 +1,81 @@
-import { Typography, Box, IconButton, Container } from "@mui/material";
-import { useState } from "react";
+import { Typography, Container } from "@mui/material";
+import { useState, useEffect } from "react";
 import IngredientComponent from "../ingredient/IngredientComponent";
 import theme from "../../../../theme";
 
+export function SectionComponent({ IngredientType, items, maxQuantity = 0, weight = 1, listaIngrediente, onSelectionChange, required = false }) {
+    const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-export function SectionComponent({ IngredientType, items, maxQuantity = 0, weight = 1 }) {
-    const [selectedIngredients, setSelectedIngredients] = useState({});
+    // Inicializa com os ingredientes da listaIngrediente que pertencem a esta seção
+    useEffect(() => {
+        if (listaIngrediente && listaIngrediente.length > 0 && items) {
+            const idsFromLista = listaIngrediente.filter(id => 
+                items.some(ingredient => ingredient.idIngrediente === id)
+            );
+            setSelectedIngredients(idsFromLista);
+        } else {
+            setSelectedIngredients([]);
+        }
+    }, [listaIngrediente, items]);
 
     const handleToggle = (id) => {
         setSelectedIngredients(prev => {
-            const newSelected = { ...prev };
-            const isCurrentlySelected = newSelected[id];
-            const currentCount = Object.keys(newSelected).filter(key => newSelected[key]).length;
-
+            const isCurrentlySelected = prev.includes(id);
+            let newSelection;
+            
             if (isCurrentlySelected) {
-                delete newSelected[id];
+                newSelection = prev.filter(ingredientId => ingredientId !== id);
             } else {
-
-                if (maxQuantity === 0 || currentCount < maxQuantity) {
-                    newSelected[id] = true;
+                if (maxQuantity === 0 || prev.length < maxQuantity) {
+                    newSelection = [...prev, id];
+                } else {
+                    return prev;
                 }
             }
-
-            console.log(newSelected)
-            return newSelected;
+            
+            // Notifica o componente pai sobre a mudança
+            if (onSelectionChange) {
+                onSelectionChange(IngredientType, newSelection);
+            }
+            
+            return newSelection;
         });
     };
 
-    const currentCount = Object.keys(selectedIngredients).filter(key => selectedIngredients[key]).length;
-    const limitReached = currentCount >= maxQuantity && maxQuantity != 0;
+    const currentCount = selectedIngredients.length;
+    const limitReached = currentCount >= maxQuantity && maxQuantity !== 0;
 
     const totalPrice = items
-        ? items
-            .filter(item => selectedIngredients[item.idIngrediente])
-            .reduce((total, item) => total + (5.5 * weight), 0)
-        : 0;
+    ? items
+        .filter(item => selectedIngredients.includes(item.idIngrediente))
+        .reduce((total, item) => {
+            // Para adicionais, usa o peso. Para outros tipos, preço fixo
+            console.log(item)
+            if (item.tipoIngrediente.descricao.toLowerCase() === 'adicionais') {
+                return total + ( 5.5 * (weight || 1));
+            }
+        }, 0)
+    : 0;
+    // Verifica se esta seção obrigatória está vazia
+    const isRequiredAndEmpty = required && selectedIngredients.length === 0;
+
+    // Se não há itens para esta seção, oculta o componente
+    if (!items || items.length === 0) {
+        return null;
+    }
 
     return (
         <>
-
-            <Container  sx={{width: '100%', padding: 0, marginBottom: 1}}>
-                <Typography sx={{ fontWeight: 'bold', color: theme.palette.primary.main }} >
+            <Container sx={{width: '100%', padding: 0, marginBottom: 1}}>
+                <Typography 
+                    sx={{ 
+                        fontWeight: 'bold', 
+                        color: isRequiredAndEmpty ? '#d32f2f' : theme.palette.primary.main 
+                    }} 
+                >
                     {IngredientType}
                     {maxQuantity > 0 && ` (Máximo: ${maxQuantity})`}
+                    {isRequiredAndEmpty && ' *'}
                 </Typography>
 
                 <Typography variant="caption">
@@ -60,12 +93,11 @@ export function SectionComponent({ IngredientType, items, maxQuantity = 0, weigh
                     key={item.idIngrediente}
                     id={item.idIngrediente}
                     item={item}
-                    active={!!selectedIngredients[item.idIngrediente]}
+                    active={selectedIngredients.includes(item.idIngrediente)}
                     onToggle={handleToggle}
-                    disabled={limitReached && !selectedIngredients[item.idIngrediente]}
+                    disabled={limitReached && !selectedIngredients.includes(item.idIngrediente)}
                 />
             ))}
-            
         </>
     );
 }

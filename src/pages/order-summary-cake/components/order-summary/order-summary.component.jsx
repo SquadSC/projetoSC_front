@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Container, Typography, Box, Stack } from '@mui/material';
+import { Button, Container, Typography, Box, Stack, capitalize } from '@mui/material';
 import { formatCurrencyBRL } from '../../../../utils/formatter/currency-formatter/currency-formatter';
 
 export function OrderSummary({ product, onSubmit }) {
@@ -23,9 +23,13 @@ export function OrderSummary({ product, onSubmit }) {
     if (attachment instanceof File) {
       return URL.createObjectURL(attachment);
     }
-
+    
     return null;
   };
+  const capitalizeFirst = (text) => {
+  if (!text) return '';
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+};
 
   const imageSrc = getImageSrc(product.attachment);
   const valorTotal = Number(product.price) || 0;
@@ -123,9 +127,9 @@ export function OrderSummary({ product, onSubmit }) {
         <ul style={{ marginTop: 1, marginBottom: 8, color: 'grey', gap: 4 }}>
           {product.ingredientList?.map((ingred, idx) => (
             <li key={idx}>
-              {ingred.type ? `${ingred.type}: ` : ''}
-              {ingred.name}
-              {ingred.isPremium ? ' (premium)' : ''}
+              {capitalizeFirst(ingred.tipoIngrediente.descricao) ? `${capitalizeFirst(ingred.tipoIngrediente.descricao)}: ` : ''}
+              {ingred.nome}
+              {ingred.premium ? ' (premium)' : ''}
             </li>
           ))}
         </ul>

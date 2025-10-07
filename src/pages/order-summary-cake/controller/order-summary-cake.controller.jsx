@@ -13,14 +13,9 @@ export function OrderSummaryCakeController() {
     theme: '',
     observation: '',
     attachment: '',
-    ingredientList: [
-      {
-        name: '',
-        type: '',
-        isPremium: false,
-      },
-    ],
-  });
+    weight: 1,
+    ingredientList: [], 
+});
   const [errors, setErrors] = useState({
     idProduct: '',
     price: '',
