@@ -18,7 +18,7 @@ export function AddressMenuComponent({
           p: 3,
         }}
       >
-        <Typography variant='textBold' sx={{ mb: 2 }}>
+        <Typography variant='text' sx={{ mb: 2 }}>
           Endereços de entregas cadastrados
         </Typography>
 
@@ -35,7 +35,7 @@ export function AddressMenuComponent({
               />
             ))
           ) : (
-            <Typography variant='textBold' sx={{ textAlign: 'center', mt: 4 }}>
+            <Typography variant='text' sx={{ textAlign: 'center', mt: 4 }}>
               Nenhum endereço cadastrado.
             </Typography>
           )}

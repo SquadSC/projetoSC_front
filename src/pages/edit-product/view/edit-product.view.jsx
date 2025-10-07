@@ -29,34 +29,54 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', p: 3, }}>
+    <Box
+      sx={{ backgroundColor: 'background.default', minHeight: '100vh', p: 3 }}
+    >
       {/* Header */}
-        <PageHeader
-          titulo='Editar Produto'
-          showBackButton={true}
-          width='100%'
-        ></PageHeader>
+      <PageHeader
+        titulo='Editar Produto'
+        showBackButton={true}
+        width='100%'
+      ></PageHeader>
 
-      <Container maxWidth="sm" sx={{ mt: 3 }}>
-        <Typography variant="h6" color="primary" fontWeight="fontWeightSemiBold" sx={{ mb: 2 }}>
+      <Container maxWidth='sm' sx={{ mt: 3 }}>
+        <Typography
+          variant='h6'
+          color='primary'
+          fontWeight='semiBold'
+          sx={{ mb: 2 }}
+        >
           Informações do Produto
         </Typography>
-        <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box
+          component='form'
+          onSubmit={onSubmit}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+        >
           {/* Select Principal */}
           <FormControl fullWidth>
-            <InputLabel id="main-category-label">Categoria do Produto</InputLabel>
+            <InputLabel id='main-category-label'>
+              Categoria do Produto
+            </InputLabel>
             <Select
-              labelId="main-category-label"
-              name="mainCategory"
+              labelId='main-category-label'
+              name='mainCategory'
               value={fields.mainCategory}
-              label="Categoria do Produto"
+              label='Categoria do Produto'
               onChange={onChange}
             >
               {mainCategoryOptions.map(option => (
@@ -70,12 +90,14 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
           {/* Select Secundário (Condicional) - não aparece para tabela de preços */}
           {fields.mainCategory && fields.mainCategory !== 'tabela-precos' && (
             <FormControl fullWidth>
-              <InputLabel id="sub-category-label">Tipo / Categoria Específica</InputLabel>
+              <InputLabel id='sub-category-label'>
+                Tipo / Categoria Específica
+              </InputLabel>
               <Select
-                labelId="sub-category-label"
-                name="subCategory"
+                labelId='sub-category-label'
+                name='subCategory'
                 value={fields.subCategory}
-                label="Tipo / Categoria Específica"
+                label='Tipo / Categoria Específica'
                 onChange={onChange}
               >
                 {subCategoryOptions[fields.mainCategory].map(option => (
@@ -88,35 +110,36 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
           )}
 
           <TextField
-            name="name"
-            label="Nome do Produto"
+            name='name'
+            label='Nome do Produto'
             value={fields.name}
             onChange={onChange}
             fullWidth
           />
-          
+
           <TextField
-            name="price"
-            label="Preço do Produto (R$)"
-            type="number"
+            name='price'
+            label='Preço do Produto (R$)'
+            type='number'
             value={fields.price}
             onChange={onChange}
             fullWidth
           />
 
           {/* Campo Unidade - aparece para itens complementares e tabela de preços */}
-          {(fields.mainCategory === 'itens-complementares' || fields.mainCategory === 'tabela-precos') && (
+          {(fields.mainCategory === 'itens-complementares' ||
+            fields.mainCategory === 'tabela-precos') && (
             <FormControl fullWidth>
-              <InputLabel id="unidade-label">Unidade de Medida</InputLabel>
+              <InputLabel id='unidade-label'>Unidade de Medida</InputLabel>
               <Select
-                labelId="unidade-label"
-                name="unidade"
+                labelId='unidade-label'
+                name='unidade'
                 value={fields.unidade}
-                label="Unidade de Medida"
+                label='Unidade de Medida'
                 onChange={onChange}
               >
-                <MenuItem value="kg">kg</MenuItem>
-                <MenuItem value="unidade">unidade</MenuItem>
+                <MenuItem value='kg'>kg</MenuItem>
+                <MenuItem value='unidade'>unidade</MenuItem>
               </Select>
             </FormControl>
           )}
@@ -124,16 +147,22 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
           <FormControlLabel
             control={
               <Checkbox
-                name="isPremium"
+                name='isPremium'
                 checked={fields.isPremium}
                 onChange={onChange}
-                color="primary"
+                color='primary'
               />
             }
-            label="É um item premium"
+            label='É um item premium'
           />
 
-          <Button type="submit" variant="contained" color="primary" size="large" sx={{ py: 1.5 }}>
+          <Button
+            type='submit'
+            variant='contained'
+            color='primary'
+            size='large'
+            sx={{ py: 1.5 }}
+          >
             Salvar
           </Button>
         </Box>

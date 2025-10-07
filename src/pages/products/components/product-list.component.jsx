@@ -46,7 +46,8 @@ export function ProductList({
         // Ingredientes agora só mostram o nome, sem unidade e preço
 
         const tipoId = normalizedItem.tipoIngrediente?.idTipoIngrediente;
-        const tipoNome = normalizedItem.tipoIngrediente?.descricao?.toLowerCase();
+        const tipoNome =
+          normalizedItem.tipoIngrediente?.descricao?.toLowerCase();
 
         if (tipoId === 1 || tipoNome === 'massa') {
           groups['Componentes do Bolo']['Massas'].push(normalizedItem);
@@ -55,7 +56,6 @@ export function ProductList({
         } else if (tipoId === 3 || tipoNome === 'adicional') {
           groups['Componentes do Bolo']['Adicionais'].push(normalizedItem);
         }
-
       } else {
         // --- LÓGICA PARA PRODUTOS ---
         if (normalizedItem.isPriceTable) {
@@ -148,10 +148,14 @@ export function ProductList({
               <Box sx={{ p: 2, backgroundColor: 'background.default' }}>
                 {subGroups.map((item, index) => (
                   <ProductCard
-                    key={`${item.isIngredient ? 'ingredient' : 'product'}-${item.idProduto || item.id_ingrediente || item.id || index}`}
+                    key={`${item.isIngredient ? 'ingredient' : 'product'}-${
+                      item.idProduto || item.id_ingrediente || item.id || index
+                    }`}
                     name={item.nome || item.descricao}
                     weight={item.peso}
-                    price={item.preco || item.preco_unitario || item.precoUnitario}
+                    price={
+                      item.preco || item.preco_unitario || item.precoUnitario
+                    }
                     onEdit={() => onEditProduct(item)}
                     onDelete={() => onDeleteProduct(item)}
                     isIngredient={item.isIngredient}
@@ -214,10 +218,19 @@ export function ProductList({
                   >
                     {items.map((item, index) => (
                       <ProductCard
-                        key={`${item.isIngredient ? 'ingredient' : 'product'}-${item.idProduto || item.id_ingrediente || item.id || index}`}
+                        key={`${item.isIngredient ? 'ingredient' : 'product'}-${
+                          item.idProduto ||
+                          item.id_ingrediente ||
+                          item.id ||
+                          index
+                        }`}
                         name={item.nome || item.descricao}
                         weight={item.peso}
-                        price={item.preco || item.preco_unitario || item.precoUnitario}
+                        price={
+                          item.preco ||
+                          item.preco_unitario ||
+                          item.precoUnitario
+                        }
                         onEdit={() => onEditProduct(item)}
                         onDelete={() => onDeleteProduct(item)}
                         isIngredient={item.isIngredient}

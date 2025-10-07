@@ -14,10 +14,10 @@ export function LoginView({ fields, error, onSubmit, onChange }) {
       />
       <Container sx={{ p: 3 }}>
         <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
-          <Typography variant='h5' fontWeight={'fontWeightMedium'}>
+          <Typography variant='subTitle' fontWeight={'semiBold'}>
             Que bom te ver de novo!
           </Typography>
-          <Typography variant='textBold'>
+          <Typography variant='text'>
             Entre e continue adoçando seus dias com a gente
           </Typography>
         </Stack>
@@ -43,7 +43,7 @@ export function LoginView({ fields, error, onSubmit, onChange }) {
             helperText={error.password}
           />
           <Link
-            variant='textLittleBold'
+            variant='textLittle'
             sx={{ alignSelf: 'flex-end' }}
             onClick={() => navigate(ROUTES_PATHS.HOME)}
           >
