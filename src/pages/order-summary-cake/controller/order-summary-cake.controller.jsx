@@ -128,16 +128,21 @@ export function OrderSummaryCakeController() {
     setErrors(prev => ({ ...prev, attachment: '' }));
   };
 
-  // Personalizar bolo
-     const [ingredients, setIngredients] = useState([]);
+    const [essenciais, setEssenciais] = useState([]);
+    const [ingredients, setIngredients] = useState([]);
 
   useEffect(() => {
     try {
       request.get('/ingredientes?ativos=true')
         .then(response => {
-          console.log('response.data:', response.data); // <-- Veja se aparece aqui
           setIngredients(response.data);
         });
+
+      request.get('/produtos/getEssenciais')
+        .then(response =>{
+          console.log('Essentials',response.data)
+          setEssenciais(response.data);
+        })
     } catch (error) {
       console.error('Error fetching ingredients:', error);
     }
@@ -183,6 +188,7 @@ export function OrderSummaryCakeController() {
       infoCake={infoCake}
       refImages={refImages}
       ingredients={ingredients}
+      essentials={essenciais}
     />
   );
 }

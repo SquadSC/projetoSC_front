@@ -32,7 +32,9 @@ function sortIngredientsByType(ingredients) {
     return types;
 }
 
-export default function CustomCake({ ingredients, nextStep, infoCake }) {
+export default function CustomCake({ ingredients, nextStep, infoCake, essentials }) {
+
+  
 
     const {
         product,
@@ -175,6 +177,8 @@ export default function CustomCake({ ingredients, nextStep, infoCake }) {
                         listaIngrediente={listaIngredientes}
                         onSelectionChange={handleSelectionChange}
                         required={true}
+                        essentials={essentials}
+                        setProduct={setProduct}
                     />
                     <Box sx={slimLineGolden}></Box>
                     
@@ -185,6 +189,8 @@ export default function CustomCake({ ingredients, nextStep, infoCake }) {
                         listaIngrediente={listaIngredientes}
                         onSelectionChange={handleSelectionChange}
                         required={true}
+                        essentials={essentials}
+                        setProduct={setProduct}
                     />
                     <Box sx={slimLineGolden}></Box>
 
@@ -232,6 +238,8 @@ export default function CustomCake({ ingredients, nextStep, infoCake }) {
                                 listaIngrediente={listaIngredientes}
                                 onSelectionChange={handleSelectionChange}
                                 required={false}
+                                essentials={essentials}
+                                infoCake={setProduct}
                             />
                             <Box sx={slimLineGolden}></Box>
                         </>
@@ -247,6 +255,8 @@ export default function CustomCake({ ingredients, nextStep, infoCake }) {
                                 listaIngrediente={listaIngredientes}
                                 onSelectionChange={handleSelectionChange}
                                 required={false}
+                                essentials={essentials}
+                                infoCake={setProduct} 
                             />
                             <Box sx={slimLineGolden}></Box>
                         </>
@@ -259,6 +269,8 @@ export default function CustomCake({ ingredients, nextStep, infoCake }) {
                         listaIngrediente={listaIngredientes}
                         onSelectionChange={handleSelectionChange}
                         required={false}
+                        essentials={essentials}
+                        infoCake={setProduct}
                     />
                 </Box>
 

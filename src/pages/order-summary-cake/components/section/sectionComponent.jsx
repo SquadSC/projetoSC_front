@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import IngredientComponent from "../ingredient/IngredientComponent";
 import theme from "../../../../theme";
 
-export function SectionComponent({ IngredientType, items, maxQuantity = 0, weight = 1, listaIngrediente, onSelectionChange, required = false }) {
+export function SectionComponent({ IngredientType, items, maxQuantity = 0, weight = 1, listaIngrediente, onSelectionChange, required = false, essentials, infoCake}) {
+    
+    const [product, setProduct] = infoCake
     const [selectedIngredients, setSelectedIngredients] = useState([]);
 
     // Inicializa com os ingredientes da listaIngrediente que pertencem a esta seção
@@ -33,6 +35,7 @@ export function SectionComponent({ IngredientType, items, maxQuantity = 0, weigh
                 }
             }
             
+            
             // Notifica o componente pai sobre a mudança
             if (onSelectionChange) {
                 onSelectionChange(IngredientType, newSelection);
@@ -44,7 +47,10 @@ export function SectionComponent({ IngredientType, items, maxQuantity = 0, weigh
 
     const currentCount = selectedIngredients.length;
     const limitReached = currentCount >= maxQuantity && maxQuantity !== 0;
-
+    var aditionalPrice = 0
+    if(essentials.length > 0){
+        aditionalPrice = essentials.filter(item => item.descricao == 'Adicionais')[0].precoUnitario
+    }
     const totalPrice = items
     ? items
         .filter(item => selectedIngredients.includes(item.idIngrediente))
@@ -52,10 +58,12 @@ export function SectionComponent({ IngredientType, items, maxQuantity = 0, weigh
             // Para adicionais, usa o peso. Para outros tipos, preço fixo
             console.log(item)
             if (item.tipoIngrediente.descricao.toLowerCase() === 'adicionais') {
-                return total + ( 5.5 * (weight || 1));
+                return total + ( aditionalPrice * (weight || 1));
             }
         }, 0)
     : 0;
+
+    setProduct(totalPrice)
     // Verifica se esta seção obrigatória está vazia
     const isRequiredAndEmpty = required && selectedIngredients.length === 0;
 

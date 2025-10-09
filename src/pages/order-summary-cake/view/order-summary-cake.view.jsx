@@ -7,14 +7,14 @@ import { AdditionalDetailsComponent } from '../components/detail/add-detail.comp
 import { OrderSummary } from '../components/order-summary/order-summary.component';
 import CustomCake from '../components/custom-cake/custom-cake';
 
-export function OrderSummaryCakeView({ stepConfig, infoCake, refImages, ingredients }) {
+export function OrderSummaryCakeView({ stepConfig, infoCake, refImages, ingredients, essentials }) {
   const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3', 'Etapa 4'];
   const { nextStep, activeStep, maxStepReached, setActiveStep } = stepConfig;
 
   const getStepContent = step => {
     switch (step) {
       case 0:
-        return <CustomCake nextStep={nextStep} infoCake={infoCake} ingredients={ingredients} />;
+        return <CustomCake nextStep={nextStep} infoCake={infoCake} ingredients={ingredients} essentials={essentials} />;
       case 1:
         return <CakeInfoComponent nextStep={nextStep} infoCake={infoCake} refImages={refImages} />;
       case 2:
