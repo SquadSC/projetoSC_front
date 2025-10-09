@@ -13,4 +13,5 @@ export const ROUTES_PATHS = {
   ADD_PRODUCT: '/add-product',
   DASHBOARD: '/dashboard',
   DETAIL_ORDER: '/detail-order',
+  NUMBER_GUESTS: '/number-guests',
 };
