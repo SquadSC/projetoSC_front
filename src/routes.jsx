@@ -15,6 +15,10 @@ import { OrderUserController } from './pages/order-user/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
 import { NumberGuestsController } from './pages/number-guests/index.page.jsx';
+import { ProductsController } from './pages/products/index.page.jsx';
+import { DashboardController } from './pages/dashboard/index.page.jsx';
+import { AddProductController } from './pages/add-product/index.page.jsx';
+import { EditProductController } from './pages/edit-product/index.page.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -53,6 +57,22 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.NUMBER_GUESTS,
       element: <NumberGuestsController />,
+    },
+    {
+      path: ROUTES_PATHS.PRODUCTS,
+      element: <ProductsController />,
+    },
+    {
+      path: ROUTES_PATHS.DASHBOARD,
+      element: <DashboardController />,
+    },
+    {
+      path: ROUTES_PATHS.ADD_PRODUCT,
+      element: <AddProductController />,
+    },
+    {
+      path: ROUTES_PATHS.EDIT_PRODUCT,
+      element: <EditProductController />,
     },
   ];
 

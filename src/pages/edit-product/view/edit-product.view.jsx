@@ -144,17 +144,20 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
             </FormControl>
           )}
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                name='isPremium'
-                checked={fields.isPremium}
-                onChange={onChange}
-                color='primary'
-              />
-            }
-            label='É um item premium'
-          />
+          {/* Checkbox Premium - aparece apenas para componentes de bolo (ingredientes) */}
+          {fields.mainCategory === 'componente-bolo' && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name='isPremium'
+                  checked={fields.isPremium}
+                  onChange={onChange}
+                  color='primary'
+                />
+              }
+              label='É um item premium'
+            />
+          )}
 
           <Button
             type='submit'
