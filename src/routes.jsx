@@ -15,6 +15,8 @@ import { OrderUserController } from './pages/order-user/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
 import { NumberGuestsController } from './pages/number-guests/index.page.jsx';
+import { OrdersController } from './pages/orders/controller/orders.controller.jsx';
+import { PendingOrderController } from './pages/pending-order/controller/pending-order.controller.jsx';
 
 export default function AppRoutes() {
   const routes = [
@@ -53,6 +55,14 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.NUMBER_GUESTS,
       element: <NumberGuestsController />,
+    },
+    {
+      path: ROUTES_PATHS.ORDERS,
+      element: < OrdersController/>,
+    },
+    {
+      path: ROUTES_PATHS.PENDING_ORDERS,
+      element: < PendingOrderController/>,
     },
   ];
 
