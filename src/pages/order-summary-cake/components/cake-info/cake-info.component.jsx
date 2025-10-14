@@ -15,17 +15,24 @@ import ImageIcon from '@mui/icons-material/Image';
 import { useRef } from 'react';
 import { CarouselReferenceComponent } from '../carousel-reference/carousel-refence.component';
 
-export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
+export function CakeInfoComponent({
+  nextStep,
+  cakeData,
+  imageData,
+  canAdvance,
+}) {
+  const { product, setProduct, errors } = cakeData;
+
   const {
-    product,
-    setProduct,
-    errors,
     file,
     preview,
     uploading,
     handleFileChange,
     removeImage,
-  } = infoCake;
+    images,
+    selectedReferenceImage,
+    setSelectedReferenceImage,
+  } = imageData;
 
   const fileInputRef = useRef(null);
 
@@ -62,7 +69,11 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
         </Stack>
 
         <Box>
-          <CarouselReferenceComponent refImages={refImages} />
+          <CarouselReferenceComponent
+            images={images}
+            selectedReferenceImage={selectedReferenceImage}
+            setSelectedReferenceImage={setSelectedReferenceImage}
+          />
         </Box>
 
         <Stack spacing={3} mt={4}>
@@ -191,8 +202,14 @@ export function CakeInfoComponent({ nextStep, infoCake, refImages }) {
           <Button
             variant='contained'
             color='primary'
-            sx={{ width: '100%', height: '48px', mt: 4 }}
+            sx={{
+              width: '100%',
+              height: '48px',
+              mt: 4,
+              opacity: canAdvance ? 1 : 0.6,
+            }}
             onClick={nextStep}
+            disabled={!canAdvance}
           >
             Avançar
           </Button>
