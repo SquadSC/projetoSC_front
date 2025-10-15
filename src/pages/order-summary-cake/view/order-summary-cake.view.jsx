@@ -10,7 +10,6 @@ export function OrderSummaryCakeView({
   stepConfig,
   cakeData,
   imageData,
-  ingredients,
   essentials,
 }) {
   const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3', 'Etapa 4'];

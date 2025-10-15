@@ -37,9 +37,16 @@ export default function CustomCake({
   const recheioPremiumAvailable =
     organizedIngredients.recheioPremium?.length > 0;
 
-  const handleRecheioTypeChange = event => {
-    setRecheioType(event.target.value);
-  };
+ const handleRecheioTypeChange = event => {
+  const newRecheioType = event.target.value;
+  setRecheioType(newRecheioType);
+  
+  // Limpa todos os recheios selecionados quando muda o tipo
+  const currentRecheios = selectedIngredients.recheio || [];
+  currentRecheios.forEach(ingredientId => {
+    handleIngredientSelection('recheio', ingredientId, false);
+  });
+};
 
   const handleWeightChange = newWeight => {
     setWeight(newWeight);

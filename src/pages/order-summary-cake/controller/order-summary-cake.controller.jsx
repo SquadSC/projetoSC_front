@@ -12,8 +12,8 @@ const CAKE_RULES = {
 
 const INGREDIENT_TYPES = {
   MASSA: 'massa',
-  RECHEIO_BASICO: 'recheio',
-  RECHEIO_PREMIUM: 'recheio',
+  RECHEIO_BASICO: 'cobertura',
+  RECHEIO_PREMIUM: 'cobertura',
   ADICIONAIS: 'adicionais',
 };
 
@@ -284,56 +284,67 @@ export function OrderSummaryCakeController() {
 
   // Função para gerenciar seleção de ingredientes
   const handleIngredientSelection = useCallback(
-    (ingredientType, ingredientId, isSelected) => {
-      const typeKey = ingredientType.toLowerCase().replace(' ', '');
+  (ingredientType, ingredientId, isSelected) => {
+    const typeKey = ingredientType.toLowerCase().replace(' ', '');
 
-      setSelectedIngredients(prev => {
-        const currentSelection = prev[typeKey] || [];
-        const rules = CAKE_RULES[ingredientType.toUpperCase()] || {
-          min: 0,
-          max: Infinity,
-        };
+    setSelectedIngredients(prev => {
+      const currentSelection = prev[typeKey] || [];
+      const rules = CAKE_RULES[ingredientType.toUpperCase()] || {
+        min: 0,
+        max: Infinity,
+      };
 
-        let newSelection;
-        if (isSelected) {
-          // Adicionar ingrediente
-          if (currentSelection.length < rules.max) {
-            newSelection = [...currentSelection, ingredientId];
-          } else {
-            // Se atingiu o máximo, substitui o primeiro (para massa)
-            if (rules.max === 1) {
-              newSelection = [ingredientId];
-            } else {
-              newSelection = currentSelection;
-            }
-          }
+      let newSelection; // Declarar aqui no escopo correto
+
+      if (isSelected) {
+        // Adicionar ingrediente
+        if (currentSelection.length < rules.max) {
+          newSelection = [...currentSelection, ingredientId];
         } else {
-          // Remover ingrediente
-          newSelection = currentSelection.filter(id => id !== ingredientId);
+          // Se atingiu o máximo, substitui o primeiro (para massa)
+          if (rules.max === 1) {
+            newSelection = [ingredientId];
+          } else {
+            newSelection = currentSelection;
+          }
         }
-
-        return {
-          ...prev,
-          [typeKey]: newSelection,
-        };
-      });
-
-      // Limpa erros relacionados ao tipo
-      setErrors(prev => ({
-        ...prev,
-        [typeKey]: '',
-      }));
-
-      // Valida se recheio é obrigatório
-      if (typeKey === 'recheio' && newSelection.length === 0) {
-        setErrors(prev => ({
-          ...prev,
-          recheio: 'Selecione pelo menos 1 recheio. É obrigatório!',
-        }));
+      } else {
+        // Remover ingrediente
+        newSelection = currentSelection.filter(id => id !== ingredientId);
       }
-    },
-    [],
-  );
+
+      return {
+        ...prev,
+        [typeKey]: newSelection,
+      };
+    });
+
+    // Limpa erros relacionados ao tipo
+    setErrors(prev => ({
+      ...prev,
+      [typeKey]: '',
+    }));
+
+    // Valida se recheio é obrigatório - usar a lógica correta aqui
+    if (typeKey === 'recheio') {
+      setSelectedIngredients(currentState => {
+        const updatedRecheios = isSelected
+          ? [...(currentState.recheio || []), ingredientId]
+          : (currentState.recheio || []).filter(id => id !== ingredientId);
+        
+        if (updatedRecheios.length === 0) {
+          setErrors(prev => ({
+            ...prev,
+            recheio: 'Selecione pelo menos 1 recheio. É obrigatório!',
+          }));
+        }
+        
+        return currentState; // Não modifica o state aqui pois já foi modificado acima
+      });
+    }
+  },
+  [],
+);
 
   // Calcula o preço total baseado nos ingredientes selecionados
   const calculateTotalPrice = useCallback(() => {
