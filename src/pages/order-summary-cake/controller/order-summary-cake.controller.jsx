@@ -6,17 +6,21 @@ import { request } from '../../../services/api';
 // Constantes para regras de negócio
 const CAKE_RULES = {
   MASSA: { min: 1, max: 1 },
-  COBERTURA: { min: 1, max: 2 },
-  RECHEIO: { min: 0, max: 2 },
+  RECHEIO: { min: 1, max: 2 }, // RECHEIO É OBRIGATÓRIO
   ADICIONAIS: { min: 0, max: Infinity },
 };
 
 const INGREDIENT_TYPES = {
   MASSA: 'massa',
-  COBERTURA: 'cobertura',
   RECHEIO_BASICO: 'recheio',
   RECHEIO_PREMIUM: 'recheio',
   ADICIONAIS: 'adicionais',
+};
+
+// Tipos de pedido baseados APENAS no recheio
+const ORDER_TYPES = {
+  BASICO: 'basico', // Todos os recheios são básicos
+  PREMIUM: 'premium', // Pelo menos um recheio é premium
 };
 
 export function OrderSummaryCakeController() {
@@ -38,14 +42,15 @@ export function OrderSummaryCakeController() {
   // Estado para ingredientes selecionados organizados por tipo
   const [selectedIngredients, setSelectedIngredients] = useState({
     massa: [],
-    cobertura: [],
     recheio: [],
     adicionais: [],
   });
 
+  // Estado para determinar o tipo de pedido baseado no recheio
+  const [orderType, setOrderType] = useState(null); // null até selecionar recheio
+
   const [errors, setErrors] = useState({
     massa: '',
-    cobertura: '',
     recheio: '',
     attachment: '',
     general: '',
@@ -57,13 +62,21 @@ export function OrderSummaryCakeController() {
       case 0: // Validação dos ingredientes básicos
         const hasValidMassa =
           selectedIngredients.massa.length === CAKE_RULES.MASSA.max;
-        const hasValidCobertura =
-          selectedIngredients.cobertura.length >= CAKE_RULES.COBERTURA.min &&
-          selectedIngredients.cobertura.length <= CAKE_RULES.COBERTURA.max;
         const hasValidRecheio =
+          selectedIngredients.recheio.length >= CAKE_RULES.RECHEIO.min &&
           selectedIngredients.recheio.length <= CAKE_RULES.RECHEIO.max;
 
-        return hasValidMassa && hasValidCobertura && hasValidRecheio;
+        console.log('✅ VALIDAÇÃO STEP 0:', {
+          hasValidMassa,
+          hasValidRecheio,
+          massaCount: selectedIngredients.massa.length,
+          recheioCount: selectedIngredients.recheio.length,
+          selectedIngredients,
+          orderType,
+          rules: CAKE_RULES,
+        });
+
+        return hasValidMassa && hasValidRecheio;
       case 1: // Validação da imagem/tema
         return product.theme || product.attachment;
       case 2: // Validação dos detalhes adicionais
@@ -192,7 +205,6 @@ export function OrderSummaryCakeController() {
 
     const organized = {
       massa: [],
-      cobertura: [],
       recheioBasico: [],
       recheioPremium: [],
       adicionais: [],
@@ -204,9 +216,6 @@ export function OrderSummaryCakeController() {
       switch (type) {
         case INGREDIENT_TYPES.MASSA:
           organized.massa.push(ingredient);
-          break;
-        case INGREDIENT_TYPES.COBERTURA:
-          organized.cobertura.push(ingredient);
           break;
         case INGREDIENT_TYPES.RECHEIO_BASICO:
           if (ingredient.premium) {
@@ -250,6 +259,29 @@ export function OrderSummaryCakeController() {
     fetchData();
   }, []);
 
+  // Função para determinar o tipo de pedido baseado APENAS nos recheios selecionados
+  const determineOrderType = useCallback(
+    (selectedRecheios, ingredientsList) => {
+      if (!selectedRecheios || selectedRecheios.length === 0) {
+        // ERRO: Recheio é obrigatório
+        return null;
+      }
+
+      // Verifica se algum recheio selecionado é premium
+      const hasAnyPremium = selectedRecheios.some(recheioId => {
+        const recheio = ingredientsList.find(
+          ing => ing.idIngrediente === recheioId,
+        );
+        return recheio?.premium === true;
+      });
+
+      // Se tem pelo menos um recheio premium → PREMIUM
+      // Se só tem recheios básicos → BÁSICO
+      return hasAnyPremium ? ORDER_TYPES.PREMIUM : ORDER_TYPES.BASICO;
+    },
+    [],
+  );
+
   // Função para gerenciar seleção de ingredientes
   const handleIngredientSelection = useCallback(
     (ingredientType, ingredientId, isSelected) => {
@@ -268,7 +300,7 @@ export function OrderSummaryCakeController() {
           if (currentSelection.length < rules.max) {
             newSelection = [...currentSelection, ingredientId];
           } else {
-            // Se atingiu o máximo, substitui o primeiro (para massa e cobertura)
+            // Se atingiu o máximo, substitui o primeiro (para massa)
             if (rules.max === 1) {
               newSelection = [ingredientId];
             } else {
@@ -291,6 +323,14 @@ export function OrderSummaryCakeController() {
         ...prev,
         [typeKey]: '',
       }));
+
+      // Valida se recheio é obrigatório
+      if (typeKey === 'recheio' && newSelection.length === 0) {
+        setErrors(prev => ({
+          ...prev,
+          recheio: 'Selecione pelo menos 1 recheio. É obrigatório!',
+        }));
+      }
     },
     [],
   );
@@ -332,12 +372,25 @@ export function OrderSummaryCakeController() {
 
     const totalPrice = calculateTotalPrice();
 
+    // Determina o tipo de pedido baseado nos recheios selecionados
+    const newOrderType = determineOrderType(
+      selectedIngredients.recheio,
+      ingredients,
+    );
+    setOrderType(newOrderType);
+
     setProduct(prev => ({
       ...prev,
       ingredientList: selectedIngredientsObjects,
       price: totalPrice,
+      orderType: newOrderType, // Adicionando o tipo de pedido ao produto
     }));
-  }, [selectedIngredients, ingredients, calculateTotalPrice]);
+  }, [
+    selectedIngredients,
+    ingredients,
+    calculateTotalPrice,
+    determineOrderType,
+  ]);
 
   const stepConfig = {
     nextStep: handleNext,
@@ -358,6 +411,9 @@ export function OrderSummaryCakeController() {
     weight: product.weight,
     setWeight: weight => setProduct(prev => ({ ...prev, weight })),
     rules: CAKE_RULES,
+    orderType,
+    setOrderType,
+    orderTypes: ORDER_TYPES,
   };
 
   const imageData = {

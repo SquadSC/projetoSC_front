@@ -40,8 +40,6 @@ export function CakeInfoComponent({
     fileInputRef.current?.click();
   };
 
-  console.log('product', product);
-
   return (
     <Box display={'flex'} flexDirection={'column'}>
       <Container sx={{ p: 2 }}>
@@ -60,7 +58,6 @@ export function CakeInfoComponent({
             value={product.theme}
             onChange={e => {
               setProduct({ ...product, theme: e.target.value });
-              console.log(e.target.value);
             }}
             error={!!errors.theme}
             helperText={errors.theme}

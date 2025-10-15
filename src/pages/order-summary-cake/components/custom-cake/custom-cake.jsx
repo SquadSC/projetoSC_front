@@ -91,18 +91,6 @@ export default function CustomCake({
           />
           <Box sx={slimLineGolden}></Box>
 
-          <SectionComponent
-            ingredientType='cobertura'
-            title='Cobertura'
-            items={organizedIngredients.cobertura}
-            selectedIngredients={selectedIngredients.cobertura || []}
-            onIngredientToggle={onIngredientToggle}
-            maxQuantity={rules.COBERTURA.max}
-            required={true}
-            errors={errors}
-          />
-          <Box sx={slimLineGolden}></Box>
-
           {(recheioBasicoAvailable || recheioPremiumAvailable) && (
             <Container sx={{ width: '100%', padding: 0, marginBottom: 1 }}>
               <Typography
@@ -183,12 +171,6 @@ export default function CustomCake({
             errors={errors}
           />
         </Box>
-
-        {errors.general && (
-          <Typography color='error' variant='caption' sx={{ mt: 1 }}>
-            {errors.general}
-          </Typography>
-        )}
 
         <Button
           variant='contained'
