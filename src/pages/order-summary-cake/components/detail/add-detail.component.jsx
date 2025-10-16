@@ -1,12 +1,12 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 
-export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
-  const { product, setProduct } = cakeData;
+export function AdditionalDetailsComponent({ nextStep, infoCake }) { // Mudando de detailCake para infoCake
+  const { product, setProduct } = infoCake;
 
-  const handleObservationChange = event => {
+  const handleObservationChange = (event) => {
     setProduct(prev => ({
       ...prev,
-      observation: event.target.value,
+      observation: event.target.value
     }));
   };
 
@@ -20,18 +20,22 @@ export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
       }}
     >
       <Box>
-        <Typography variant='h6' gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Detalhes adicionais
         </Typography>
-        <Typography variant='subtitle2' color='primary.main' sx={{ mb: 2 }}>
+        <Typography 
+          variant="subtitle2" 
+          color="primary.main"
+          sx={{ mb: 2 }}
+        >
           Deseja incluir alguma observação? (opcional)
         </Typography>
         <TextField
           fullWidth
           multiline
           rows={4}
-          placeholder='Digite uma mensagem para a confeiteira (Máx. 200 caracteres)'
-          value={product.observation || ''}
+          placeholder="Digite uma mensagem para a confeiteira (Máx. 200 caracteres)"
+          value={product.observation || ''} // Adicionando fallback para evitar undefined
           onChange={handleObservationChange}
           inputProps={{ maxLength: 200 }}
           helperText={`${(product.observation || '').length}/200 caracteres`}
@@ -49,15 +53,10 @@ export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
         }}
       >
         <Button
-          variant='contained'
+          variant="contained"
           fullWidth
-          sx={{
-            borderRadius: '24px',
-            height: '48px',
-            opacity: canAdvance ? 1 : 0.6,
-          }}
+          sx={{ borderRadius: '24px', height: '48px', }}
           onClick={nextStep}
-          disabled={!canAdvance}
         >
           Avançar
         </Button>

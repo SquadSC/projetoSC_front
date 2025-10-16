@@ -6,14 +6,6 @@ import 'swiper/css/grid';
 import 'swiper/css/pagination';
 
 export function CarouselReferenceComponent({ refImages }) {
-  if (!refImages) {
-    return (
-      <Box textAlign='center' p={3}>
-        <Typography>Carregando referências...</Typography>
-      </Box>
-    );
-  }
-
   const {
     images,
     loading,
