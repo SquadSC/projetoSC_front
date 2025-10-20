@@ -1,7 +1,7 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 
-export function AdditionalDetailsComponent({ nextStep, infoCake }) { // Mudando de detailCake para infoCake
-  const { product, setProduct } = infoCake;
+export function AdditionalDetailsComponent({ nextStep, infoCake = {} }) { // Adicionando valor padrão
+  const { product = {}, setProduct = () => {} } = infoCake; // Valores padrão para as propriedades
 
   const handleObservationChange = (event) => {
     setProduct(prev => ({

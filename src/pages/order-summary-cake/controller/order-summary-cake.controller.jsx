@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { OrderSummaryCakeView } from '../view/order-summary-cake.view';
 import { useReferencesImages } from '../../../hooks/useReferencesImages/useReferencesImages';
 import { request } from '../../../services/api';
@@ -19,8 +19,8 @@ const INGREDIENT_TYPES = {
 
 // Tipos de pedido baseados APENAS no recheio
 const ORDER_TYPES = {
-  BASICO: 'basico', // Todos os recheios são básicos
-  PREMIUM: 'premium', // Pelo menos um recheio é premium
+  BASICO: ' bolo basico', // Todos os recheios são básicos
+  PREMIUM: 'bolo premium', // Pelo menos um recheio é premium
 };
 
 export function OrderSummaryCakeController() {
@@ -194,7 +194,7 @@ export function OrderSummaryCakeController() {
     setErrors(prev => ({ ...prev, attachment: '' }));
   };
 
-  const [essenciais, setEssenciais] = useState([]);
+  const essenciaisRef = useRef([]);
   const [ingredients, setIngredients] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [apiError, setApiError] = useState(null);
@@ -246,7 +246,8 @@ export function OrderSummaryCakeController() {
         ]);
 
         setIngredients(ingredientsResponse.data);
-        setEssenciais(essentialsResponse.data);
+        essenciaisRef.current = essentialsResponse.data;
+        console.log(essenciaisRef.current);
         setApiError(null);
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -277,100 +278,160 @@ export function OrderSummaryCakeController() {
 
       // Se tem pelo menos um recheio premium → PREMIUM
       // Se só tem recheios básicos → BÁSICO
-      return hasAnyPremium ? ORDER_TYPES.PREMIUM : ORDER_TYPES.BASICO;
+      return hasAnyPremium ? 'bolo premium' : 'bolo basico';
     },
     [],
   );
 
   // Função para gerenciar seleção de ingredientes
   const handleIngredientSelection = useCallback(
-  (ingredientType, ingredientId, isSelected) => {
-    const typeKey = ingredientType.toLowerCase().replace(' ', '');
+    (ingredientType, ingredientId, isSelected) => {
+      const typeKey = ingredientType.toLowerCase().replace(' ', '');
 
-    setSelectedIngredients(prev => {
-      const currentSelection = prev[typeKey] || [];
-      const rules = CAKE_RULES[ingredientType.toUpperCase()] || {
-        min: 0,
-        max: Infinity,
-      };
+      setSelectedIngredients(prev => {
+        const currentSelection = prev[typeKey] || [];
+        const rules = CAKE_RULES[ingredientType.toUpperCase()] || {
+          min: 0,
+          max: Infinity,
+        };
 
-      let newSelection; // Declarar aqui no escopo correto
+        let newSelection; // Declarar aqui no escopo correto
 
-      if (isSelected) {
-        // Adicionar ingrediente
-        if (currentSelection.length < rules.max) {
-          newSelection = [...currentSelection, ingredientId];
-        } else {
-          // Se atingiu o máximo, substitui o primeiro (para massa)
-          if (rules.max === 1) {
-            newSelection = [ingredientId];
+        if (isSelected) {
+          // Adicionar ingrediente
+          if (currentSelection.length < rules.max) {
+            newSelection = [...currentSelection, ingredientId];
           } else {
-            newSelection = currentSelection;
+            // Se atingiu o máximo, substitui o primeiro (para massa)
+            if (rules.max === 1) {
+              newSelection = [ingredientId];
+            } else {
+              newSelection = currentSelection;
+            }
           }
+        } else {
+          // Remover ingrediente
+          newSelection = currentSelection.filter(id => id !== ingredientId);
         }
-      } else {
-        // Remover ingrediente
-        newSelection = currentSelection.filter(id => id !== ingredientId);
-      }
 
-      return {
+        return {
+          ...prev,
+          [typeKey]: newSelection,
+        };
+      });
+
+      // Limpa erros relacionados ao tipo
+      setErrors(prev => ({
         ...prev,
-        [typeKey]: newSelection,
-      };
+        [typeKey]: '',
+      }));
+
+      // Valida se recheio é obrigatório
+      if (typeKey === 'recheio') {
+        setSelectedIngredients(currentState => {
+          const updatedRecheios = isSelected
+            ? [...(currentState.recheio || []), ingredientId]
+            : (currentState.recheio || []).filter(id => id !== ingredientId);
+          
+          if (updatedRecheios.length === 0) {
+            setErrors(prev => ({
+              ...prev,
+              recheio: 'Selecione pelo menos 1 recheio. É obrigatório!',
+            }));
+          }
+          
+          return currentState; // Não modifica o state aqui pois já foi modificado acima
+        });
+      }
+    },
+    [],
+  );
+
+
+  // Calcula o preço do produto baseado no tipo e ingredientes
+  const calculateProductPrice = useCallback(() => {
+    let totalPrice = 0;
+    
+    // Verifica diretamente se algum recheio selecionado é premium
+    const hasAnyPremium = selectedIngredients.recheio?.some(recheioId => {
+      const recheio = ingredients.find(ing => ing.idIngrediente === recheioId);
+      return recheio?.premium === true;
+    }) || false;
+    
+    // Determina o tipo de produto baseado nos recheios
+    const productType = hasAnyPremium ? 'bolo premium' : 'bolo';
+    
+    // Preço base do produto essencial (básico ou premium)
+    const baseProduct = essenciaisRef.current.find(item => {
+      const descricao = item.descricao?.toLowerCase();
+      return descricao === productType;
     });
 
-    // Limpa erros relacionados ao tipo
-    setErrors(prev => ({
-      ...prev,
-      [typeKey]: '',
-    }));
-
-    // Valida se recheio é obrigatório - usar a lógica correta aqui
-    if (typeKey === 'recheio') {
-      setSelectedIngredients(currentState => {
-        const updatedRecheios = isSelected
-          ? [...(currentState.recheio || []), ingredientId]
-          : (currentState.recheio || []).filter(id => id !== ingredientId);
-        
-        if (updatedRecheios.length === 0) {
-          setErrors(prev => ({
-            ...prev,
-            recheio: 'Selecione pelo menos 1 recheio. É obrigatório!',
-          }));
-        }
-        
-        return currentState; // Não modifica o state aqui pois já foi modificado acima
-      });
+    console.log('Tipo do produto:', productType, 'Base product:', baseProduct);
+    
+    if (baseProduct) {
+      totalPrice += parseFloat(baseProduct.precoUnitario || 0) * product.weight;
     }
-  },
-  [],
-);
-
-  // Calcula o preço total baseado nos ingredientes selecionados
-  const calculateTotalPrice = useCallback(() => {
-    if (!ingredients.length || !essenciais.length) return 0;
-
-    let total = 0;
+    
+    // Preço dos adicionais
     const additionalPrice =
-      essenciais.find(item => item.descricao?.toLowerCase() === 'adicionais')
+      essenciaisRef.current.find(item => item.descricao?.toLowerCase() === 'adicionais')
         ?.precoUnitario || 0;
 
-    // Soma preços dos ingredientes selecionados
-    Object.values(selectedIngredients)
-      .flat()
-      .forEach(ingredientId => {
-        const ingredient = ingredients.find(
-          ing => ing.idIngrediente === ingredientId,
-        );
-        if (
-          ingredient?.tipoIngrediente?.descricao?.toLowerCase() === 'adicionais'
-        ) {
-          total += additionalPrice * product.weight;
-        }
-      });
 
-    return total;
-  }, [selectedIngredients, ingredients, essenciais, product.weight]);
+    Object.values(selectedIngredients).flat().forEach(ingredientId => {
+      const ingredient = ingredients.find(ing => ing.idIngrediente === ingredientId);
+      if (ingredient?.tipoIngrediente?.descricao?.toLowerCase() === 'adicionais') {
+        totalPrice += additionalPrice * product.weight;
+      }
+    });
+    
+    return totalPrice;
+  }, [selectedIngredients, ingredients, product.weight]);
+
+  // Função para construir o objeto do pedido
+  const buildOrderObject = useCallback(() => {
+    const allSelectedIngredientIds = Object.values(selectedIngredients).flat();
+    
+    const getProductId = () => {
+      // Verifica diretamente se algum recheio selecionado é premium
+      const hasAnyPremium = selectedIngredients.recheio?.some(recheioId => {
+        const recheio = ingredients.find(ing => ing.idIngrediente === recheioId);
+        return recheio?.premium === true;
+      }) || false;
+      
+      const productType = hasAnyPremium ? 'bolo premium' : 'bolo';
+      
+      const productEssential = essenciaisRef.current.find(item => {
+        const descricao = item.descricao?.toLowerCase();
+        return descricao === productType;
+      });
+      return productEssential?.idProduto || 0;
+    };
+
+    const getAttachmentId = () => {
+      if (userUploadedImage) return 0;
+      if (selectedReferenceImage && !selectedReferenceImage.isUserUpload) {
+        return selectedReferenceImage.id_anexo || 0;
+      }
+      return 0;
+    };
+
+    const orderObject = {
+      idCliente: 0,
+      idProduto: getProductId(),
+      quantidade: product.quantity || 1,
+      preco: product.price || calculateProductPrice(),
+      listaIngredientes: allSelectedIngredientIds,
+      informacaoBolo: {
+        tema: product.theme || "",
+        detalhes: product.observation || "",
+        anexo: getAttachmentId()
+      }
+    };
+
+    return orderObject;
+  }, [selectedIngredients, ingredients, product, userUploadedImage, selectedReferenceImage, calculateProductPrice]);
 
   // Atualiza o produto quando ingredientes ou preços mudam
   useEffect(() => {
@@ -381,27 +442,77 @@ export function OrderSummaryCakeController() {
       )
       .filter(Boolean);
 
-    const totalPrice = calculateTotalPrice();
-
     // Determina o tipo de pedido baseado nos recheios selecionados
     const newOrderType = determineOrderType(
       selectedIngredients.recheio,
       ingredients,
     );
-    setOrderType(newOrderType);
+    
+    // Só atualiza o orderType se mudou
+    if (newOrderType !== orderType) {
+      setOrderType(newOrderType);
+    }
 
     setProduct(prev => ({
       ...prev,
       ingredientList: selectedIngredientsObjects,
-      price: totalPrice,
-      orderType: newOrderType, // Adicionando o tipo de pedido ao produto
+      orderType: newOrderType,
     }));
   }, [
     selectedIngredients,
     ingredients,
-    calculateTotalPrice,
     determineOrderType,
+    orderType,
   ]);
+
+  // Atualiza o preço do produto automaticamente quando orderType ou ingredientes mudam
+  useEffect(() => {
+    const newPrice = calculateProductPrice();
+    setProduct(prev => ({
+      ...prev,
+      price: newPrice
+    }));
+  }, [selectedIngredients, orderType, calculateProductPrice, product.weight]);
+
+  // Função para forçar atualização do tipo de bolo sem verificar ingredientes
+  const forceUpdateCakeType = useCallback((isPremium) => {
+    const newOrderType = isPremium ? 'bolo premium' : 'bolo basico';
+    setOrderType(newOrderType);
+    
+    setProduct(prev => ({
+      ...prev,
+      orderType: newOrderType,
+    }));
+
+    // Força recálculo imediato do preço
+    setTimeout(() => {
+      const baseProduct = essenciaisRef.current.find(item => {
+        const descricao = item.descricao?.toLowerCase();
+        return descricao === newOrderType;
+      });
+
+      if (baseProduct) {
+        const basePrice = parseFloat(baseProduct.precoUnitario || 0) * product.weight;
+        
+        // Calcula preço dos adicionais mantendo os já selecionados
+        const additionalPrice = essenciaisRef.current.find(item => 
+          item.descricao?.toLowerCase() === 'adicionais'
+        )?.precoUnitario || 0;
+
+        let totalAdditionals = 0;
+        if (selectedIngredients.adicionais) {
+          totalAdditionals = selectedIngredients.adicionais.length * additionalPrice * product.weight;
+        }
+
+        const newTotalPrice = basePrice + totalAdditionals;
+        
+        setProduct(prev => ({
+          ...prev,
+          price: newTotalPrice
+        }));
+      }
+    }, 0);
+  }, [product.weight, selectedIngredients.adicionais]);
 
   const stepConfig = {
     nextStep: handleNext,
@@ -425,6 +536,10 @@ export function OrderSummaryCakeController() {
     orderType,
     setOrderType,
     orderTypes: ORDER_TYPES,
+    setPrice: (price) => setProduct(prev => ({ ...prev, price })),
+    calculatePrice: calculateProductPrice,
+    buildOrderObject,
+    forceUpdateCakeType,
   };
 
   const imageData = {
@@ -458,7 +573,7 @@ export function OrderSummaryCakeController() {
       cakeData={cakeData}
       imageData={imageData}
       ingredients={ingredients}
-      essentials={essenciais}
+      essentials={essenciaisRef.current}
     />
   );
 }
