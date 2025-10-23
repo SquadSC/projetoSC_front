@@ -1,111 +1,118 @@
-import { Typography, Container } from "@mui/material";
-import { useState, useEffect } from "react";
-import IngredientComponent from "../ingredient/IngredientComponent";
-import theme from "../../../../theme";
+import { Typography, Container } from '@mui/material';
+import { useMemo } from 'react';
+import IngredientComponent from '../ingredient/IngredientComponent';
+import theme from '../../../../theme';
 
-export function SectionComponent({ IngredientType, items, maxQuantity = 0, weight = 1, listaIngrediente, onSelectionChange, required = false, essentials, infoCake}) {
-    
-    const [product, setProduct] = infoCake
-    const [selectedIngredients, setSelectedIngredients] = useState([]);
+export function SectionComponent({
+  ingredientType,
+  title,
+  items,
+  selectedIngredients = [],
+  onIngredientToggle,
+  maxQuantity = 0,
+  weight = 1,
+  required = false,
+  essentials = [],
+  errors = {},
+}) {
+  const handleToggle = id => {
+    const isCurrentlySelected = selectedIngredients.includes(id);
 
-    // Inicializa com os ingredientes da listaIngrediente que pertencem a esta seção
-    useEffect(() => {
-        if (listaIngrediente && listaIngrediente.length > 0 && items) {
-            const idsFromLista = listaIngrediente.filter(id => 
-                items.some(ingredient => ingredient.idIngrediente === id)
-            );
-            setSelectedIngredients(idsFromLista);
-        } else {
-            setSelectedIngredients([]);
-        }
-    }, [listaIngrediente, items]);
-
-    const handleToggle = (id) => {
-        setSelectedIngredients(prev => {
-            const isCurrentlySelected = prev.includes(id);
-            let newSelection;
-            
-            if (isCurrentlySelected) {
-                newSelection = prev.filter(ingredientId => ingredientId !== id);
-            } else {
-                if (maxQuantity === 0 || prev.length < maxQuantity) {
-                    newSelection = [...prev, id];
-                } else {
-                    return prev;
-                }
-            }
-            
-            
-            // Notifica o componente pai sobre a mudança
-            if (onSelectionChange) {
-                onSelectionChange(IngredientType, newSelection);
-            }
-            
-            return newSelection;
-        });
-    };
-
-    const currentCount = selectedIngredients.length;
-    const limitReached = currentCount >= maxQuantity && maxQuantity !== 0;
-    var aditionalPrice = 0
-    if(essentials.length > 0){
-        aditionalPrice = essentials.filter(item => item.descricao == 'Adicionais')[0].precoUnitario
+    if (onIngredientToggle) {
+      onIngredientToggle(ingredientType, id, !isCurrentlySelected);
     }
-    const totalPrice = items
-    ? items
-        .filter(item => selectedIngredients.includes(item.idIngrediente))
-        .reduce((total, item) => {
-            // Para adicionais, usa o peso. Para outros tipos, preço fixo
-            console.log(item)
-            if (item.tipoIngrediente.descricao.toLowerCase() === 'adicionais') {
-                return total + ( aditionalPrice * (weight || 1));
-            }
-        }, 0)
-    : 0;
+  };
 
-    setProduct(totalPrice)
-    // Verifica se esta seção obrigatória está vazia
-    const isRequiredAndEmpty = required && selectedIngredients.length === 0;
+  const currentCount = selectedIngredients.length;
+  const limitReached = currentCount >= maxQuantity && maxQuantity !== 0;
 
-    // Se não há itens para esta seção, oculta o componente
-    if (!items || items.length === 0) {
-        return null;
-    }
+  // Calcula preço adicional para ingredientes tipo "adicionais"
+  const additionalPrice = useMemo(() => {
+    if (ingredientType !== 'adicionais' || !essentials.length) return 0;
 
-    return (
-        <>
-            <Container sx={{width: '100%', padding: 0, marginBottom: 1}}>
-                <Typography 
-                    sx={{ 
-                        fontWeight: 'bold', 
-                        color: isRequiredAndEmpty ? '#d32f2f' : theme.palette.primary.main 
-                    }} 
-                >
-                    {IngredientType}
-                    {maxQuantity > 0 && ` (Máximo: ${maxQuantity})`}
-                    {isRequiredAndEmpty && ' *'}
-                </Typography>
-
-                <Typography variant="caption">
-                    {maxQuantity > 0
-                        ? ''
-                        : totalPrice > 0
-                            ? `Adicional: +R$ ${totalPrice.toFixed(2)}`
-                            : 'Nenhum adicional selecionado'
-                    }
-                </Typography>
-            </Container>
-
-            {items && items.map(item => (
-                <IngredientComponent
-                    key={item.idIngrediente}
-                    id={item.idIngrediente}
-                    item={item}
-                    active={selectedIngredients.includes(item.idIngrediente)}
-                    onToggle={handleToggle}
-                    disabled={limitReached && !selectedIngredients.includes(item.idIngrediente)}
-                />
-            ))}
-        </>
+    const additionalEssential = essentials.find(
+      item => item.descricao?.toLowerCase() === 'adicionais',
     );
+
+    return additionalEssential?.precoUnitario || 0;
+  }, [ingredientType, essentials]);
+
+  const totalPrice = useMemo(() => {
+    if (!items || ingredientType !== 'adicionais') return 0;
+
+    return items
+      .filter(item => selectedIngredients.includes(item.idIngrediente))
+      .reduce(total => {
+        return total + additionalPrice * weight;
+      }, 0);
+  }, [items, selectedIngredients, additionalPrice, weight, ingredientType]);
+
+  // Verifica se esta seção obrigatória está vazia
+  const isRequiredAndEmpty = required && selectedIngredients.length === 0;
+  const hasError = errors[ingredientType];
+
+  // Se não há itens para esta seção, oculta o componente
+  if (!items || items.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <Container sx={{ width: '100%', padding: 0, marginBottom: 1 }}>
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+            color:
+              isRequiredAndEmpty || hasError
+                ? '#d32f2f'
+                : theme.palette.primary.main,
+          }}
+        >
+          {title}
+          {maxQuantity > 0 && ` (Máximo: ${maxQuantity})`}
+          {required && ' *'}
+        </Typography>
+
+        {/* Mostra informações de preço para adicionais */}
+        {ingredientType === 'adicionais' && (
+          <Typography
+            variant='caption'
+            color={totalPrice > 0 ? 'success.main' : 'text.secondary'}
+          >
+            {totalPrice > 0
+              ? `Adicional: +R$ ${totalPrice.toFixed(2)}`
+              : 'Nenhum adicional selecionado'}
+          </Typography>
+        )}
+
+        {/* Mostra contador para seções com limite */}
+        {maxQuantity > 0 && (
+          <Typography variant='caption' color='text.secondary'>
+            {currentCount}/{maxQuantity} selecionados
+          </Typography>
+        )}
+
+        {/* Mostra mensagem de erro se existir */}
+        {hasError && (
+          <Typography variant='caption' color='error.main' display='block'>
+            {errors[ingredientType]}
+          </Typography>
+        )}
+      </Container>
+
+      {items &&
+        items.map(item => (
+          <IngredientComponent
+            key={item.idIngrediente}
+            id={item.idIngrediente}
+            item={item}
+            active={selectedIngredients.includes(item.idIngrediente)}
+            onToggle={handleToggle}
+            disabled={
+              limitReached && !selectedIngredients.includes(item.idIngrediente)
+            }
+          />
+        ))}
+    </>
+  );
 }
