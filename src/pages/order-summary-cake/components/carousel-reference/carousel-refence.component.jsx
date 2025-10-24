@@ -5,15 +5,15 @@ import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 
-export function CarouselReferenceComponent({ refImages = {} }) {
+export function CarouselReferenceComponent({ refImages }) {
   const {
-    images = [],
-    loading = false,
-    error = null,
-    refetch = () => {},
-    userUploadedImage = null,
-    selectedReferenceImage = null,
-    setSelectedReferenceImage = () => {},
+    images,
+    loading,
+    error,
+    refetch,
+    userUploadedImage,
+    selectedReferenceImage,
+    setSelectedReferenceImage,
   } = refImages;
 
   if (loading) {

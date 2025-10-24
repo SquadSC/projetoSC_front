@@ -20,17 +20,22 @@ export default function CustomCake({
   nextStep,
 }) {
   const {
-    product,
     selectedIngredients,
-    handleIngredientSelection,
     organizedIngredients,
     errors,
+    validation,
+    cakeType,
+    toggleIngredient,
+    rules,
+  } = cakeData.ingredientSelection;
+
+  const {
     weight,
     setWeight,
-    rules,
-    orderType,
-    forceUpdateCakeType,
-  } = cakeData;
+    getBasePrice,
+    getAdditionalPrice,
+    calculateTotalPrice,
+  } = cakeData.priceCalculator;
 
   const [recheioType, setRecheioType] = useState('basico');
 
@@ -41,29 +46,28 @@ export default function CustomCake({
 
   // Calcula o preço base atual baseado no tipo de recheio
   const currentBasePrice = useMemo(() => {
-    if (!orderType || !essentials?.length) return 0;
-    
+    if (!cakeType || !essentials?.length) return 0;
+
     const baseProduct = essentials.find(item => {
       const descricao = item.descricao?.toLowerCase();
-      return descricao === orderType?.toLowerCase();
+      return descricao === cakeType?.toLowerCase();
     });
-    
-    return baseProduct ? parseFloat(baseProduct.precoUnitario || 0) * weight : 0;
-  }, [orderType, essentials, weight]);
 
- const handleRecheioTypeChange = event => {
-  const newRecheioType = event.target.value;
-  setRecheioType(newRecheioType);
-  
-  // Limpa todos os recheios selecionados quando muda o tipo
-  const currentRecheios = selectedIngredients.recheio || [];
-  currentRecheios.forEach(ingredientId => {
-    handleIngredientSelection('recheio', ingredientId, false);
-  });
+    return baseProduct
+      ? parseFloat(baseProduct.precoUnitario || 0) * weight
+      : 0;
+  }, [cakeType, essentials, weight]);
 
-  // Força a atualização do tipo de bolo imediatamente
-  forceUpdateCakeType(newRecheioType === 'premium');
-};
+  const handleRecheioTypeChange = event => {
+    const newRecheioType = event.target.value;
+    setRecheioType(newRecheioType);
+
+    // Limpa todos os recheios selecionados quando muda o tipo
+    const currentRecheios = selectedIngredients.recheio || [];
+    currentRecheios.forEach(ingredientId => {
+      toggleIngredient('recheio', ingredientId);
+    });
+  };
 
   const handleWeightChange = newWeight => {
     setWeight(newWeight);
@@ -71,8 +75,10 @@ export default function CustomCake({
 
   // Função para lidar com seleção de ingredientes
   const onIngredientToggle = (type, ingredientId, isSelected) => {
-    handleIngredientSelection(type, ingredientId, isSelected);
+    toggleIngredient(type, ingredientId);
   };
+
+  const totalPrice = calculateTotalPrice(cakeType, selectedIngredients);
 
   return (
     <>
@@ -108,10 +114,10 @@ export default function CustomCake({
               color: theme.palette.success.main,
               fontWeight: 'bold',
               mt: 1,
-              mb: 2
+              mb: 2,
             }}
           >
-            Preço base ({orderType}): R$ {currentBasePrice.toFixed(2)}
+            Preço base ({cakeType}): R$ {currentBasePrice.toFixed(2)}
           </Typography>
         )}
 
@@ -121,10 +127,10 @@ export default function CustomCake({
           sx={{
             color: theme.palette.primary.main,
             fontWeight: 'bold',
-            mb: 2
+            mb: 2,
           }}
         >
-          Preço total: R$ {product.price?.toFixed(2) || '0.00'}
+          Preço total: R$ {totalPrice?.toFixed(2) || '0.00'}
         </Typography>
 
         <Box>
@@ -184,7 +190,7 @@ export default function CustomCake({
                 selectedIngredients={selectedIngredients.recheio || []}
                 onIngredientToggle={onIngredientToggle}
                 maxQuantity={rules.RECHEIO.max}
-                required={false}
+                required={true}
                 errors={errors}
               />
               <Box sx={slimLineGolden}></Box>
@@ -200,7 +206,7 @@ export default function CustomCake({
                 selectedIngredients={selectedIngredients.recheio || []}
                 onIngredientToggle={onIngredientToggle}
                 maxQuantity={rules.RECHEIO.max}
-                required={false}
+                required={true}
                 errors={errors}
               />
               <Box sx={slimLineGolden}></Box>

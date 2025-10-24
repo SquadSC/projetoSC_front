@@ -10,10 +10,13 @@ export function OrderSummaryCakeView({
   stepConfig,
   cakeData,
   imageData,
+  ingredients,
   essentials,
+  onSubmitOrder,
 }) {
   const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3', 'Etapa 4'];
-  const { nextStep, activeStep, maxStepReached, setActiveStep, canAdvance } =
+
+  const { nextStep, activeStep, maxStepReached, goToStep, canAdvance } =
     stepConfig;
 
   const getStepContent = step => {
@@ -47,8 +50,10 @@ export function OrderSummaryCakeView({
       case 3:
         return (
           <OrderSummary
-            product={cakeData.product}
-            onSubmit={() => console.log('Pedido finalizado!')}
+            cakeData={cakeData}
+            ingredients={ingredients}
+            essentials={essentials}
+            onSubmit={onSubmitOrder}
           />
         );
       default:
@@ -56,18 +61,35 @@ export function OrderSummaryCakeView({
     }
   };
 
+  const getStepTitle = step => {
+    const titles = [
+      'Escolha os Ingredientes',
+      'Defina o Tema e Referência',
+      'Adicione Observações',
+      'Revise e Finalize',
+    ];
+    return titles[step] || 'Etapa';
+  };
+
   return (
     <>
       <Container sx={{ p: 3 }}>
-        <PageHeader titulo='Pedido Personalizado' showBackButton={true} />
+        <PageHeader
+          titulo='Pedido Personalizado'
+          subtitulo={getStepTitle(activeStep)}
+          showBackButton={true}
+        />
         <StepperComponent
           steps={steps}
           activeStep={activeStep}
           maxStepReached={maxStepReached}
-          onStepChange={setActiveStep}
+          onStepChange={goToStep}
         />
       </Container>
-      <Box> {getStepContent(activeStep)} </Box>
+
+      <Box sx={{ minHeight: 'calc(100vh - 200px)' }}>
+        {getStepContent(activeStep)}
+      </Box>
     </>
   );
 }

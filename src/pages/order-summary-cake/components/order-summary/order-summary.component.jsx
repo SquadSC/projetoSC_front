@@ -1,38 +1,101 @@
 import * as React from 'react';
-import { Button, Container, Typography, Box, Stack, capitalize } from '@mui/material';
+import { Button, Container, Typography, Box, Stack } from '@mui/material';
+import { useState } from 'react';
 import { formatCurrencyBRL } from '../../../../utils/formatter/currency-formatter/currency-formatter';
+import { useUser } from '../../../../hooks/use-user/useUser';
 
-export function OrderSummary({ product, onSubmit }) {
-  // Função para converter base64 para imagem
-  const getImageSrc = attachment => {
-    if (!attachment) return null;
+export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
+  const { getUserId } = useUser();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-    // Se já é uma string (base64 ou URL)
-    if (typeof attachment === 'string') {
-      // Se já tem o prefixo data:image, retorna como está
-      if (attachment.startsWith('data:image/')) {
-        return attachment;
-      }
-      // Se é base64 sem prefixo, adiciona o prefixo
-      if (attachment.length > 0) {
-        return `data:image/jpeg;base64,${attachment}`;
-      }
+  const { selectedIngredients, cakeType, getAllSelectedIds } =
+    cakeData.ingredientSelection;
+
+  const { weight, calculateTotalPrice, getProductId } =
+    cakeData.priceCalculator;
+
+  const { theme, selectedImage, getSubmissionData } = cakeData.themeAndImage;
+
+  const { observation } = cakeData.observation;
+
+  const { buildOrderObject, validateOrder } = cakeData.orderBuilder;
+
+  // Calcula valores
+  const totalPrice = calculateTotalPrice(
+    cakeType,
+    selectedIngredients,
+    ingredients,
+  );
+  const productId = getProductId(cakeType);
+  const selectedIngredientIds = getAllSelectedIds();
+  const themeImageData = getSubmissionData();
+  const userId = getUserId();
+
+  // Constrói objeto do pedido
+  const orderObject = buildOrderObject({
+    userId,
+    selectedIngredientIds,
+    productId,
+    quantity: 1,
+    totalPrice,
+    theme: themeImageData.theme,
+    observation,
+    attachmentId: themeImageData.attachmentId,
+  });
+
+  // Valida pedido
+  const orderValidation = validateOrder(orderObject);
+
+  const capitalizeFirst = text => {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
+
+  const getImageSrc = () => {
+    if (!selectedImage) return null;
+
+    if (selectedImage.source === 'upload') {
+      return selectedImage.data;
+    } else if (selectedImage.source === 'carousel') {
+      return selectedImage.data.imagem_anexo;
     }
 
-    // Se é um arquivo (File object)
-    if (attachment instanceof File) {
-      return URL.createObjectURL(attachment);
-    }
-    
     return null;
   };
-  const capitalizeFirst = (text) => {
-  if (!text) return '';
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-};
 
-  const imageSrc = getImageSrc(product.attachment);
-  const valorTotal = Number(product.price) || 0;
+  const getSelectedIngredients = () => {
+    const allIds = getAllSelectedIds();
+    return allIds
+      .map(id =>
+        ingredients.find(ingredient => ingredient.idIngrediente === id),
+      )
+      .filter(Boolean);
+  };
+
+  const handleSubmit = async () => {
+    if (!orderValidation.isValid) {
+      setSubmitError('Dados do pedido inválidos. Verifique as informações.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+
+      // Aqui você faria a chamada para o backend
+      await onSubmit(orderObject);
+    } catch (error) {
+      setSubmitError('Erro ao finalizar pedido. Tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const imageSrc = getImageSrc();
+  const selectedIngredientsList = getSelectedIngredients();
+  const valorTotal = Number(totalPrice) || 0;
   const valorTotalFormatado = formatCurrencyBRL(valorTotal);
   const valor50 = formatCurrencyBRL(valorTotal / 2);
 
@@ -71,7 +134,6 @@ export function OrderSummary({ product, onSubmit }) {
                 padding: 8,
               }}
               onError={e => {
-                console.error('Erro ao carregar imagem:', e);
                 e.target.style.display = 'none';
               }}
             />
@@ -125,9 +187,11 @@ export function OrderSummary({ product, onSubmit }) {
           Bolo:
         </Typography>
         <ul style={{ marginTop: 1, marginBottom: 8, color: 'grey', gap: 4 }}>
-          {product.ingredientList?.map((ingred, idx) => (
+          {selectedIngredientsList?.map((ingred, idx) => (
             <li key={idx}>
-              {capitalizeFirst(ingred.tipoIngrediente.descricao) ? `${capitalizeFirst(ingred.tipoIngrediente.descricao)}: ` : ''}
+              {capitalizeFirst(ingred.tipoIngrediente?.descricao)
+                ? `${capitalizeFirst(ingred.tipoIngrediente?.descricao)}: `
+                : ''}
               {ingred.nome}
               {ingred.premium ? ' (premium)' : ''}
             </li>
@@ -137,18 +201,37 @@ export function OrderSummary({ product, onSubmit }) {
           Detalhes adicionais do pedido:
         </Typography>
         <Typography variant='textLittle' sx={{ mt: 1, color: 'grey' }}>
-          {product.observation || 'Nenhuma observação adicional.'}
+          {observation || 'Nenhuma observação adicional.'}
         </Typography>
       </Box>
+
+      {/* Debug info em desenvolvimento */}
+      {process.env.NODE_ENV === 'development' && (
+        <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+          <Typography variant='subtitle2' sx={{ mb: 1 }}>
+            Objeto a ser enviado (DEV):
+          </Typography>
+          <pre
+            style={{
+              fontSize: '0.8rem',
+              overflow: 'auto',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {JSON.stringify(orderObject, null, 2)}
+          </pre>
+        </Box>
+      )}
 
       <Button
         variant='contained'
         color='primary'
         fullWidth
         sx={{ borderRadius: '24px', height: '48px', mt: 2 }}
-        onClick={onSubmit}
+        onClick={handleSubmit}
+        disabled={!orderValidation.isValid || isSubmitting}
       >
-        Finalizar Pedido
+        {isSubmitting ? 'Finalizando Pedido...' : 'Finalizar Pedido'}
       </Button>
     </Container>
   );

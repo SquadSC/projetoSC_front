@@ -104,11 +104,10 @@ export function SectionComponent({
         items.map(item => (
           <IngredientComponent
             key={item.idIngrediente}
-            id={item.idIngrediente}
-            item={item}
-            active={selectedIngredients.includes(item.idIngrediente)}
-            onToggle={handleToggle}
-            disabled={
+            ingredient={item}
+            isSelected={selectedIngredients.includes(item.idIngrediente)}
+            onClick={() => handleToggle(item.idIngrediente)}
+            isDisabled={
               limitReached && !selectedIngredients.includes(item.idIngrediente)
             }
           />
