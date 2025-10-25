@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { LoginView } from '../view/login.view';
 import { request } from '../../../services/api';
 import { saveUserData } from '../../../utils/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import {
   validateFields,
@@ -12,12 +12,16 @@ import Swal from 'sweetalert2';
 
 export function LoginController() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [fields, setFields] = useState({
     email: '',
     password: '',
   });
 
   const [error, setError] = useState({});
+
+  // Pega a rota de origem para redirecionamento após login
+  const from = location.state?.from || ROUTES_PATHS.HOME;
 
   function validate() {
     const loginValidators = {
@@ -48,8 +52,8 @@ export function LoginController() {
         const userData = response.data;
         if (response.status === 200) {
           let userRole = 'cliente';
-          if (userData.tipo && userData.tipo.toLowerCase() === "confeiteira") {
-            userRole = "confeiteira";
+          if (userData.tipo && userData.tipo.toLowerCase() === 'confeiteira') {
+            userRole = 'confeiteira';
           }
           const normalizedUserData = {
             id: userData.id,
@@ -69,7 +73,8 @@ export function LoginController() {
             showConfirmButton: false,
             timer: 1500,
           });
-          navigate(ROUTES_PATHS.HOME);
+          // Redireciona para a rota original ou home se não houver rota de origem
+          navigate(from, { replace: true });
         } else {
           Swal.fire({
             icon: 'error',
