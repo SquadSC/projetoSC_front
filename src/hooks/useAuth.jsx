@@ -24,7 +24,6 @@ export function useAuth() {
       setUser(userData);
       setIsAuthenticated(authenticated);
     } catch (error) {
-      console.error('Erro ao verificar status de autenticação:', error);
       setUser(null);
       setIsAuthenticated(false);
     } finally {

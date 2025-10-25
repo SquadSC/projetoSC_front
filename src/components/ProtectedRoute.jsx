@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { ROUTES_PATHS } from '../utils/enums/routes-url';
+import { CircularProgress, Container } from '@mui/material';
 
 /**
  * Componente para proteger rotas que requerem autenticação
@@ -14,17 +15,9 @@ export function ProtectedRoute({ children }) {
   // Mostra um loading enquanto verifica a autenticação
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          fontSize: '16px',
-        }}
-      >
-        Carregando...
-      </div>
+      <Container backgroundColor='white' sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress size="5rem" color='primary.main' />
+      </Container>
     );
   }
 
