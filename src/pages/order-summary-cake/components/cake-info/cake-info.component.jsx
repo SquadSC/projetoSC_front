@@ -77,11 +77,9 @@ export function CakeInfoComponent({
             </Typography>
 
             <CarouselReferenceComponent
-              refImages={imageData.images}
+              refImages={imageData}
               selectedImage={selectedCarouselImage}
               onImageSelect={handleCarouselImageSelect}
-              loading={imageData.loading}
-              error={imageData.error}
             />
           </Box>
 

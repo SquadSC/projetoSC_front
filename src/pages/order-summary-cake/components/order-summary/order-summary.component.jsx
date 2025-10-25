@@ -83,7 +83,6 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
     setSubmitError('');
 
     try {
-
       // Aqui você faria a chamada para o backend
       await onSubmit(orderObject);
     } catch (error) {
@@ -127,7 +126,7 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
               style={{
                 width: '100%',
                 maxWidth: 320,
-                height: 220,
+                height: 300,
                 objectFit: 'cover',
                 margin: '0 auto',
                 borderRadius: 16,
@@ -182,6 +181,12 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
       <Box sx={{ mb: 2 }}>
         <Typography variant='h6' fontWeight={600} sx={{ mb: 1 }}>
           Detalhes
+        </Typography>
+        <Typography variant='subtitle1' fontWeight={600} sx={{ mt: 1 }}>
+          Tema:
+        </Typography>
+        <Typography variant='textLittle' sx={{ mt: 1, color: 'grey', mb: 2 }}>
+          {theme || 'Nenhum tema especificado.'}
         </Typography>
         <Typography variant='subtitle1' fontWeight={600}>
           Bolo:
