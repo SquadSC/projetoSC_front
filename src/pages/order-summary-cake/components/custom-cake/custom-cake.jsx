@@ -10,7 +10,7 @@ import {
 import { SectionComponent } from '../section/sectionComponent';
 import { FormField } from '../../../../components/text-field/text-field.component';
 import theme from '../../../../theme';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { slimLineGolden } from '../../../../components/header/header-component.style';
 
 export default function CustomCake({
@@ -20,15 +20,22 @@ export default function CustomCake({
   nextStep,
 }) {
   const {
-    product,
     selectedIngredients,
-    handleIngredientSelection,
     organizedIngredients,
     errors,
+    validation,
+    cakeType,
+    toggleIngredient,
+    rules,
+  } = cakeData.ingredientSelection;
+
+  const {
     weight,
     setWeight,
-    rules,
-  } = cakeData;
+    getBasePrice,
+    getAdditionalPrice,
+    calculateTotalPrice,
+  } = cakeData.priceCalculator;
 
   const [recheioType, setRecheioType] = useState('basico');
 
@@ -37,8 +44,29 @@ export default function CustomCake({
   const recheioPremiumAvailable =
     organizedIngredients.recheioPremium?.length > 0;
 
+  // Calcula o preço base atual baseado no tipo de recheio
+  const currentBasePrice = useMemo(() => {
+    if (!cakeType || !essentials?.length) return 0;
+
+    const baseProduct = essentials.find(item => {
+      const descricao = item.descricao?.toLowerCase();
+      return descricao === cakeType?.toLowerCase();
+    });
+
+    return baseProduct
+      ? parseFloat(baseProduct.precoUnitario || 0) * weight
+      : 0;
+  }, [cakeType, essentials, weight]);
+
   const handleRecheioTypeChange = event => {
-    setRecheioType(event.target.value);
+    const newRecheioType = event.target.value;
+    setRecheioType(newRecheioType);
+
+    // Limpa todos os recheios selecionados quando muda o tipo
+    const currentRecheios = selectedIngredients.recheio || [];
+    currentRecheios.forEach(ingredientId => {
+      toggleIngredient('recheio', ingredientId);
+    });
   };
 
   const handleWeightChange = newWeight => {
@@ -47,8 +75,10 @@ export default function CustomCake({
 
   // Função para lidar com seleção de ingredientes
   const onIngredientToggle = (type, ingredientId, isSelected) => {
-    handleIngredientSelection(type, ingredientId, isSelected);
+    toggleIngredient(type, ingredientId);
   };
+
+  const totalPrice = calculateTotalPrice(cakeType, selectedIngredients);
 
   return (
     <>
@@ -77,6 +107,31 @@ export default function CustomCake({
           onChange={handleWeightChange}
           listOptions={[1, 1.5, 2, 2.5, 3, 3.5]}
         />
+        {currentBasePrice > 0 && (
+          <Typography
+            variant='body2'
+            sx={{
+              color: theme.palette.success.main,
+              fontWeight: 'bold',
+              mt: 1,
+              mb: 2,
+            }}
+          >
+            Preço base ({cakeType}): R$ {currentBasePrice.toFixed(2)}
+          </Typography>
+        )}
+
+        {/* Exibe o preço total */}
+        <Typography
+          variant='h6'
+          sx={{
+            color: theme.palette.primary.main,
+            fontWeight: 'bold',
+            mb: 2,
+          }}
+        >
+          Preço total: R$ {totalPrice?.toFixed(2) || '0.00'}
+        </Typography>
 
         <Box>
           <SectionComponent
@@ -135,7 +190,7 @@ export default function CustomCake({
                 selectedIngredients={selectedIngredients.recheio || []}
                 onIngredientToggle={onIngredientToggle}
                 maxQuantity={rules.RECHEIO.max}
-                required={false}
+                required={true}
                 errors={errors}
               />
               <Box sx={slimLineGolden}></Box>
@@ -151,7 +206,7 @@ export default function CustomCake({
                 selectedIngredients={selectedIngredients.recheio || []}
                 onIngredientToggle={onIngredientToggle}
                 maxQuantity={rules.RECHEIO.max}
-                required={false}
+                required={true}
                 errors={errors}
               />
               <Box sx={slimLineGolden}></Box>

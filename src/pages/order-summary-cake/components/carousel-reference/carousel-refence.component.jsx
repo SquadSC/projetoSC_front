@@ -5,16 +5,12 @@ import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 
-export function CarouselReferenceComponent({ refImages }) {
-  const {
-    images,
-    loading,
-    error,
-    refetch,
-    userUploadedImage,
-    selectedReferenceImage,
-    setSelectedReferenceImage,
-  } = refImages;
+export function CarouselReferenceComponent({
+  refImages,
+  selectedImage,
+  onImageSelect,
+}) {
+  const { images, loading, error } = refImages;
 
   if (loading) {
     return (
@@ -84,7 +80,7 @@ export function CarouselReferenceComponent({ refImages }) {
         }}
       >
         {images.map((ref, index) => {
-          const isSelected = selectedReferenceImage?.id_anexo === ref.id_anexo;
+          const isSelected = selectedImage?.id_anexo === ref.id_anexo;
 
           return (
             <SwiperSlide key={ref.id_anexo || index}>
@@ -103,7 +99,7 @@ export function CarouselReferenceComponent({ refImages }) {
                   position: 'relative',
                 }}
                 onClick={() => {
-                  setSelectedReferenceImage(ref);
+                  onImageSelect && onImageSelect(ref);
                 }}
               >
                 {isSelected && (
