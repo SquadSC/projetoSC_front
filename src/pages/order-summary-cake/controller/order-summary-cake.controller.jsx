@@ -95,6 +95,8 @@ export function OrderSummaryCakeController() {
       );
       let finalOrderObject = { ...orderObject };
 
+      finalOrderObject.forma_pagamento ='Pix'
+
       // Se existe uma imagem uploadada pelo usuário que ainda não foi enviada ao backend
       if (themeAndImage.uploadedFile && !themeAndImage.uploadedImageData) {
         console.log('Upload de imagem necessário antes do envio do pedido');
@@ -162,9 +164,9 @@ export function OrderSummaryCakeController() {
       // Aqui seria feita a requisição para o backend com o objeto final
       // const response = await request.post('/pedidos', finalOrderObject);
 
+      const res = request.post('/pedidos/adicionarProduto', finalOrderObject);
       // Por enquanto, apenas simula o envio
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
+     console.log(res);
       console.log('Pedido enviado com sucesso!');
       alert('Pedido finalizado com sucesso!');
     } catch (error) {

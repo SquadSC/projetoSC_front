@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 export function CartController() {
   const [produtos, setProdutos] = useState([]);
 
+  const idUsuario = localStorage.getItem('userData').id;
   useEffect(() => {
     request
-      .get('http://localhost:3001/produtos')
+      .get(`http://localhost:8080/pedidos/carrinho?idUsuario=${idUsuario}`)
       .then(response => {
         setProdutos(response.data);
       })
