@@ -7,4 +7,5 @@ export const ROUTES_PATHS = {
     NEW_ADDRESS:'/new-address',
     CART: '/cart',
     CALENDAR_USER: '/calendar-user',
+    PROFILE: '/profile',
 }
