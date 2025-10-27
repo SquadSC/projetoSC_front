@@ -109,7 +109,7 @@ export function ProfileView({
                                     Quantidade de pedidos já feitos:
                                 </Typography>
                                 <Typography variant='body2' color='text.secondary' sx={{ mt: 0.5 }}>
-                                    {user.totalPedidos || 0}
+                                    {user.totalPedidos}
                                 </Typography>
                             </Box>
                         </Stack>

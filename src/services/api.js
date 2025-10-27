@@ -3,9 +3,9 @@ import { getUserData } from '../utils/auth'; // Importa a função que pega dado
 
 // Configuração da instância do axios
 const api = axios.create({
-  // 1. MUDE A BASEURL para apontar para o seu back-end Spring
-  baseURL: 'http://localhost:8080', 
-  timeout: 30000,
+  // baseURL: 'http://localhost:8080',
+  baseURL: 'http://localhost:3001',
+  timeout: 30000, // timeout de 30 segundos (para uploads)
   headers: {
     'Content-Type': 'application/json',
   },
