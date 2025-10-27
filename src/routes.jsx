@@ -11,7 +11,8 @@ import { LoginController } from './pages/login/index.page.jsx';
 import { RegisterUserController } from './pages/register-user/index.page';
 import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
-import { CalendarUserController } from './pages/calendar-user/controller/calendar-user.controller.jsx';
+// import { CalendarUserController } from './pages/calendar-user/index.page.jsx';
+import { ProfileController } from './pages/profile/index.page.jsx';
 
 
 export default function AppRoutes() {
@@ -36,9 +37,13 @@ export default function AppRoutes() {
       path: ROUTES_PATHS.CART,
       element: <CartController />,
     },
+    // {
+    //   path: ROUTES_PATHS.CALENDAR_USER,
+    //   element: <CalendarUserController />,
+    // },
     {
-      path: ROUTES_PATHS.CALENDAR_USER,
-      element: <CalendarUserController />,
+      path: ROUTES_PATHS.PROFILE,
+      element: <ProfileController />,
     }
   ];
 
