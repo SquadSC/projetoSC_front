@@ -1,9 +1,4 @@
-import {
-  Typography,
-  IconButton,
-  Box,
-  Stack,
-} from '@mui/material';
+import { Typography, IconButton, Box, Stack } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,7 +22,12 @@ export function PageHeader({ titulo, showBackButton = false }) {
 
         <Typography
           variant='h5'
-          sx={{ flexGrow: 1, textAlign: 'center', color: 'primary.main', fontWeight: 'fontWeightSemiBold' }}
+          sx={{
+            flexGrow: 1,
+            textAlign: 'center',
+            color: 'primary.main',
+            fontWeight: 'semiBold',
+          }}
         >
           {titulo}
         </Typography>

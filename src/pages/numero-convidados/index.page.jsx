@@ -1,1 +1,0 @@
-export {NumeroConvidadosController} from './controller/numeroConvidados.controller.jsx';

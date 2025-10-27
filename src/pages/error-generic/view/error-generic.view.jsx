@@ -29,7 +29,7 @@ export function ErrorGenericView({ error }) {
         <ErrorOutlineIcon color='error' sx={{ fontSize: 70, mb: 3 }} />
         <Stack spacing={1}>
           <Typography variant='h5'>Ocorreu um erro!</Typography>
-          <Typography variant='body1'>{error}</Typography>
+          <Typography variant='text'>{error}</Typography>
         </Stack>
       </Box>
 

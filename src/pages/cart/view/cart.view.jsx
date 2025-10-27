@@ -86,13 +86,13 @@ export function CartView({ produtos }) {
                       <Typography variant='subtitle1' fontWeight='bold'>
                         {item.nome}
                       </Typography>
-                      <Typography variant='body2' color='text.secondary'>
+                      <Typography variant='textLittle' color='text.secondary'>
                         {item.descricao}
                       </Typography>
                     </Box>
                     <Box display='flex' alignItems='flex-start'>
                       <Typography variant='subtitle1' fontWeight='bold' mr={1}>
-                        R${item.preco.toFixed(2)}
+                        R${(item?.preco || 0).toFixed(2)}
                       </Typography>
                       <IconButton size='small'>
                         <MoreVertIcon />
@@ -114,18 +114,24 @@ export function CartView({ produtos }) {
 
                 <Stack spacing={1}>
                   <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='body1'>Valor Total:</Typography>
-                    <Typography variant='body1' fontWeight='bold'>
+                    <Typography variant='text'>Valor Total:</Typography>
+                    <Typography variant='text' fontWeight='bold'>
                       R${valorTotal.toFixed(2)}
                     </Typography>
                   </Box>
                   <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='body2'>Data de Entrega:</Typography>
-                    <Typography variant='body2'>16 Setembro, 2025</Typography>
+                    <Typography variant='textLittle'>
+                      Data de Entrega:
+                    </Typography>
+                    <Typography variant='textLittle'>
+                      16 Setembro, 2025
+                    </Typography>
                   </Box>
                   <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='body2'>Horário de Entrega:</Typography>
-                    <Typography variant='body2'>11:54 PM</Typography>
+                    <Typography variant='textLittle'>
+                      Horário de Entrega:
+                    </Typography>
+                    <Typography variant='textLittle'>11:54 PM</Typography>
                   </Box>
                 </Stack>
 

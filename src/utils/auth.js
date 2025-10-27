@@ -31,3 +31,12 @@ export function isLoggedIn() {
   // Retorna o valor da propriedade 'logado' (true ou false)
   return userData.logado === true;
 }
+
+// Função para recuperar o papel do usuário
+export function getUserRole() {
+  const userData = getUserData();
+  if (!userData) {
+    return null;
+  }
+  return userData.tipo || 'cliente'; // valor padrão 'cliente' se tipo não estiver definido
+}

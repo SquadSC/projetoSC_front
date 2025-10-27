@@ -3,7 +3,7 @@ import axios from 'axios';
 // Configuração da instância do axios para comunicação com a API
 const api = axios.create({
   baseURL: 'http://localhost:8080',
-  timeout: 10000, // timeout de 10 segundos
+  timeout: 30000, // timeout de 30 segundos (para uploads)
   headers: {
     'Content-Type': 'application/json',
   },

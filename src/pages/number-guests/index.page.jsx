@@ -1,0 +1,1 @@
+export {NumberGuestsController} from './controller/number-guests.controller.jsx';

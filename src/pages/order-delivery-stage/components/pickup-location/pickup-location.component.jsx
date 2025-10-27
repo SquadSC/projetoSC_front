@@ -3,11 +3,7 @@ import { Box, Button, Container, Stack, Typography } from '@mui/material';
 export function PickupLocationComponent() {
   return (
     <Container sx={{ p: 3 }}>
-      <Typography
-        variant='h6'
-        color='primary.main'
-        fontWeight={'fontWeightSemiBold'}
-      >
+      <Typography variant='h6' color='primary.main' fontWeight={'semiBold'}>
         Local para retirar o pedido
       </Typography>
 
@@ -16,41 +12,41 @@ export function PickupLocationComponent() {
           <Typography
             variant='subtitle1'
             color='primary.main'
-            fontWeight={'fontWeightSemiBold'}
+            fontWeight={'semiBold'}
           >
             CEP:
           </Typography>
-          <Typography variant='body1'>08343-190</Typography>
+          <Typography variant='text'>08343-190</Typography>
         </Box>
         <Box>
           <Typography
             variant='subtitle1'
             color='primary.main'
-            fontWeight={'fontWeightSemiBold'}
+            fontWeight={'semiBold'}
           >
             Bairro:
           </Typography>
-          <Typography variant='body1'>Jardim da Conquista</Typography>
+          <Typography variant='text'>Jardim da Conquista</Typography>
         </Box>
         <Box>
           <Typography
             variant='subtitle1'
             color='primary.main'
-            fontWeight={'fontWeightSemiBold'}
+            fontWeight={'semiBold'}
           >
             Rua:
           </Typography>
-          <Typography variant='body1'>Trav. La Paloma, 23</Typography>
+          <Typography variant='text'>Trav. La Paloma, 23</Typography>
         </Box>
         <Box>
           <Typography
             variant='subtitle1'
             color='primary.main'
-            fontWeight={'fontWeightSemiBold'}
+            fontWeight={'semiBold'}
           >
             Telefone para contato:
           </Typography>
-          <Typography variant='body1'>(11) 99673-3647</Typography>
+          <Typography variant='text'>(11) 99673-3647</Typography>
         </Box>
       </Stack>
       <Box
