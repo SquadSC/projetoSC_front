@@ -19,7 +19,7 @@ export function CartView({ produtos }) {
   const navigate = useNavigate();
 
   const isEmpty = produtos.length === 0; // corrigi aqui
-  const valorTotal = produtos.reduce((acc, item) => acc + item.preco, 0);
+  const valorTotal = produtos.precoTotal
 
   return (
     <>
@@ -73,7 +73,7 @@ export function CartView({ produtos }) {
                 p: 2,
               }}
             >
-              {produtos.map((item, index) => (
+              {produtos.itensPedido.map((item, index) => (
                 <Card key={index} variant='outlined' sx={{ borderRadius: 2 }}>
                   <CardContent
                     sx={{
@@ -84,15 +84,35 @@ export function CartView({ produtos }) {
                   >
                     <Box>
                       <Typography variant='subtitle1' fontWeight='bold'>
-                        {item.nome}
-                      </Typography>
-                      <Typography variant='textLittle' color='text.secondary'>
                         {item.descricao}
                       </Typography>
+                      <Typography variant='textLittle' color='text.secondary'>
+                        {item.informacaoBolo && item.informacaoBolo.tema
+                          ? item.informacaoBolo.tema
+                          : 'Genérico'
+                        }
+
+                      </Typography>
+                      {/* Lista de ingredientes */}
+                      {item.ingredientes && item.ingredientes.length > 0 && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 'bold' }}>
+                            Ingredientes:
+                          </Typography>
+                          <Typography variant='caption' color='text.secondary' sx={{ display: 'block' }}>
+                            {item.ingredientes.map((ingrediente, idx) => (
+                              <span key={idx}>
+                                {ingrediente.nome}
+                                {idx < item.ingredientes.length - 1 ? ', ' : ''}
+                              </span>
+                            ))}
+                          </Typography>
+                        </Box>
+                      )}
                     </Box>
                     <Box display='flex' alignItems='flex-start'>
                       <Typography variant='subtitle1' fontWeight='bold' mr={1}>
-                        R${(item?.preco || 0).toFixed(2)}
+                        R${(item?.precoItem || 0).toFixed(2)}
                       </Typography>
                       <IconButton size='small'>
                         <MoreVertIcon />
@@ -119,20 +139,7 @@ export function CartView({ produtos }) {
                       R${valorTotal.toFixed(2)}
                     </Typography>
                   </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='textLittle'>
-                      Data de Entrega:
-                    </Typography>
-                    <Typography variant='textLittle'>
-                      16 Setembro, 2025
-                    </Typography>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='textLittle'>
-                      Horário de Entrega:
-                    </Typography>
-                    <Typography variant='textLittle'>11:54 PM</Typography>
-                  </Box>
+
                 </Stack>
 
                 <Button

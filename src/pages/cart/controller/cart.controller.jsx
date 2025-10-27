@@ -1,14 +1,15 @@
 import { CartView } from '../view/cart.view';
 import { request } from '../../../services/api';
 import { useState, useEffect } from 'react';
+import {getUserData} from '../../../utils/auth'
 
 export function CartController() {
   const [produtos, setProdutos] = useState([]);
 
-  const idUsuario = localStorage.getItem('userData').id;
+  const userData = getUserData();
   useEffect(() => {
     request
-      .get(`http://localhost:8080/pedidos/carrinho?idUsuario=${idUsuario}`)
+      .get(`http://localhost:8080/pedidos/carrinho?idUsuario=${userData.id}`)
       .then(response => {
         setProdutos(response.data);
       })
@@ -17,5 +18,6 @@ export function CartController() {
       });
   }, []);
 
+  console.log(produtos)
   return <CartView produtos={produtos} />;
 }
