@@ -90,6 +90,11 @@ export function CartView({ produtos, onDeleteItem }) {
                       </Typography>
                       <Typography variant='textLittle' color='text.secondary'>
                         Tema: {item?.informacaoBolo?.tema || 'Genérico'}
+                        {item?.quantidade && (
+                        <Typography variant='caption' color='text.secondary' sx={{ display: 'block' }}>
+                          Peso: {item.quantidade} kg
+                        </Typography>
+                      )}
                       </Typography>
                       
                       {/* Lista de ingredientes com tratativa */}
@@ -115,12 +120,8 @@ export function CartView({ produtos, onDeleteItem }) {
                         </Typography>
                       )}
                       
-                      {/* Peso do bolo se existir */}
-                      {item?.peso && (
-                        <Typography variant='caption' color='text.secondary' sx={{ display: 'block' }}>
-                          Peso: {item.peso}kg
-                        </Typography>
-                      )}
+            
+                      
                       
                       {/* Observações se existir */}
                       {item?.observacao && (

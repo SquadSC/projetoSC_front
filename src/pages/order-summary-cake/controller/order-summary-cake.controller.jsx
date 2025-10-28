@@ -9,6 +9,8 @@ import { useThemeAndImage } from '../hooks/useThemeAndImage';
 import { usePriceCalculator } from '../hooks/usePriceCalculator';
 import { useObservation } from '../hooks/useObservation';
 import { useOrderBuilder } from '../hooks/useOrderBuilder';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 
 import { OrderSummaryCakeView } from '../view/order-summary-cake.view';
 
@@ -18,7 +20,8 @@ export function OrderSummaryCakeController() {
   const [essentials, setEssentials] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [apiError, setApiError] = useState(null);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate()
   // Hooks personalizados
   const stepController = useStepController(4);
   const ingredientSelection = useIngredientSelection(ingredients);
@@ -81,6 +84,9 @@ export function OrderSummaryCakeController() {
 
   // Função para finalizar pedido
   const handleSubmitOrder = async orderObject => {
+    if (isSubmitting) return; // Previne múltiplas execuções
+
+    setIsSubmitting(true);
     try {
       console.log('Preparando envio do pedido:', orderObject);
 
@@ -96,6 +102,7 @@ export function OrderSummaryCakeController() {
       let finalOrderObject = { ...orderObject };
 
       finalOrderObject.forma_pagamento ='Pix'
+      finalOrderObject.quantidade = priceCalculator.weight; // Quantidade igual ao peso
 
       // Se existe uma imagem uploadada pelo usuário que ainda não foi enviada ao backend
       if (themeAndImage.uploadedFile && !themeAndImage.uploadedImageData) {
@@ -161,17 +168,25 @@ export function OrderSummaryCakeController() {
 
       console.log('Enviando pedido completo:', finalOrderObject);
 
-      // Aqui seria feita a requisição para o backend com o objeto final
-      // const response = await request.post('/pedidos', finalOrderObject);
+      const response = await request.post('/pedidos/adicionarProduto', finalOrderObject);
+      
+      console.log('Resposta do servidor:', response);
 
-      const res = request.post('/pedidos/adicionarProduto', finalOrderObject);
-      // Por enquanto, apenas simula o envio
-     console.log(res);
-      console.log('Pedido enviado com sucesso!');
-      alert('Pedido finalizado com sucesso!');
+      if(response.status == 201){
+        console.log('Pedido enviado com sucesso!');
+        navigate(ROUTES_PATHS.CART)
+      }
+      
+      
+      // Opcional: redirecionar para carrinho ou home após sucesso
+      // navigate(ROUTES_PATHS.CART);
+      
     } catch (error) {
       console.error('Erro ao enviar pedido:', error);
+      alert('Erro ao finalizar pedido. Tente novamente.');
       throw error;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -222,6 +237,7 @@ export function OrderSummaryCakeController() {
       ingredients={ingredients}
       essentials={essentials}
       onSubmitOrder={handleSubmitOrder}
+      isSubmitting={isSubmitting}
     />
   );
 }
