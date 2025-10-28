@@ -7,7 +7,8 @@ export function CartController() {
   const [produtos, setProdutos] = useState([]);
 
   const userData = getUserData();
-  useEffect(() => {
+  
+  const fetchCartData = () => {
     request
       .get(`http://localhost:8080/pedidos/carrinho?idUsuario=${userData.id}`)
       .then(response => {
@@ -16,8 +17,23 @@ export function CartController() {
       .catch(error => {
         console.error('Error fetching cart data:', error);
       });
+  };
+
+  const desabilitarItem = (idDoItemPedido) => {
+    request
+      .delete(`http://localhost:8080/pedidos/desabilitarItemPedido/${idDoItemPedido}`)
+      .then(() => {
+        fetchCartData(); // Refresh cart data after deletion
+      })
+      .catch(error => {
+        console.error('Error disabling item:', error);
+      });
+  };
+
+  useEffect(() => {
+    fetchCartData();
   }, []);
 
   console.log(produtos)
-  return <CartView produtos={produtos} />;
+  return <CartView produtos={produtos} onDeleteItem={desabilitarItem} />;
 }
