@@ -14,4 +14,6 @@ export const ROUTES_PATHS = {
   DASHBOARD: '/dashboard',
   DETAIL_ORDER: '/detail-order',
   NUMBER_GUESTS: '/number-guests',
+  ORDERS: '/orders',
+  PENDING_ORDERS:'/pending-orders', 
 };

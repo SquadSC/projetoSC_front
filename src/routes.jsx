@@ -20,6 +20,8 @@ import { ProductsController } from './pages/products/index.page.jsx';
 import { AddProductController } from './pages/add-product/index.page.jsx';
 import { EditProductController } from './pages/edit-product/index.page.jsx';
 import { DashboardController } from './pages/dashboard/index.page.jsx';
+import { OrdersController } from './pages/orders/controller/orders.controller.jsx';
+import { PendingOrderController } from './pages/pending-order/controller/pending-order.controller.jsx';
 
 export default function AppRoutes() {
   // Rotas públicas que não requerem autenticação
@@ -79,6 +81,14 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.DASHBOARD,
       element: <DashboardController />,
+    },
+    {
+      path: ROUTES_PATHS.ORDERS,
+      element: <OrdersController />,
+    },
+    {
+      path: ROUTES_PATHS.PENDING_ORDERS,
+      element: < PendingOrderController/>,
     },
   ];
 
