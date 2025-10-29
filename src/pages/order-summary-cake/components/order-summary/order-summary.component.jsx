@@ -210,24 +210,6 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
         </Typography>
       </Box>
 
-      {/* Debug info em desenvolvimento */}
-      {process.env.NODE_ENV === 'development' && (
-        <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-          <Typography variant='subtitle2' sx={{ mb: 1 }}>
-            Objeto a ser enviado (DEV):
-          </Typography>
-          <pre
-            style={{
-              fontSize: '0.8rem',
-              overflow: 'auto',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {JSON.stringify(orderObject, null, 2)}
-          </pre>
-        </Box>
-      )}
-
       <Button
         variant='contained'
         color='primary'

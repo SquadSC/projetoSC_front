@@ -43,12 +43,11 @@ export function CakeInfoComponent({
       <Container sx={{ p: 2 }}>
         <Stack spacing={3}>
           {/* Campo de Tema */}
-          <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <Typography
-              variant='subtitle1'
-              fontWeight='semiBold'
+              variant='subTitleLittle'
               color='primary.main'
-              sx={{ mb: 2 }}
+              fontWeight='semiBold'
             >
               Qual vai ser o tema?
             </Typography>
@@ -67,15 +66,6 @@ export function CakeInfoComponent({
 
           {/* Carrossel de Referências */}
           <Box>
-            <Typography
-              variant='subtitle1'
-              fontWeight='semiBold'
-              color='primary.main'
-              sx={{ mb: 2 }}
-            >
-              Escolha uma referência:
-            </Typography>
-
             <CarouselReferenceComponent
               refImages={imageData}
               selectedImage={selectedCarouselImage}

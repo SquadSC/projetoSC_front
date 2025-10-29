@@ -28,7 +28,7 @@ export function CarouselReferenceComponent({
   if (error) {
     return (
       <Box textAlign='center' p={3}>
-        <Typography color='error'>
+        <Typography color='error' variant='subTitleLittle'>
           Erro ao carregar referências: {error}
         </Typography>
       </Box>
@@ -38,7 +38,7 @@ export function CarouselReferenceComponent({
   if (!images || images.length === 0) {
     return (
       <Box textAlign='center' p={3}>
-        <Typography>Nenhuma referência disponível no momento.</Typography>
+        <Typography variant='subTitleLittle'>Nenhuma referência disponível no momento.</Typography>
       </Box>
     );
   }
@@ -46,8 +46,9 @@ export function CarouselReferenceComponent({
   return (
     <Box
       sx={{
+        display: 'flex',
+        flexDirection: 'column',
         width: '100%',
-        mt: 5,
         '& .swiper-pagination-bullet': {
           backgroundColor: '#b2bec3',
           opacity: 1,
@@ -56,13 +57,14 @@ export function CarouselReferenceComponent({
           backgroundColor: 'primary.main',
         },
         zIndex: 0,
+        gap: 2,
       }}
     >
       <Typography
-        variant='subtitle1'
+        variant='subTitleLittle'
         fontWeight={'semiBold'}
         color='primary.main'
-        mb={2}
+
       >
         Referências disponíveis:
       </Typography>

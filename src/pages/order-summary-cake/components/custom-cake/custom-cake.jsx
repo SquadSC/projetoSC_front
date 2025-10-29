@@ -6,6 +6,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Stack,
 } from '@mui/material';
 import { SectionComponent } from '../section/sectionComponent';
 import { FormField } from '../../../../components/text-field/text-field.component';
@@ -23,19 +24,12 @@ export default function CustomCake({
     selectedIngredients,
     organizedIngredients,
     errors,
-    validation,
     cakeType,
     toggleIngredient,
     rules,
   } = cakeData.ingredientSelection;
 
-  const {
-    weight,
-    setWeight,
-    getBasePrice,
-    getAdditionalPrice,
-    calculateTotalPrice,
-  } = cakeData.priceCalculator;
+  const { weight, setWeight, calculateTotalPrice } = cakeData.priceCalculator;
 
   const [recheioType, setRecheioType] = useState('basico');
 
@@ -86,57 +80,30 @@ export default function CustomCake({
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          mt: 4,
-          pb: 4,
+          pt: 2,
+          pb: 2,
           color: 'primary.main',
         }}
       >
-        <Typography
-          variant='h6'
-          sx={{
-            fontWeight: 'bold',
-            marginBottom: 2,
-            color: theme.palette.primary.main,
-          }}
-        >
-          Peso do Bolo (Kg)
-        </Typography>
-
-        <FormField
-          value={weight}
-          onChange={handleWeightChange}
-          listOptions={[1, 1.5, 2, 2.5, 3, 3.5]}
-        />
-        {currentBasePrice > 0 && (
+        <Stack spacing={3}>
           <Typography
-            variant='body2'
-            sx={{
-              color: theme.palette.success.main,
-              fontWeight: 'bold',
-              mt: 1,
-              mb: 2,
-            }}
+            variant='subTitleLittle'
+            fontWeight='semiBold'
           >
-            Preço base ({cakeType}): R$ {currentBasePrice.toFixed(2)}
+            Personalize seu bolo
           </Typography>
-        )}
 
-        {/* Exibe o preço total */}
-        <Typography
-          variant='h6'
-          sx={{
-            color: theme.palette.primary.main,
-            fontWeight: 'bold',
-            mb: 2,
-          }}
-        >
-          Preço total: R$ {totalPrice?.toFixed(2) || '0.00'}
-        </Typography>
+          <FormField
+            value={weight}
+            onChange={handleWeightChange}
+            listOptions={[1, 1.5, 2, 2.5, 3, 3.5]}
+          />
+        </Stack>
 
-        <Box>
+        <Box pt={4}>
           <SectionComponent
             ingredientType='massa'
-            title='Massa'
+            title='Qual a massa do seu bolo?'
             items={organizedIngredients.massa}
             selectedIngredients={selectedIngredients.massa || []}
             onIngredientToggle={onIngredientToggle}
@@ -144,12 +111,25 @@ export default function CustomCake({
             required={true}
             errors={errors}
           />
-          <Box sx={slimLineGolden}></Box>
+
+          <Box
+            my={3}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Box sx={slimLineGolden}></Box>
+          </Box>
 
           {(recheioBasicoAvailable || recheioPremiumAvailable) && (
-            <Container sx={{ width: '100%', padding: 0, marginBottom: 1 }}>
+            <Container sx={{ width: '100%', padding: 0, marginBottom: 3 }}>
               <Typography
-                sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}
+                variant='subTitleLittle'
+                fontWeight={'semiBold'}
+                sx={{ color: theme.palette.primary.main }}
               >
                 Tipo de Recheio
               </Typography>
@@ -165,11 +145,23 @@ export default function CustomCake({
                       value='basico'
                       control={<Radio size='small' />}
                       label='Básico'
+                      sx={{
+                        '& .MuiFormControlLabel-label': {
+                          fontSize: '15px',
+                          fontWeight: 'medium',
+                        },
+                      }}
                     />
                     <FormControlLabel
                       value='premium'
                       control={<Radio size='small' />}
                       label='Premium'
+                      sx={{
+                        '& .MuiFormControlLabel-label': {
+                          fontSize: '15px',
+                          fontWeight: 'medium',
+                        },
+                      }}
                     />
                   </RadioGroup>
                 </Box>
@@ -193,7 +185,7 @@ export default function CustomCake({
                 required={true}
                 errors={errors}
               />
-              <Box sx={slimLineGolden}></Box>
+              <Box my={2} sx={slimLineGolden}></Box>
             </>
           )}
 
@@ -209,7 +201,7 @@ export default function CustomCake({
                 required={true}
                 errors={errors}
               />
-              <Box sx={slimLineGolden}></Box>
+              <Box my={2} sx={slimLineGolden}></Box>
             </>
           )}
 
@@ -225,6 +217,142 @@ export default function CustomCake({
             essentials={essentials}
             errors={errors}
           />
+        </Box>
+
+        <Box
+          sx={{
+            mt: 4,
+            mb: 3,
+            p: 3,
+            borderRadius: '16px',
+            background: `linear-gradient(135deg, ${theme.palette.primary.main}15 0%, ${theme.palette.primary.main}08 100%)`,
+            border: `1px solid ${theme.palette.primary.main}30`,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+          }}
+        >
+          <Stack spacing={2}>
+            {/* Título */}
+            <Typography
+              variant='subTitleLittle'
+              sx={{
+                fontWeight: 'bold',
+                color: theme.palette.primary.main,
+                textAlign: 'center',
+                letterSpacing: '0.5px',
+              }}
+            >
+              Resumo do Pedido
+            </Typography>
+
+            <Box sx={slimLineGolden}></Box>
+
+            {/* Preço Base */}
+            {currentBasePrice > 0 && (
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                alignItems='center'
+              >
+                <Typography
+                  variant='text'
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontWeight: 'medium',
+                    width: '70%',
+                  }}
+                >
+                  Preço base ({cakeType} - {weight}kg)
+                </Typography>
+                <Typography
+                  variant='text'
+                  sx={{
+                    fontWeight: 'bold',
+                  }}
+                >
+                  R$ {currentBasePrice.toFixed(2)}
+                </Typography>
+              </Box>
+            )}
+
+            {/* Adicionais */}
+            {totalPrice > currentBasePrice && (
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                alignItems='center'
+              >
+                <Typography
+                  variant='text'
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontWeight: 'medium',
+                  }}
+                >
+                  Adicionais
+                </Typography>
+                <Typography
+                  variant='text'
+                  sx={{
+                    fontWeight: 'bold',
+                  }}
+                >
+                  + R$ {(totalPrice - currentBasePrice).toFixed(2)}
+                </Typography>
+              </Box>
+            )}
+
+            <Box
+              sx={{
+                height: '1px',
+                background: `linear-gradient(90deg, transparent 0%, ${theme.palette.primary.main}40 50%, transparent 100%)`,
+                my: 1,
+              }}
+            />
+
+            {/* Preço Total */}
+            <Box
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              sx={{
+                p: 2,
+                borderRadius: '12px',
+                backgroundColor: theme.palette.primary.main + '10',
+              }}
+            >
+              <Typography
+                variant='h6'
+                sx={{
+                  color: theme.palette.primary.main,
+                  fontWeight: 'bold',
+                  fontSize: '1.1rem',
+                }}
+              >
+                Total
+              </Typography>
+              <Box display='flex' alignItems='baseline' gap={0.5}>
+                <Typography
+                  variant='body2'
+                  sx={{
+                    color: theme.palette.primary.main,
+                    fontWeight: 'medium',
+                  }}
+                >
+                  R$
+                </Typography>
+                <Typography
+                  variant='h5'
+                  sx={{
+                    color: theme.palette.primary.main,
+                    fontWeight: 'bold',
+                    fontSize: '1.5rem',
+                  }}
+                >
+                  {totalPrice?.toFixed(2) || '0.00'}
+                </Typography>
+              </Box>
+            </Box>
+          </Stack>
         </Box>
 
         <Button

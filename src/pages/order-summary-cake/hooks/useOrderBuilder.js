@@ -9,7 +9,7 @@ export function useOrderBuilder() {
    * @param {Object} params - Parâmetros do pedido
    * @param {Array} params.selectedIngredientIds - IDs dos ingredientes selecionados
    * @param {number} params.productId - ID do produto base
-   * @param {number} params.quantity - Quantidade do produto
+   * @param {number} params.weight - Peso do produto
    * @param {number} params.totalPrice - Preço total
    * @param {string} params.theme - Tema do bolo
    * @param {string} params.observation - Observação adicional
@@ -21,7 +21,7 @@ export function useOrderBuilder() {
       userId = 0,
       selectedIngredientIds = [],
       productId = 0,
-      quantity = 1,
+      weight = 1, // Usar weight em vez de quantity
       totalPrice = 0,
       theme = '',
       observation = '',
@@ -31,7 +31,7 @@ export function useOrderBuilder() {
     return {
       idCliente: userId, // ✅ Agora usa o userId passado como parâmetro
       idProduto: productId,
-      quantidade: quantity,
+      quantidade: weight, // Quantidade baseada no peso
       preco: totalPrice,
       listaIngredientes: selectedIngredientIds, // Apenas IDs, não objetos
       informacaoBolo: {
@@ -66,7 +66,7 @@ export function useOrderBuilder() {
     }
 
     if (orderObject.quantidade <= 0) {
-      errors.push('Quantidade inválida');
+      errors.push('Peso inválido');
     }
 
     return {
