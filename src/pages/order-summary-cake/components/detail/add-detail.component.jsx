@@ -6,6 +6,7 @@ import {
   Container,
   Alert,
   Paper,
+  Stack,
 } from '@mui/material';
 
 export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
@@ -28,16 +29,23 @@ export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
         display: 'flex',
         flexDirection: 'column',
         gap: 3,
-        p: 3,
+        p: 2,
       }}
     >
-      <Box>
-        <Typography variant='h6' gutterBottom>
-          Detalhes adicionais
-        </Typography>
-        <Typography variant='subtitle2' color='primary.main' sx={{ mb: 2 }}>
-          Deseja incluir alguma observação? (opcional)
-        </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Stack spacing={3} mb={2}>
+          <Typography
+            variant='subTitleLittle'
+            color='primary.main'
+            fontWeight='semiBold'
+          >
+            Detalhes adicionais
+          </Typography>
+          <Typography variant='text'>
+            Deseja incluir alguma observação? (opcional)
+          </Typography>
+        </Stack>
+
         <TextField
           fullWidth
           multiline
@@ -48,10 +56,21 @@ export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
           inputProps={{ maxLength: 200 }}
           helperText={`${characterCount}/200 caracteres`}
           error={!!error}
+          sx={{
+            '& .MuiInputBase-input': {
+              fontSize: '15px', // Tamanho do texto digitado
+              lineHeight: 1.5,
+              fontFamily: 'inherit', // Usa a fonte padrão do tema
+            },
+            '& .MuiInputBase-input::placeholder': {
+              fontSize: '14px', // Tamanho do placeholder (opcional)
+              opacity: 0.6,
+            },
+          }}
         />
         {error && (
           <Typography
-            variant='caption'
+            variant='text'
             color='error'
             sx={{ mt: 1, display: 'block' }}
           >

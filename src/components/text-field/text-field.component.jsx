@@ -7,7 +7,7 @@ import {
   MenuItem,
   InputLabel
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { formatNumber } from '../../utils/numbers/numbers.utils'
@@ -78,14 +78,13 @@ export function FormField({
   };
 
   return (
-    <FormControl sx={{mb: 2.5, mt:2, height: 50, width:'100%'}}>
-      <InputLabel id="demo-simple-select-label">Peso</InputLabel>
+    <FormControl sx={{ height: '100%', width:'100%'}}>
+      <InputLabel id="demo-simple-select-label">Peso do bolo (Kg)</InputLabel>
       <Select 
-        sx={{height: 50}}
         value={selectedValue}
         onChange={handleChange}
         labelId="demo-simple-select-label"
-        label="Peso"
+        label="Peso do bolo (Kg)"
       >
         {options.map((item) => (
           <MenuItem key={item} value={item}>
