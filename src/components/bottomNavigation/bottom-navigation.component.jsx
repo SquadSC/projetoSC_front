@@ -16,21 +16,20 @@ export function BottomNavigationComponent() {
 
   const clienteTabs = [
     { label: "Início", icon: <HomeFilledIcon sx={iconStyle} />, path: ROUTES_PATHS.HOME },
-    { label: "Pedidos", icon: <AssignmentIcon sx={iconStyle} />, path: ROUTES_PATHS.CART },
-    { label: "Loja", icon: <ShoppingBagIcon sx={iconStyle} />, path: ROUTES_PATHS.SEARCH },
+    { label: "Pedidos", icon: <AssignmentIcon sx={iconStyle} />, path: ROUTES_PATHS.ORDERS },
+    { label: "Loja", icon: <ShoppingBagIcon sx={iconStyle} />, path: ROUTES_PATHS.HOME },
     { label: "Perfil", icon: <PersonIcon sx={iconStyle} />, path: ROUTES_PATHS.PROFILE },
   ];
 
   const confeiteiraTabs = [
     { label: "Início", icon: <HomeFilledIcon sx={iconStyle} />, path: ROUTES_PATHS.HOME },
-    { label: "Pendentes", icon: <QueryBuilderIcon sx={iconStyle} />, path: ROUTES_PATHS.PENDING },
+    { label: "Pendentes", icon: <QueryBuilderIcon sx={iconStyle} />, path: ROUTES_PATHS.PENDING_ORDERS },
     { label: "Catálogo", icon: <AssignmentIcon sx={iconStyle} />, path: ROUTES_PATHS.CATALOG },
     { label: "Dashboard", icon: <DashboardIcon sx={iconStyle} />, path: ROUTES_PATHS.DASHBOARD },
     { label: "Perfil", icon: <PersonIcon sx={iconStyle} />, path: ROUTES_PATHS.PROFILE },
   ];
 
   const tabs = userRole === "cliente" ? clienteTabs : confeiteiraTabs;
-  console.log('User Role:', userRole);
 
   return (
     <Box
