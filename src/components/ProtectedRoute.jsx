@@ -15,7 +15,7 @@ export function ProtectedRoute({ children }) {
   // Mostra um loading enquanto verifica a autenticação
   if (loading) {
     return (
-      <Container backgroundColor='white' sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Container sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CircularProgress size="5rem" color='primary.main' />
       </Container>
     );
