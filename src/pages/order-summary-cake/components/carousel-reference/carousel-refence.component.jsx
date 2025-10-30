@@ -5,16 +5,12 @@ import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 
-export function CarouselReferenceComponent({ refImages }) {
-  const {
-    images,
-    loading,
-    error,
-    refetch,
-    userUploadedImage,
-    selectedReferenceImage,
-    setSelectedReferenceImage,
-  } = refImages;
+export function CarouselReferenceComponent({
+  refImages,
+  selectedImage,
+  onImageSelect,
+}) {
+  const { images, loading, error } = refImages;
 
   if (loading) {
     return (
@@ -32,7 +28,7 @@ export function CarouselReferenceComponent({ refImages }) {
   if (error) {
     return (
       <Box textAlign='center' p={3}>
-        <Typography color='error'>
+        <Typography color='error' variant='subTitleLittle'>
           Erro ao carregar referências: {error}
         </Typography>
       </Box>
@@ -42,7 +38,7 @@ export function CarouselReferenceComponent({ refImages }) {
   if (!images || images.length === 0) {
     return (
       <Box textAlign='center' p={3}>
-        <Typography>Nenhuma referência disponível no momento.</Typography>
+        <Typography variant='subTitleLittle'>Nenhuma referência disponível no momento.</Typography>
       </Box>
     );
   }
@@ -50,8 +46,9 @@ export function CarouselReferenceComponent({ refImages }) {
   return (
     <Box
       sx={{
+        display: 'flex',
+        flexDirection: 'column',
         width: '100%',
-        mt: 5,
         '& .swiper-pagination-bullet': {
           backgroundColor: '#b2bec3',
           opacity: 1,
@@ -60,13 +57,14 @@ export function CarouselReferenceComponent({ refImages }) {
           backgroundColor: 'primary.main',
         },
         zIndex: 0,
+        gap: 2,
       }}
     >
       <Typography
-        variant='subtitle1'
+        variant='subTitleLittle'
         fontWeight={'semiBold'}
         color='primary.main'
-        mb={2}
+
       >
         Referências disponíveis:
       </Typography>
@@ -84,7 +82,7 @@ export function CarouselReferenceComponent({ refImages }) {
         }}
       >
         {images.map((ref, index) => {
-          const isSelected = selectedReferenceImage?.id_anexo === ref.id_anexo;
+          const isSelected = selectedImage?.id_anexo === ref.id_anexo;
 
           return (
             <SwiperSlide key={ref.id_anexo || index}>
@@ -103,7 +101,7 @@ export function CarouselReferenceComponent({ refImages }) {
                   position: 'relative',
                 }}
                 onClick={() => {
-                  setSelectedReferenceImage(ref);
+                  onImageSelect && onImageSelect(ref);
                 }}
               >
                 {isSelected && (

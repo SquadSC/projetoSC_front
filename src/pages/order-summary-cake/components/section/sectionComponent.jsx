@@ -60,8 +60,10 @@ export function SectionComponent({
     <>
       <Container sx={{ width: '100%', padding: 0, marginBottom: 1 }}>
         <Typography
+          variant='subTitleLittle'
+          fontWeight={'semiBold'}
           sx={{
-            fontWeight: 'bold',
+            display: 'flex',
             color:
               isRequiredAndEmpty || hasError
                 ? '#d32f2f'
@@ -69,7 +71,6 @@ export function SectionComponent({
           }}
         >
           {title}
-          {maxQuantity > 0 && ` (Máximo: ${maxQuantity})`}
           {required && ' *'}
         </Typography>
 
@@ -101,16 +102,16 @@ export function SectionComponent({
       </Container>
 
       {items &&
-        items.map(item => (
+        items.map((item, index) => (
           <IngredientComponent
             key={item.idIngrediente}
-            id={item.idIngrediente}
-            item={item}
-            active={selectedIngredients.includes(item.idIngrediente)}
-            onToggle={handleToggle}
-            disabled={
+            ingredient={item}
+            isSelected={selectedIngredients.includes(item.idIngrediente)}
+            onClick={() => handleToggle(item.idIngrediente)}
+            isDisabled={
               limitReached && !selectedIngredients.includes(item.idIngrediente)
             }
+            showDivider={index < items.length - 1}
           />
         ))}
     </>

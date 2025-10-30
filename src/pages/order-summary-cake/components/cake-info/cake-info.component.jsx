@@ -7,12 +7,12 @@ import {
   Paper,
   IconButton,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 import { CustomTextField } from '../../../../components/text-field/text-field.component';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
-import { useRef } from 'react';
 import { CarouselReferenceComponent } from '../carousel-reference/carousel-refence.component';
 
 export function CakeInfoComponent({
@@ -21,70 +21,71 @@ export function CakeInfoComponent({
   imageData,
   canAdvance,
 }) {
-  const { product, setProduct, errors } = cakeData;
-
   const {
-    file,
-    preview,
+    theme,
+    uploadedFile,
+    uploadPreview,
     uploading,
-    handleFileChange,
+    selectedCarouselImage,
+    selectedImage,
+    errors,
+    isValid,
+    fileInputRef,
+    handleThemeChange,
+    handleFileUpload,
+    handleCarouselImageSelect,
     removeImage,
-    images,
-    selectedReferenceImage,
-    setSelectedReferenceImage,
-  } = imageData;
-
-  const fileInputRef = useRef(null);
-
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
-  };
+    openFileSelector,
+  } = cakeData.themeAndImage;
 
   return (
-    <Box display={'flex'} flexDirection={'column'}>
+    <Box display='flex' flexDirection='column'>
       <Container sx={{ p: 2 }}>
-        <Stack spacing={2}>
-          <Typography
-            variant='subtitle1'
-            fontWeight={'semiBold'}
-            color='primary.main'
-          >
-            Qual vai ser o tema?
-          </Typography>
+        <Stack spacing={3}>
+          {/* Campo de Tema */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Typography
+              variant='subTitleLittle'
+              color='primary.main'
+              fontWeight='semiBold'
+            >
+              Qual vai ser o tema?
+            </Typography>
 
-          <CustomTextField
-            label='Tema do bolo (opcional):'
-            type='text'
-            value={product.theme}
-            onChange={e => {
-              setProduct({ ...product, theme: e.target.value });
-            }}
-            error={!!errors.theme}
-            helperText={errors.theme}
-            fullWidth
-          />
-        </Stack>
+            <CustomTextField
+              label='Tema do bolo (opcional):'
+              type='text'
+              value={theme}
+              onChange={e => handleThemeChange(e.target.value)}
+              error={!!errors.theme}
+              helperText={errors.theme}
+              fullWidth
+              placeholder='Ex: Aniversário infantil, Casamento, etc.'
+            />
+          </Box>
 
-        <Box>
-          <CarouselReferenceComponent
-            images={images}
-            selectedReferenceImage={selectedReferenceImage}
-            setSelectedReferenceImage={setSelectedReferenceImage}
-          />
-        </Box>
+          {/* Carrossel de Referências */}
+          <Box>
+            <CarouselReferenceComponent
+              refImages={imageData}
+              selectedImage={selectedCarouselImage}
+              onImageSelect={handleCarouselImageSelect}
+            />
+          </Box>
 
-        <Stack spacing={3} mt={4}>
+          {/* Upload de Imagem Personalizada */}
           <Box>
             <Typography
               variant='subtitle1'
-              fontWeight={'semiBold'}
+              fontWeight='semiBold'
               color='primary.main'
-              mb={2}
+              sx={{ mb: 2 }}
             >
-              Não encontrou as referências certas?
+              Ou anexe sua própria referência:
             </Typography>
 
-            {preview && (
+            {/* Mostra preview da imagem uploadada */}
+            {uploadPreview && (
               <Paper
                 elevation={3}
                 sx={{
@@ -102,7 +103,7 @@ export function CakeInfoComponent({
                     mb: 1,
                   }}
                 >
-                  <Typography variant='textLittle' color='text.secondary'>
+                  <Typography variant='body2' color='text.secondary'>
                     Referência anexada:
                   </Typography>
                   <IconButton size='small' color='error' onClick={removeImage}>
@@ -118,7 +119,7 @@ export function CakeInfoComponent({
                   }}
                 >
                   <img
-                    src={preview}
+                    src={uploadPreview}
                     alt='Preview da referência'
                     style={{
                       maxWidth: '100%',
@@ -129,32 +130,33 @@ export function CakeInfoComponent({
                   />
                 </Box>
 
-                {file && (
+                {uploadedFile && (
                   <Typography
                     variant='caption'
                     color='text.secondary'
                     sx={{ mt: 1, display: 'block' }}
                   >
-                    {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                    {uploadedFile.name} (
+                    {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB)
                   </Typography>
                 )}
               </Paper>
             )}
 
+            {/* Botão de Upload */}
             <Button
               variant='outlined'
               color='primary'
               sx={{
                 width: '100%',
                 height: '48px',
-                position: 'relative',
               }}
-              onClick={handleButtonClick}
+              onClick={openFileSelector}
               disabled={uploading}
               startIcon={
                 uploading ? (
                   <CircularProgress size={16} />
-                ) : preview ? (
+                ) : uploadPreview ? (
                   <ImageIcon />
                 ) : (
                   <CloudUploadIcon />
@@ -163,7 +165,7 @@ export function CakeInfoComponent({
             >
               {uploading
                 ? 'Processando...'
-                : preview
+                : uploadPreview
                 ? 'Alterar Referência'
                 : 'Anexar suas Referências'}
             </Button>
@@ -174,16 +176,17 @@ export function CakeInfoComponent({
               type='file'
               hidden
               accept='image/*'
-              onChange={handleFileChange}
+              onChange={handleFileUpload}
             />
 
-            {errors.attachment && (
+            {/* Mensagens de erro */}
+            {errors.image && (
               <Typography
                 variant='caption'
                 color='error'
                 sx={{ mt: 1, display: 'block' }}
               >
-                {errors.attachment}
+                {errors.image}
               </Typography>
             )}
 
@@ -196,21 +199,38 @@ export function CakeInfoComponent({
             </Typography>
           </Box>
 
-          <Button
-            variant='contained'
-            color='primary'
-            sx={{
-              width: '100%',
-              height: '48px',
-              mt: 4,
-              opacity: canAdvance ? 1 : 0.6,
-            }}
-            onClick={nextStep}
-            disabled={!canAdvance}
-          >
-            Avançar
-          </Button>
+          {/* Informação sobre seleção */}
+          {selectedImage && (
+            <Alert severity='info' sx={{ mt: 2 }}>
+              {selectedImage.source === 'upload'
+                ? 'Você anexou uma imagem personalizada'
+                : 'Você selecionou uma referência do carrossel'}
+            </Alert>
+          )}
+
+          {/* Validação */}
+          {!isValid && (
+            <Alert severity='warning' sx={{ mt: 2 }}>
+              Preencha o tema ou selecione/anexe uma imagem para continuar.
+            </Alert>
+          )}
         </Stack>
+
+        {/* Botão Avançar */}
+        <Button
+          variant='contained'
+          color='primary'
+          sx={{
+            width: '100%',
+            height: '48px',
+            mt: 4,
+            borderRadius: '24px',
+          }}
+          onClick={nextStep}
+          disabled={!canAdvance}
+        >
+          Avançar
+        </Button>
       </Container>
     </Box>
   );

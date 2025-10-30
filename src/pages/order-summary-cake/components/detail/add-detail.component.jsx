@@ -1,13 +1,26 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Alert,
+  Paper,
+  Stack,
+} from '@mui/material';
 
 export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
-  const { product, setProduct } = cakeData;
+  const {
+    observation,
+    error,
+    characterCount,
+    remainingCharacters,
+    isValid,
+    updateObservation,
+  } = cakeData.observation;
 
   const handleObservationChange = event => {
-    setProduct(prev => ({
-      ...prev,
-      observation: event.target.value,
-    }));
+    updateObservation(event.target.value);
   };
 
   return (
@@ -16,26 +29,54 @@ export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
         display: 'flex',
         flexDirection: 'column',
         gap: 3,
-        p: 3,
+        p: 2,
       }}
     >
-      <Box>
-        <Typography variant='h6' gutterBottom>
-          Detalhes adicionais
-        </Typography>
-        <Typography variant='subtitle2' color='primary.main' sx={{ mb: 2 }}>
-          Deseja incluir alguma observação? (opcional)
-        </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Stack spacing={3} mb={2}>
+          <Typography
+            variant='subTitleLittle'
+            color='primary.main'
+            fontWeight='semiBold'
+          >
+            Detalhes adicionais
+          </Typography>
+          <Typography variant='text'>
+            Deseja incluir alguma observação? (opcional)
+          </Typography>
+        </Stack>
+
         <TextField
           fullWidth
           multiline
           rows={4}
           placeholder='Digite uma mensagem para a confeiteira (Máx. 200 caracteres)'
-          value={product.observation || ''}
+          value={observation}
           onChange={handleObservationChange}
           inputProps={{ maxLength: 200 }}
-          helperText={`${(product.observation || '').length}/200 caracteres`}
+          helperText={`${characterCount}/200 caracteres`}
+          error={!!error}
+          sx={{
+            '& .MuiInputBase-input': {
+              fontSize: '15px', // Tamanho do texto digitado
+              lineHeight: 1.5,
+              fontFamily: 'inherit', // Usa a fonte padrão do tema
+            },
+            '& .MuiInputBase-input::placeholder': {
+              fontSize: '14px', // Tamanho do placeholder (opcional)
+              opacity: 0.6,
+            },
+          }}
         />
+        {error && (
+          <Typography
+            variant='text'
+            color='error'
+            sx={{ mt: 1, display: 'block' }}
+          >
+            {error}
+          </Typography>
+        )}
       </Box>
 
       <Box
@@ -51,13 +92,8 @@ export function AdditionalDetailsComponent({ nextStep, cakeData, canAdvance }) {
         <Button
           variant='contained'
           fullWidth
-          sx={{
-            borderRadius: '24px',
-            height: '48px',
-            opacity: canAdvance ? 1 : 0.6,
-          }}
+          sx={{ borderRadius: '24px', height: '48px' }}
           onClick={nextStep}
-          disabled={!canAdvance}
         >
           Avançar
         </Button>
