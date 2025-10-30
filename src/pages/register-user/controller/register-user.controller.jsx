@@ -52,7 +52,7 @@ export function RegisterUserController() {
       senha: fields.password,
       nome: fields.name,
       telefone: cleanPhone,
-      admin: false,
+      tipoUsuario: 'CLIENTE', 
     };
 
     request
