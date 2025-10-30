@@ -1,0 +1,1 @@
+export { ErrorGenericController } from './controller/error-generic.controller';

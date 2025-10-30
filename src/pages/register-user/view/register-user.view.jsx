@@ -1,20 +1,26 @@
 import { Button, Container, Stack, Typography, Link, Box } from '@mui/material';
 import { HeaderComponent } from '../../../components/header/header-component';
-import { CustomTextField } from '../../../components/text-field/custom-text-field';
 import { PhoneField } from '../components/phone-field/phone-field.component';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import { CustomTextField } from '../../../components/text-field/text-field.component';
 
 export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
+  const navigate = useNavigate();
+
   return (
     <>
-      <HeaderComponent 
-        titulo="Bem-vindo à Elê Doces!"
-        pagina="Peça seus doces de forma rápida, prática e com todo o carinho de
-            sempre."
+      <HeaderComponent
+        titulo='Bem-vindo à Elê Doces!'
+        pagina='Peça seus doces de forma rápida, prática e com todo o carinho de
+            sempre.'
       />
       <Container sx={{ p: 3 }}>
         <Stack spacing={{ xs: 1, sm: 2, md: 4 }} mb={3}>
-          <Typography variant='h5'> Crie sua conta! </Typography>
-          <Typography variant='body1'> Rápido, fácil e gratuito. </Typography>
+          <Typography variant='subTitle' fontWeight={'semiBold'}>
+            Crie sua conta!
+          </Typography>
+          <Typography variant='text'> Rápido, fácil e gratuito. </Typography>
         </Stack>
 
         <Box
@@ -71,9 +77,13 @@ export function RegisterUserView({ fields, errors, onChange, onSubmit }) {
         </Box>
 
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Link href='/' underline='none'>
+          <Button
+            variant='text'
+            color='primary'
+            onClick={() => navigate(ROUTES_PATHS.LOGIN)}
+          >
             Já tem conta? Entre
-          </Link>
+          </Button>
         </Box>
       </Container>
     </>

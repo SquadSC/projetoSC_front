@@ -2,11 +2,15 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel
 } from '@mui/material';
 import { useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import theme from '../../theme';
+import { formatNumber } from '../../utils/numbers/numbers.utils'
 
 export function CustomTextField({
   label,
@@ -14,7 +18,6 @@ export function CustomTextField({
   value,
   onChange,
   error,
-  sx,
   helperText,
   ...props
 }) {
@@ -42,32 +45,53 @@ export function CustomTextField({
       slotProps={
         isPassword
           ? {
-              input: {
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton onClick={() => setShow((s) => !s)} edge='end'>
-                      {show ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }
+            input: {
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton onClick={() => setShow((s) => !s)} edge='end'>
+                    {show ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }
           : undefined
       }
-      sx={{
-        ...sx,
-        '& .MuiOutlinedInput-root': {
-          '&.Mui-focused fieldset': {
-            borderColor: theme.palette.primary.main,
-            borderWidth: 2,
-          },
-          '& fieldset': {
-            borderColor: 'black',
-            borderWidth: 2,
-          },
-        },
-      }}
       {...props}
     />
+  );
+}
+export function FormField({
+  listOptions, 
+  value = 1,
+  onChange
+}) {
+  const [selectedValue, setSelectedValue] = useState(value || '');
+  const options = listOptions;
+
+  const handleChange = (event) => {
+    const newValue = event.target.value;
+    setSelectedValue(newValue);
+    if (onChange) {
+      onChange(newValue);
+    }
+  };
+
+  return (
+    <FormControl sx={{ height: '100%', width:'100%'}}>
+      <InputLabel id="demo-simple-select-label">Peso do bolo (Kg)</InputLabel>
+      <Select 
+        value={selectedValue}
+        onChange={handleChange}
+        labelId="demo-simple-select-label"
+        label="Peso do bolo (Kg)"
+      >
+        {options.map((item) => (
+          <MenuItem key={item} value={item}>
+            {formatNumber(item)}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
