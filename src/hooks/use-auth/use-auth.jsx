@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { getUserData, isLoggedIn, logout as authLogout } from '../utils/auth';
+import {
+  getUserData,
+  isLoggedIn,
+  logout as authLogout,
+} from '../../utils/auth';
 
-/**
- * Hook customizado para gerenciar o estado de autenticação
- * Centraliza a verificação de autenticação e fornece funcionalidades relacionadas
- */
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState('cliente');
   const [loading, setLoading] = useState(true);
 
   // Verifica o estado de autenticação ao montar o componente
@@ -20,6 +21,8 @@ export function useAuth() {
     try {
       const userData = getUserData();
       const authenticated = isLoggedIn();
+
+      setUserRole(userData.tipo === 'confeiteira' ? 'confeiteira' : 'cliente');
 
       setUser(userData);
       setIsAuthenticated(authenticated);
@@ -50,6 +53,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated,
+    userRole,
     loading,
     logout,
     updateAuthStatus,
