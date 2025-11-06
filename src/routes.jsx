@@ -24,7 +24,6 @@ import { OrdersController } from './pages/orders/controller/orders.controller.js
 import { PendingOrderController } from './pages/pending-order/controller/pending-order.controller.jsx';
 
 export default function AppRoutes() {
-  // Rotas públicas que não requerem autenticação
   const publicRoutes = [
     {
       path: ROUTES_PATHS.LOGIN,
@@ -40,7 +39,6 @@ export default function AppRoutes() {
     },
   ];
 
-  // Rotas protegidas que requerem autenticação
   const protectedRoutes = [
     {
       path: ROUTES_PATHS.HOME,
@@ -96,12 +94,10 @@ export default function AppRoutes() {
     <Router>
       <NavigationProvider>
         <Routes>
-          {/* Rotas públicas - não requerem autenticação */}
           {publicRoutes.map(route => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
 
-          {/* Rotas protegidas - requerem autenticação */}
           {protectedRoutes.map(route => (
             <Route
               key={route.path}
@@ -110,7 +106,6 @@ export default function AppRoutes() {
             />
           ))}
 
-          {/* Rota padrão - redireciona para home (protegida) */}
           <Route
             path='*'
             element={<Navigate to={ROUTES_PATHS.HOME} replace />}
