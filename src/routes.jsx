@@ -6,13 +6,15 @@ import {
 } from 'react-router-dom';
 import { ROUTES_PATHS } from './utils/enums/routes-url';
 import { NavigationProvider } from './hooks/use-navigation/navigation-provider.jsx';
-import { ProtectedRoute } from './components/ProtectedRoute.jsx';
+import {
+  ProtectedCustomerRoute,
+  ProtectedConfectionerRoute,
+} from './components/protected-custumer/protected-custumer.jsx';
 import { HomeController } from './pages/home/index.page';
 import { LoginController } from './pages/login/index.page.jsx';
 import { RegisterUserController } from './pages/register-user/index.page';
 import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
-import { OrderUserController } from './pages/order-user/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
 import { NumberGuestsController } from './pages/number-guests/index.page.jsx';
@@ -22,8 +24,62 @@ import { EditProductController } from './pages/edit-product/index.page.jsx';
 import { DashboardController } from './pages/dashboard/index.page.jsx';
 import { OrdersController } from './pages/orders/controller/orders.controller.jsx';
 import { PendingOrderController } from './pages/pending-order/controller/pending-order.controller.jsx';
+import { HomeConfectionerController } from './pages/home-confectioner/index.page.jsx';
+
+// ========================================
+// CONFIGURAÇÃO CENTRALIZADA DE ROTAS
+// ========================================
+
+export const CLIENT_ROUTES_PATHS = [
+  ROUTES_PATHS.HOME,
+  ROUTES_PATHS.CART,
+  ROUTES_PATHS.ORDERS,
+  ROUTES_PATHS.ORDER_DELIVERY_STAGE,
+  ROUTES_PATHS.ORDER_SUMMARY_CAKE,
+  ROUTES_PATHS.NUMBER_GUESTS,
+];
+
+export const CONFECTIONER_ROUTES_PATHS = [
+  ROUTES_PATHS.HOME_CONFECTIONER,
+  ROUTES_PATHS.PRODUCTS,
+  ROUTES_PATHS.ADD_PRODUCT,
+  ROUTES_PATHS.EDIT_PRODUCT,
+  ROUTES_PATHS.DASHBOARD,
+  ROUTES_PATHS.ORDERS,
+  ROUTES_PATHS.PENDING_ORDERS,
+];
+
+export const routeHelpers = {
+
+  canUserAccessRoute: (userRole, routePath) => {
+    if (userRole === 'confeiteira') {
+      return CONFECTIONER_ROUTES_PATHS.includes(routePath);
+    } else {
+      return CLIENT_ROUTES_PATHS.includes(routePath);
+    }
+  },
+
+  getDefaultHomeRoute: userRole => {
+    return userRole === 'confeiteira'
+      ? ROUTES_PATHS.HOME_CONFECTIONER
+      : ROUTES_PATHS.HOME;
+  },
+
+  getRedirectPath: (userRole, from) => {
+    if (!from) {
+      return routeHelpers.getDefaultHomeRoute(userRole);
+    }
+
+    if (routeHelpers.canUserAccessRoute(userRole, from)) {
+      return from;
+    }
+
+    return routeHelpers.getDefaultHomeRoute(userRole);
+  },
+};
 
 export default function AppRoutes() {
+  // Rotas públicas (qualquer pessoa pode acessar)
   const publicRoutes = [
     {
       path: ROUTES_PATHS.LOGIN,
@@ -39,7 +95,8 @@ export default function AppRoutes() {
     },
   ];
 
-  const protectedRoutes = [
+  // Rotas exclusivas para CLIENTES
+  const customerRoutes = [
     {
       path: ROUTES_PATHS.HOME,
       element: <HomeController />,
@@ -49,8 +106,8 @@ export default function AppRoutes() {
       element: <CartController />,
     },
     {
-      path: ROUTES_PATHS.ORDER_USER,
-      element: <OrderUserController />,
+      path: ROUTES_PATHS.ORDERS,
+      element: <OrdersController />,
     },
     {
       path: ROUTES_PATHS.ORDER_DELIVERY_STAGE,
@@ -63,6 +120,14 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.NUMBER_GUESTS,
       element: <NumberGuestsController />,
+    },
+  ];
+
+  // Rotas exclusivas para CONFEITEIRAS
+  const confectionerRoutes = [
+    {
+      path: ROUTES_PATHS.HOME_CONFECTIONER,
+      element: <HomeConfectionerController />,
     },
     {
       path: ROUTES_PATHS.PRODUCTS,
@@ -86,7 +151,7 @@ export default function AppRoutes() {
     },
     {
       path: ROUTES_PATHS.PENDING_ORDERS,
-      element: < PendingOrderController/>,
+      element: <PendingOrderController />,
     },
   ];
 
@@ -94,21 +159,39 @@ export default function AppRoutes() {
     <Router>
       <NavigationProvider>
         <Routes>
+          {/* Rotas públicas */}
           {publicRoutes.map(route => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
 
-          {protectedRoutes.map(route => (
+          {/* Rotas protegidas para CLIENTES */}
+          {customerRoutes.map(route => (
             <Route
               key={route.path}
               path={route.path}
-              element={<ProtectedRoute>{route.element}</ProtectedRoute>}
+              element={
+                <ProtectedCustomerRoute>{route.element}</ProtectedCustomerRoute>
+              }
             />
           ))}
 
+          {/* Rotas protegidas para CONFEITEIRAS */}
+          {confectionerRoutes.map(route => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={
+                <ProtectedConfectionerRoute>
+                  {route.element}
+                </ProtectedConfectionerRoute>
+              }
+            />
+          ))}
+
+          {/* Rota padrão - redireciona para login */}
           <Route
             path='*'
-            element={<Navigate to={ROUTES_PATHS.HOME} replace />}
+            element={<Navigate to={ROUTES_PATHS.LOGIN} replace />}
           />
         </Routes>
       </NavigationProvider>

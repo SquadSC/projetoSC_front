@@ -3,7 +3,7 @@ import { LoginView } from '../view/login.view';
 import { request } from '../../../services/api';
 import { saveUserData } from '../../../utils/auth';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import { routeHelpers } from '../../../routes';
 import {
   validateFields,
   validators,
@@ -21,7 +21,7 @@ export function LoginController() {
   const [error, setError] = useState({});
 
   // Pega a rota de origem para redirecionamento após login
-  const from = location.state?.from || ROUTES_PATHS.HOME;
+  const from = location.state?.from;
 
   function validate() {
     const loginValidators = {
@@ -66,15 +66,18 @@ export function LoginController() {
           };
 
           saveUserData(normalizedUserData);
-          saveUserData(userData);
+
           Swal.fire({
             icon: 'success',
             title: 'Login bem-sucedido',
             showConfirmButton: false,
             timer: 1500,
           });
-          // Redireciona para a rota original ou home se não houver rota de origem
-          navigate(from, { replace: true });
+
+          // Redirecionamento inteligente baseado no tipo de usuário
+          const redirectPath = routeHelpers.getRedirectPath(userRole, from);
+          navigate(redirectPath);
+          console.log('userRole', userRole, 'redirecting to:', redirectPath);
         } else {
           Swal.fire({
             icon: 'error',
