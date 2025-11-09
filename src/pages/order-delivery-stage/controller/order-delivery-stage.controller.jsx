@@ -4,14 +4,20 @@ import { request } from '../../../services/api';
 import { getUserData } from '../../../utils/auth';
 import { fetchCep } from '../../../hooks/use-cep/cep-service';
 import { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 
 export function OrderDeliveryStageController() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const pedidoId = searchParams.get('pedidoId');
+
   const [activeStep, setActiveStep] = useState(0);
   const [maxStepReached, setMaxStepReached] = useState(0);
 
   const [methodDelivery, setMethodDelivery] = useState('');
-  const [addAddress, setAddAddress] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -106,11 +112,21 @@ export function OrderDeliveryStageController() {
 
   // Calendar handlers lifted to controller so selections persist
   function handleSetDate(d) {
+    const date = d.format('YYYY-MM-DD')
+    console.log(date)
     setDeliveryDate(d);
   }
 
   function handleSetHorario(h) {
     setDeliveryHorario(h);
+  }
+
+  // Função para montar a string de data e horário
+  function getFormattedDateTime() {
+    if (!deliveryDate || !deliveryHorario) return '';
+    
+    const dateStr = deliveryDate.format('DD/MM/YYYY');
+    return `${dateStr} ${deliveryHorario}:00`;
   }
 
   function handleCalendarNext() {
@@ -120,6 +136,8 @@ export function OrderDeliveryStageController() {
     setDeliveryErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
+      const formattedDateTime = getFormattedDateTime();
+      console.log('Data e horário formatados:', formattedDateTime);
       handleNext();
     }
   }
@@ -199,6 +217,63 @@ export function OrderDeliveryStageController() {
       });
   }
 
+  // Verificar se existe pedidoId
+  useEffect(() => {
+    if (!pedidoId) {
+      console.error('ID do pedido não encontrado');
+      navigate(ROUTES_PATHS.CART);
+      return;
+    }
+  }, [pedidoId, navigate]);
+
+  // Função para finalizar o processo de entrega
+  const handleFinishDelivery = async () => {
+    try {
+      // Validações baseadas no método de entrega
+      if (methodDelivery === 'delivery' && !selectedAddressId) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Endereço não selecionado',
+          text: 'Por favor, selecione um endereço para entrega.',
+        });
+        return;
+      }
+
+      const deliveryData = {
+        idPedido: parseInt(pedidoId),
+        isRetirada: methodDelivery,
+        dataEntregaEsperada: getFormattedDateTime(),
+        enderecoId: methodDelivery === false ? selectedAddressId : null,
+      };
+
+      console.log('Finalizando entrega:', deliveryData);
+      
+      // Requisição para atualizar o pedido com os dados de entrega
+      await request.patch(`/pedidos/enviarPedido`, deliveryData);
+
+      const successMessage = methodDelivery === 'delivery' 
+        ? 'Pedido finalizado! Será entregue no endereço selecionado.' 
+        : 'Pedido finalizado! Aguarde contato para retirada no ateliê.';
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Pedido finalizado com sucesso!',
+        text: successMessage,
+        showConfirmButton: true,
+        timer: 3000,
+      });
+
+      navigate(ROUTES_PATHS.HOME);
+    } catch (error) {
+      console.error('Erro ao finalizar pedido:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro ao finalizar pedido',
+        text: 'Tente novamente ou entre em contato conosco.',
+      });
+    }
+  };
+
   return (
     <OrderDeliveryStageView
       stepConfig={{
@@ -210,7 +285,6 @@ export function OrderDeliveryStageController() {
       methodDeliveryConfig={{
         methodDelivery,
         driveMethodDelivery,
-        addAddress,
       }}
       calendarConfig={{
         date: deliveryDate,
@@ -219,6 +293,7 @@ export function OrderDeliveryStageController() {
         onDateChange: handleSetDate,
         onHorarioChange: handleSetHorario,
         onNext: handleCalendarNext,
+        formattedDateTime: getFormattedDateTime(),
       }}
       addressConfig={{
         addresses,
@@ -233,6 +308,8 @@ export function OrderDeliveryStageController() {
         onChange: handleChange,
         onSubmit: handleSubmit,
       }}
+      onFinishDelivery={handleFinishDelivery}
+      pedidoId={pedidoId}
     />
   );
 }

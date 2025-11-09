@@ -17,7 +17,7 @@ export function AddressRedirectorComponent({ ...props }) {
       selectedAddressId={props.selectedAddressId}
       onSelectAddress={props.onSelectAddress}
       onAddNewAddress={props.onAddNewAddress}
-      onConfirm={() => {}}
+      onFinishDelivery={props.onFinishDelivery}
     />
   );
 }
