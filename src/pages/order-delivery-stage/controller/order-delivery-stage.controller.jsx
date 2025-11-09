@@ -16,6 +16,8 @@ export function OrderDeliveryStageController() {
 
   const [activeStep, setActiveStep] = useState(0);
   const [maxStepReached, setMaxStepReached] = useState(0);
+  
+  const [addAddress, setAddAddress] = useState(false);
 
   const [methodDelivery, setMethodDelivery] = useState('');
 
@@ -50,7 +52,7 @@ export function OrderDeliveryStageController() {
 
   const driveMethodDelivery = method => {
     setMethodDelivery(method);
-    if (method === 'delivery') {
+    if (method === true) {
       setAddAddress(true);
     } else {
       setAddAddress(false);
@@ -230,7 +232,7 @@ export function OrderDeliveryStageController() {
   const handleFinishDelivery = async () => {
     try {
       // Validações baseadas no método de entrega
-      if (methodDelivery === 'delivery' && !selectedAddressId) {
+      if (methodDelivery === false && !selectedAddressId) {
         Swal.fire({
           icon: 'error',
           title: 'Endereço não selecionado',
