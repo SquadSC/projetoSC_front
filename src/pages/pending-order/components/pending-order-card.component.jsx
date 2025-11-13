@@ -117,10 +117,12 @@ export function PendingOrderCard({
           </Typography>
         </Box>
 
+{/* status do pedido - titulo */}
         <Typography variant="body2" color="primary.main" sx={orderCardStatus}>
           {getStatusLabel(currentStep)}
         </Typography>
 
+{/* icone relogio e mensagem do status do pedido */}
         <Box sx={orderCardDetail}>
           <AccessTimeIcon fontSize="small" sx={{ color: 'primary.main' }} />
           <Typography variant="body2" color="primary.main">

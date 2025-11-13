@@ -3,8 +3,8 @@ const primaryColor = 'primary.main';
 // Estilos para o card de pedido pendente
 export const orderCard = {
   backgroundColor: 'background.paper',
-  border: '1px solid',
-  borderColor: 'divider',
+  border: '2px solid',
+  borderColor: 'primary.main',
   borderRadius: 2,
   mb: 2,
   boxShadow: 'none',
