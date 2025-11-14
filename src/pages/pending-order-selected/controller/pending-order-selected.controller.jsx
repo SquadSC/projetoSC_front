@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { PendingOrderSelectedView } from '../view/pending-order-selected.view';
 import { api } from '../../../services/api';
 import { maskCep } from '../../../utils/mask/mask.utils';
+import Swal from 'sweetalert2';
 
 export function PendingOrderSelectedController() {
   const { id } = useParams();
@@ -107,6 +108,7 @@ export function PendingOrderSelectedController() {
   /**
    * Avança o pedido para a próxima etapa ou aceita ( se o status 6 = Em produção)
    * Status 3 -> 4 -> 5 -> 6
+   * Quando status for 6, agenda o pedido no Google Calendar também
    */
   const handleAccept = async () => {
     setActionLoading(true);
@@ -120,19 +122,58 @@ export function PendingOrderSelectedController() {
       else if (currentStatus === 4) nextStatus = 5; // Validado pelo fornecedor -> Agendamento confirmado
       else if (currentStatus === 5) nextStatus = 6; // Agendamento confirmado -> Em produção (aceitar)
 
+      // Atualizar status do pedido
       await api.patch(`/pedidos/alterarStatus/${id}/status/${nextStatus}`);
       
+      // Se foi para status 6 (Em produção), agendar no Google Calendar
       if (nextStatus === 6) {
-        alert('Pedido aceito e inserido na agenda com sucesso!');
+        try {
+          await api.post(`/calendario/${id}`);
+        } catch (calendarErr) {
+          console.error('Erro ao agendar no Google Calendar:', calendarErr);
+          // Continua mesmo se falhar o agendamento, mas mostra aviso
+          Swal.fire({
+            icon: 'warning',
+            title: 'Atenção!',
+            text: 'Pedido aceito, mas houve um problema ao agendar no calendário. Verifique manualmente.',
+            confirmButtonText: 'OK'
+          });
+          navigate('/pending-orders');
+          return;
+        }
+        
+        // Popup de sucesso quando aceita e agenda
+        Swal.fire({
+          icon: 'success',
+          title: 'Sucesso!',
+          text: 'Pedido aceito e inserido na agenda com sucesso!',
+          showConfirmButton: false,
+          timer: 2000,
+        });
       } else {
-        alert('Etapa avançada com sucesso!');
+        // Popup de sucesso quando apenas avança etapa
+        Swal.fire({
+          icon: 'success',
+          title: 'Sucesso!',
+          text: 'Etapa avançada com sucesso!',
+          showConfirmButton: false,
+          timer: 2000,
+        });
       }
       
-      navigate('/pending-orders'); // Voltar para a lista de pedidos pendentes
+      // Redirecionar após 2 segundos
+      setTimeout(() => {
+        navigate('/pending-orders');
+      }, 2000);
     } catch (err) {
       console.error('Erro ao aceitar pedido:', err);
       setError('Não foi possível aceitar o pedido. Tente novamente.');
-      alert('Erro ao aceitar pedido. Tente novamente.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro!',
+        text: 'Não foi possível aceitar o pedido. Tente novamente.',
+        confirmButtonText: 'OK'
+      });
     } finally {
       setActionLoading(false);
     }
@@ -140,19 +181,56 @@ export function PendingOrderSelectedController() {
 
   /**
    * Recusa o pedido alterando o status para Cancelado (status 8)
+   * Mostra popup de confirmação antes de recusar
    */
   const handleDecline = async () => {
+    // Popup de confirmação antes de recusar (seguindo padrão da tela de produtos)
+    const result = await Swal.fire({
+      title: 'Deseja recusar o pedido?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#38090D',
+      cancelButtonColor: '#38090D',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Sim, recusar',
+      customClass: {
+        cancelButton: 'swal-cancel-button',
+      },
+    });
+
+    // Se o usuário cancelou, não faz nada
+    if (!result.isConfirmed) {
+      return;
+    }
+
     setActionLoading(true);
     setError(null);
     try {
       // Cancelar pedido (status 8 = Cancelado)
       await api.patch(`/pedidos/alterarStatus/${id}/status/8`);
-      alert('Pedido recusado com sucesso!');
-      navigate('/pending-orders'); // Voltar para a lista de pedidos pendentes
+      
+      // Popup de sucesso após recusar
+      Swal.fire({
+        icon: 'success',
+        title: 'Sucesso!',
+        text: 'Pedido recusado com sucesso!',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      
+      // Redirecionar após 2 segundos
+      setTimeout(() => {
+        navigate('/pending-orders');
+      }, 2000);
     } catch (err) {
       console.error('Erro ao recusar pedido:', err);
       setError('Não foi possível recusar o pedido. Tente novamente.');
-      alert('Erro ao recusar pedido. Tente novamente.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro!',
+        text: 'Não foi possível recusar o pedido. Tente novamente.',
+        confirmButtonText: 'OK'
+      });
     } finally {
       setActionLoading(false);
     }
