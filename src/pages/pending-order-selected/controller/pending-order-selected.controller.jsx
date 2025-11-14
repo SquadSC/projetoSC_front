@@ -237,14 +237,27 @@ export function PendingOrderSelectedController() {
   };
 
   /**
-   * Exibe detalhes do bolo selecionado
-   * Pode ser expandido para navegar para uma tela de detalhes
+   * Navega para a tela de detalhes do bolo selecionado
    */
   const handleViewCakeDetails = (item) => {
-    // Aqui você pode implementar a navegação para uma tela de detalhes do bolo
-    // Por enquanto, apenas mostra um alerta
-    console.log('Detalhes do bolo:', item);
-    alert(`Detalhes do Bolo #${item.idItemPedido}\nTema: ${item.informacaoBolo?.tema || 'N/A'}`);
+    const orderId = order?.idPedido || order?.id;
+    const itemId = item.idItemPedido;
+    
+    if (!orderId || !itemId) {
+      console.error('IDs do pedido ou item não disponíveis');
+      return;
+    }
+
+    // Navegar para a tela de detalhes do bolo, passando o item via state
+    navigate(
+      `/pending-order-selected/${orderId}/cake/${itemId}`,
+      {
+        state: {
+          item: item,
+          orderId: orderId,
+        },
+      }
+    );
   };
 
   return (

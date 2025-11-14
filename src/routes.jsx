@@ -25,6 +25,7 @@ import { DashboardController } from './pages/dashboard/index.page.jsx';
 import { OrdersController } from './pages/orders/controller/orders.controller.jsx';
 import { PendingOrderController } from './pages/pending-order/controller/pending-order.controller.jsx';
 import { PendingOrderSelectedController } from './pages/pending-order-selected/controller/pending-order-selected.controller.jsx';
+import { CakeDetailsController } from './pages/pending-order-selected/components/cake-details/cake-details.controller';
 import { HomeConfectionerController } from './pages/home-confectioner/index.page.jsx';
 
 // ========================================
@@ -49,6 +50,7 @@ export const CONFECTIONER_ROUTES_PATHS = [
   ROUTES_PATHS.ORDERS,
   ROUTES_PATHS.PENDING_ORDERS,
   ROUTES_PATHS.PENDING_ORDER_SELECTED,
+  ROUTES_PATHS.CAKE_DETAILS,
 ];
 
 export const routeHelpers = {
@@ -158,6 +160,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.PENDING_ORDER_SELECTED,
       element: <PendingOrderSelectedController />,
+    },
+    {
+      path: ROUTES_PATHS.CAKE_DETAILS,
+      element: <CakeDetailsController />,
     },
   ];
 
