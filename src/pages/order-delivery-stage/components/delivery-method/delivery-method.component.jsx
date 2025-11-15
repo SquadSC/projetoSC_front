@@ -35,7 +35,7 @@ export function DeliveryMethodComponent({ nextStep, driveMethodDelivery }) {
             variant='contained'
             fullWidth
             sx={{ borderRadius: '24px', height: '48px' }}
-            onClick={() => handleDeliveryMethodChange('pickup')}
+            onClick={() => handleDeliveryMethodChange(true)}
           >
             Retirar no Ateliê
           </Button>
@@ -43,7 +43,7 @@ export function DeliveryMethodComponent({ nextStep, driveMethodDelivery }) {
             variant='outlined'
             fullWidth
             sx={{ borderRadius: '24px', height: '48px' }}
-            onClick={() => handleDeliveryMethodChange('delivery')}
+            onClick={() => handleDeliveryMethodChange(false)}
           >
             Entregar no meu Endereço
           </Button>
