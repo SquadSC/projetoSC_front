@@ -24,7 +24,7 @@ export function BottomNavigationComponent() {
   const confeiteiraTabs = [
     { label: "Início", icon: <HomeFilledIcon sx={iconStyle} />, path: ROUTES_PATHS.HOME },
     { label: "Pendentes", icon: <QueryBuilderIcon sx={iconStyle} />, path: ROUTES_PATHS.PENDING_ORDERS },
-    { label: "Catálogo", icon: <AssignmentIcon sx={iconStyle} />, path: ROUTES_PATHS.CATALOG },
+    { label: "Catálogo", icon: <AssignmentIcon sx={iconStyle} />, path: ROUTES_PATHS.PRODUCTS },
     { label: "Dashboard", icon: <DashboardIcon sx={iconStyle} />, path: ROUTES_PATHS.DASHBOARD },
     { label: "Perfil", icon: <PersonIcon sx={iconStyle} />, path: ROUTES_PATHS.PROFILE },
   ];

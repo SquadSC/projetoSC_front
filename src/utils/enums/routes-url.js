@@ -11,6 +11,9 @@ export const ROUTES_PATHS = {
   EDIT_PRODUCT: '/products/edit/:id',
   ADD_PRODUCT: '/add-product',
   DASHBOARD: '/dashboard',
+  PENDING_ORDERS: '/pending-orders',
+  PENDING_ORDER_SELECTED: '/pending-order-selected/:id',
+  CAKE_DETAILS: '/pending-order-selected/:idPedido/cake/:idItemPedido', 
   
   // Rotas cliente
   HOME: '/',
@@ -20,5 +23,5 @@ export const ROUTES_PATHS = {
   DETAIL_ORDER: '/detail-order',
   NUMBER_GUESTS: '/number-guests',
   ORDERS: '/orders',
-  PENDING_ORDERS:'/pending-orders', 
+  // PENDING_ORDERS:'/pending-orders', 
 };

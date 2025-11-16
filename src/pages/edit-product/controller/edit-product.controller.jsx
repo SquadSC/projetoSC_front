@@ -112,7 +112,7 @@ export function EditProductController() {
           mainCategory: 'itens-complementares',
           subCategory: item.categoria || '',
           name: item.descricao,
-          isPremium: item.premium || false,
+          isPremium: false, // Produtos (itens complementares) nunca são premium
           price: item.precoUnitario || '',
           unidade: item.unidade_medida || item.unidadeMedida || '', // Carrega unidade existente
         });
@@ -170,7 +170,7 @@ export function EditProductController() {
         temIngrediente: false, // Itens da tabela não têm ingredientes
       };
     } else {
-      // É um PRODUTO
+      // É um PRODUTO (itens complementares)
       endpoint = `/produtos/${id}`;
       payload = {
         descricao: fields.name,
@@ -179,7 +179,8 @@ export function EditProductController() {
         unidadeMedida: fields.unidade || 'unidade', // Usar unidade do formulário ou padrão
         ativo: item?.ativo ?? true, // Incluir o status ativo do produto
         temIngrediente: item?.temIngrediente ?? false, // Incluir se tem ingrediente
-        // Remover campo 'premium' que não existe no ProdutoRequest
+        observacao: null, // Campo opcional
+        // Produtos (itens complementares) não têm campo premium
       };
     }
 

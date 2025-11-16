@@ -19,6 +19,7 @@ export function CalendarUserComponent({
   onDateChange,
   onHorarioChange,
   onNext,
+  formattedDateTime,
 }) {
   const handleChange = event => {
     onHorarioChange?.(event.target.value);
@@ -89,6 +90,21 @@ export function CalendarUserComponent({
         </Select>
         {errors?.horario && <FormHelperText>{errors.horario}</FormHelperText>}
       </FormControl>
+      {formattedDateTime && (
+        <Typography
+          variant='body2'
+          sx={{
+            mt: 2,
+            p: 2,
+            backgroundColor: theme.palette.primary.main + '10',
+            borderRadius: 1,
+            color: theme.palette.primary.main,
+            fontWeight: 'bold',
+          }}
+        >
+          Data e horário selecionados: {formattedDateTime}
+        </Typography>
+      )}
       <Button
         variant='contained'
         color='primary'

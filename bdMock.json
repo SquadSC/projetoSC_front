@@ -50,11 +50,13 @@
   ],
   "pedidos": [
     {
-      "id": "123",
+      "idPedido": 14256,
       "deliveryDate": "22/04/2025",
+      "dtEntregaEsperada": "2025-04-22T15:30:00",
       "deliveryTime": "15:30",
       "address": "Trav. La Paloma, 23, 08343-190",
       "total": 220.00,
+      "precoTotal": 220.00,
       "paidPercent": 50,
       "customer": {
         "name": "Cesar Ruiz de Souza",
@@ -74,7 +76,52 @@
         "additions": ["Pedaços de Bis"],
         "weightKg": "1,00",
         "notes": "Se possível, embalar os doces e salgados separadamente para facilitar a organização. Qualquer dúvida sobre a personalização do bolo ou itens complementares, favor entrar em contato no número (11) 99673-3647."
-      }
+      },
+      "itensPedido": [
+        {
+          "idItemPedido": 145,
+          "descricao": "Bolo personalizado",
+          "quantidade": 1.0,
+          "precoUnitario": 220.00,
+          "precoItem": 220.00,
+          "informacaoBolo": {
+            "idItemPedido": 145,
+            "tema": "Os Smurfs",
+            "detalhes": "Bolo temático dos Smurfs"
+          },
+          "ingredientes": [
+            {
+              "nome": "Chocolate",
+              "isPremium": false,
+              "descricao": "Chocolate ao leite"
+            }
+          ]
+        },
+        {
+          "idItemPedido": 555,
+          "descricao": "Bolo personalizado",
+          "quantidade": 1.0,
+          "precoUnitario": 220.00,
+          "precoItem": 220.00,
+          "informacaoBolo": {
+            "idItemPedido": 555,
+            "tema": "Os Smurfs",
+            "detalhes": "Bolo temático dos Smurfs"
+          },
+          "ingredientes": [
+            {
+              "nome": "Chocolate Belga",
+              "isPremium": true,
+              "descricao": "Chocolate belga premium"
+            },
+            {
+              "nome": "Frutas Vermelhas",
+              "isPremium": true,
+              "descricao": "Frutas vermelhas selecionadas"
+            }
+          ]
+        }
+      ]
     },
      {
       "id": "124",

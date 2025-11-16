@@ -22,6 +22,15 @@ export function CartView({ produtos, onDeleteItem }) {
   const produtosList = produtos?.itensPedido || [];
   const isEmpty = !produtos || !produtos.itensPedido || produtos.itensPedido.length === 0;
   const valorTotal = produtos?.precoTotal || 0;
+  const pedidoId = produtos?.idPedido;
+
+  const handleContinueOrder = () => {
+    if (pedidoId) {
+      navigate(`${ROUTES_PATHS.ORDER_DELIVERY_STAGE}?pedidoId=${pedidoId}`);
+    } else {
+      navigate(ROUTES_PATHS.HOME);
+    }
+  };
 
   return (
     <>
@@ -177,9 +186,9 @@ export function CartView({ produtos, onDeleteItem }) {
                   fullWidth
                   variant='contained'
                   sx={{ mt: 2, py: 1.5 }}
-                  onClick={() => navigate(ROUTES_PATHS.HOME)}
+                  onClick={handleContinueOrder}
                 >
-                  Continuar o Pedido
+                  Finalizar Pedido
                 </Button>
               </Box>
             </Box>

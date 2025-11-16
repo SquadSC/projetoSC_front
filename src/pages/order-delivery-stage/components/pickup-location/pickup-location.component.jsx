@@ -1,6 +1,17 @@
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 
-export function PickupLocationComponent() {
+export function PickupLocationComponent({ onConfirm }) {
+  const handleConfirm = () => {
+    console.log('Confirmando retirada no ateliê');
+    if (onConfirm) {
+      console.log('Calling onConfirm function');
+      onConfirm();
+    } else {
+      console.log('No onConfirm function provided');
+      alert('Pedido confirmado para retirada!');
+    }
+  };
+
   return (
     <Container sx={{ p: 3 }}>
       <Typography variant='h6' color='primary.main' fontWeight={'semiBold'}>
@@ -64,7 +75,7 @@ export function PickupLocationComponent() {
           variant='contained'
           fullWidth
           sx={{ borderRadius: '24px', height: '48px' }}
-          onClick={() => alert('Pedido confirmado!')}
+          onClick={handleConfirm}
         >
           Confirmar
         </Button>

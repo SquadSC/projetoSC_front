@@ -1,65 +1,104 @@
-const primaryColor = 'primary.main'; 
+const primaryColor = 'primary.main';
 
-export const headerStyle = {
+// Estilos para o card de pedido pendente
+export const orderCard = {
+  backgroundColor: 'background.paper',
+  border: '2px solid',
+  borderColor: 'primary.main',
+  borderRadius: 2,
+  mb: 2,
+  boxShadow: 'none',
+};
+
+export const orderCardHeader = {
+  mb: 1,
+};
+
+export const orderCardStatus = {
+  fontWeight: 'medium',
+  mb: 1,
+};
+
+export const orderCardDetail = {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  p: 1.7,
-  borderBottom: '1px solid #E0E0E0',
-  backgroundColor: 'secondary.main',
+  gap: 1,
+  mb: 2,
 };
 
-export const infoRow = {
+// Estilos para a barra de progresso
+export const progressBarContainer = {
   display: 'flex',
+  gap: 1,
   alignItems: 'center',
-  gap: 1.5, // Espaçamento entre o ícone e o texto
+  width: '100%',
 };
 
-export const imageCarousel = {
-  display: 'flex',
-  gap: 2,
-  overflowX: 'auto',
-  paddingBottom: 1, // Espaço para a barra de rolagem não cortar a imagem
-  '&::-webkit-scrollbar': {
-    height: '4px',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: '#ccc',
-    borderRadius: '10px',
-  },
+export const progressStep = (isActive, hasConnector) => {
+  return {
+    flex: 1,
+    height: '8px',
+    backgroundColor: isActive ? primaryColor : 'action.disabledBackground',
+    borderRadius: '4px',
+    ...(hasConnector && {
+      marginRight: '8px',
+    }),
+  };
 };
 
-export const bottomActions = {
-  position: 'fixed',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  display: 'flex',
-  gap: 2,
-  padding: '16px',
-  backgroundColor: '#F7F2EC', // Mesma cor do fundo da página
-  boxShadow: '0 -2px 10px rgba(0,0,0,0.1)', // Sombra para destacar
-  zIndex: 1000,
-};
-
-export const btnAccept = {
-  flex: 1, // Ocupa metade do espaço disponível
-  backgroundColor: primaryColor,
-  color: 'white',
-  borderRadius: '24px',
-  padding: '10px 0',
-  fontWeight: 'bold',
-  '&:hover': {
-    backgroundColor: '#3E2723', // Um tom mais escuro para o hover
-  },
-};
-
-export const btnDecline = {
-  flex: 1, // Ocupa metade do espaço disponível
+// Estilos para botões
+export const btnViewDetails = {
+  flex: 1,
   borderColor: primaryColor,
   color: primaryColor,
   borderRadius: '24px',
   padding: '10px 0',
   fontWeight: 'bold',
+  textTransform: 'none',
+  '&:hover': {
+    borderColor: primaryColor,
+    backgroundColor: 'action.hover',
+  },
+};
+
+export const btnAdvance = {
+  flex: 1,
+  backgroundColor: primaryColor,
+  color: 'white',
+  borderRadius: '24px',
+  padding: '10px 0',
+  fontWeight: 'bold',
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#3E2723',
+  },
+  '&:disabled': {
+    backgroundColor: 'action.disabledBackground',
+    color: 'action.disabled',
+  },
+};
+
+// Estilos para o header com bordas na seta
+export const headerContainer = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'relative',
+  p: 2,
+  borderBottom: '1px solid',
+  borderColor: 'divider',
+  backgroundColor: 'background.paper',
+};
+
+export const backButton = {
+  position: 'absolute',
+  left: 8,
+  borderTop: '1px solid',
+  borderLeft: '1px solid',
+  borderColor: 'divider',
+  borderRadius: '4px 0 0 0',
+  padding: '8px',
+  '&:hover': {
+    backgroundColor: 'action.hover',
+  },
 };
