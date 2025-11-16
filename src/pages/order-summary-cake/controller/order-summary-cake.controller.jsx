@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { request } from '../../../services/api';
 import { useReferencesImages } from '../../../hooks/useReferencesImages/useReferencesImages';
 
