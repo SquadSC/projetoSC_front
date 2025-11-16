@@ -6,32 +6,43 @@ import { useState, useCallback, useMemo } from 'react';
 export function usePriceCalculator(essentials = []) {
   const [weight, setWeight] = useState(1);
 
+  // Garantir que essentials é sempre um array e validado
+  const essentialsArray = useMemo(() => {
+    if (!essentials) return [];
+    if (Array.isArray(essentials)) return essentials;
+    // Se for um objeto, tentar extrair dados
+    if (typeof essentials === 'object') {
+      return essentials.data || essentials.produtos || [];
+    }
+    return [];
+  }, [essentials]);
+
   // Obtém preço base por tipo de produto
   const getBasePrice = useCallback(
     cakeType => {
-      if (!cakeType || !essentials.length) return 0;
+      if (!cakeType || !essentialsArray.length) return 0;
 
-      const baseProduct = essentials.find(
+      const baseProduct = essentialsArray.find(
         item => item.descricao?.toLowerCase() === cakeType.toLowerCase(),
       );
 
       return parseFloat(baseProduct?.precoUnitario || 0);
     },
-    [essentials],
+    [essentialsArray],
   );
 
   // Obtém preço por adicional
   const getAdditionalPrice = useCallback(() => {
-    const additionalProduct = essentials.find(
+    const additionalProduct = essentialsArray.find(
       item => item.descricao?.toLowerCase() === 'adicionais',
     );
 
     return parseFloat(additionalProduct?.precoUnitario || 0);
-  }, [essentials]);
+  }, [essentialsArray]);
 
   // Calcula preço total do produto
   const calculateTotalPrice = useCallback(
-    (cakeType, selectedIngredients, ingredients = []) => {
+    (cakeType, selectedIngredients) => {
       let totalPrice = 0;
 
       // Preço base do bolo
@@ -51,15 +62,15 @@ export function usePriceCalculator(essentials = []) {
   // Obtém ID do produto base
   const getProductId = useCallback(
     cakeType => {
-      if (!cakeType || !essentials.length) return 0;
+      if (!cakeType || !essentialsArray.length) return 0;
 
-      const baseProduct = essentials.find(
+      const baseProduct = essentialsArray.find(
         item => item.descricao?.toLowerCase() === cakeType.toLowerCase(),
       );
 
       return baseProduct?.idProduto || 0;
     },
-    [essentials],
+    [essentialsArray],
   );
 
   // Informações de preço organizadas
@@ -68,8 +79,8 @@ export function usePriceCalculator(essentials = []) {
       weight,
       basePrice: cakeType => getBasePrice(cakeType) * weight,
       additionalPrice: getAdditionalPrice() * weight,
-      totalPrice: (cakeType, selectedIngredients, ingredients) =>
-        calculateTotalPrice(cakeType, selectedIngredients, ingredients),
+      totalPrice: (cakeType, selectedIngredients) =>
+        calculateTotalPrice(cakeType, selectedIngredients),
     };
   }, [weight, getBasePrice, getAdditionalPrice, calculateTotalPrice]);
 

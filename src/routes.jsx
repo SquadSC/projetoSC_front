@@ -27,6 +27,7 @@ import { PendingOrderController } from './pages/pending-order/controller/pending
 import { PendingOrderSelectedController } from './pages/pending-order-selected/controller/pending-order-selected.controller.jsx';
 import { CakeDetailsController } from './pages/pending-order-selected/components/cake-details/cake-details.controller';
 import { HomeConfectionerController } from './pages/home-confectioner/index.page.jsx';
+import { DetailOrderController } from './pages/detail-order/index.page.jsx';
 
 // ========================================
 // CONFIGURAÇÃO CENTRALIZADA DE ROTAS
@@ -36,6 +37,7 @@ export const CLIENT_ROUTES_PATHS = [
   ROUTES_PATHS.HOME,
   ROUTES_PATHS.CART,
   ROUTES_PATHS.ORDERS,
+  ROUTES_PATHS.DETAIL_ORDER,
   ROUTES_PATHS.ORDER_DELIVERY_STAGE,
   ROUTES_PATHS.ORDER_SUMMARY_CAKE,
   ROUTES_PATHS.NUMBER_GUESTS,
@@ -54,7 +56,6 @@ export const CONFECTIONER_ROUTES_PATHS = [
 ];
 
 export const routeHelpers = {
-
   canUserAccessRoute: (userRole, routePath) => {
     if (userRole === 'confeiteira') {
       return CONFECTIONER_ROUTES_PATHS.includes(routePath);
@@ -112,6 +113,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.ORDERS,
       element: <OrdersController />,
+    },
+    {
+      path: ROUTES_PATHS.DETAIL_ORDER + '/:id',
+      element: <DetailOrderController />,
     },
     {
       path: ROUTES_PATHS.ORDER_DELIVERY_STAGE,

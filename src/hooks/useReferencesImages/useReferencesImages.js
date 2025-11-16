@@ -172,7 +172,7 @@ export function useReferencesImages() {
       objectUrlsRef.current.forEach(url => {
         try {
           URL.revokeObjectURL(url);
-        } catch (e) {
+        } catch {
           // Ignorar erros de cleanup
         }
       });
@@ -217,7 +217,7 @@ export function useReferencesImages() {
         }, {});
 
         if (failures.length > 0) {
-          console.log(`⚠️ Tipos de falhas:`, errorsByType);
+          console.log(`Tipos de falhas:`, errorsByType);
         }
 
         setImages(validResults);
@@ -232,7 +232,7 @@ export function useReferencesImages() {
           const errorMessage =
             error.message || 'Erro ao buscar imagens de referência';
           setGlobalError(errorMessage);
-          console.error('❌ Erro geral ao buscar imagens:', error);
+          console.error('Erro geral ao buscar imagens:', error);
 
           // Criar array de placeholders para manter estrutura
           const placeholders = Array.from({ length: 8 }, (_, index) => ({
@@ -266,7 +266,7 @@ export function useReferencesImages() {
     objectUrlsRef.current.forEach(url => {
       try {
         URL.revokeObjectURL(url);
-      } catch (e) {
+      } catch {
         // Ignorar erros de cleanup
       }
     });
