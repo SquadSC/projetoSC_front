@@ -11,29 +11,18 @@ import { validateFields, validators, } from '../../../utils/field-validator/fiel
 export function ProfileController() {
     const navigate = useNavigate();
     const { getUserId, user } = useUser();
-    // Controla se a tela está no modo de visualização ou edição
+
     const [isEditMode, setIsEditMode] = useState(false); // Começa em modo de visualização
-
-    // --- Estados dos dados ---
-    // Guarda os dados do usuário FORMATADOS para exibição na tela (View Mode)
     const [displayUser, setDisplayUser] = useState({});
-
-    // Guarda os valores ATUAIS dos campos do formulário (Edit Mode)
     const [fields, setFields] = useState({
         nome: '',
         telefone: '',
         dataNascimento: '',
     });
     const [errors, setErrors] = useState({});
-
-    // --- Estados do Avatar ---
-    // Guarda a URL de preview da imagem do avatar selecionada
     const [avatarPreview, setAvatarPreview] = useState(null);
-    // useRef cria uma "referência" a um elemento da tela (DOM). Útil para interagir
-    // diretamente com ele, como clicar em um input escondido.
     const fileInputRef = useRef(null);
 
-    // --- Funções de Formatação ---
     const formatDateForInput = dateStr => {
         if (!dateStr) return '';
         try {
@@ -58,61 +47,63 @@ export function ProfileController() {
 
     const formatDateForDisplay = dateStr => {
         if (!dateStr) return 'Não informado';
-        if (dateStr.includes('-')) {
-            const [year, month, day] = dateStr.split('-');
+
+        try {
+            const datePart = dateStr.split('T')[0];
+            const [year, month, day] = datePart.split('-');
+
             if (day && month && year) {
                 return `${day}/${month}/${year}`;
             }
+        } catch (e) {
+            return new Date(dateStr).toLocaleDateString('pt-BR');
         }
-        return new Date(dateStr).toLocaleString('pt-BR');
+        return dateStr;
     };
 
 
-    // --- Carregamento dos Dados ---
-    // Este useEffect busca os dados do usuário da API QUANDO o 'user' for carregado
-    // E pega o ID do usuário (ou usa 1 se não encontrar, para o json-server funcionar)
     useEffect(() => {
-       
-            const userId = 1;
 
-            request
-                .get(`/usuarios/${userId}`)
-                .then(response => {
-                    const data = response.data;
-                    // Atualiza o estado 'displayUser' com os dados formatados para visualização
-                    setDisplayUser({
-                        ...data,
-                        dataNascimentoDisplay: formatDateForDisplay(data.dataNascimento),
-                        memberSinceDisplay: formatDateForDisplay(data.createdAt),
-                    });
-                    // Também atualiza o estado 'fields' com os dados para as inputs de edição
-                    setFields({
-                        nome: data.nome,
-                        telefone: data.telefone,
-                        dataNascimento: formatDateForInput(data.dataNascimento),
-                    });
-                    // Atualiza o preview do avatar com a URL salva (se existir)
-                    setAvatarPreview(data.avatarUrl || null);
-                })
-                .catch(err => {
-                    console.error('Erro ao buscar usuário:', err);
-                    Swal.fire(
-                        'Erro',
-                        'Não foi possível carregar os dados do perfil.',
-                        'error',    
-                    );
-                });
+        if (!user || !user.id) {
+            return;
         }
-    , [user]);
+
+        const userId = user.id;
+
+        request
+            .get(`/usuarios/${userId}`)
+            .then(response => {
+                const data = response.data;
+                setDisplayUser({
+                    ...data,
+                    dataNascimentoDisplay: formatDateForDisplay(data.dataNascimento),
+                    memberSinceDisplay: formatDateForDisplay(data.dataCadastro),
+                    totalPedidos: data.totalPedidos,
+                });
+                setFields({
+                    nome: data.nome,
+                    telefone: data.telefone,
+                    dataNascimento: formatDateForInput(data.dataNascimento),
+                });
+                setAvatarPreview(data.avatarUrl || null);
+            })
+            .catch(err => {
+                console.error('Erro ao buscar usuário:', err);
+                Swal.fire(
+                    'Erro',
+                    'Não foi possível carregar os dados do perfil.',
+                    'error',
+                );
+            });
+    }
+        , [user]);
 
 
-    // --- Funções de Ação ---
     // Chamada ao clicar no botão Editar ou Cancelar 
     const handleToggleEditMode = () => {
-        // Se estava editando e clicou em "Cancelar"
         if (isEditMode) {
-            // Recarrega os dados originais para descartar mudanças não salvas
-            const userId = 1;
+            const userId = user?.id;;
+            if (!userId) return;
             request.get(`/usuarios/${userId}`).then(response => {
                 const data = response.data;
                 // Resetando os 'fields', o preview do avatar para os valores originais
@@ -125,13 +116,11 @@ export function ProfileController() {
                 setErrors({});
             });
         }
-        // Invertendo o estado 'isEditMode' (true vira false, false vira true)
         setIsEditMode(prev => !prev);
     };
 
     // Chamada ao clicar no botão "Sair"
     const handleLogout = () => {
-        // Mostra um pop-up de confirmação
         Swal.fire({
             title: 'Deseja realmente sair?',
             icon: 'question',
@@ -142,7 +131,7 @@ export function ProfileController() {
             cancelButtonColor: '#6c757d',
         }).then(result => {
             if (result.isConfirmed) {
-                logout(); // Chama a função que limpa o localStorage
+                logout();
                 navigate(ROUTES_PATHS.LOGIN);
             }
         });
@@ -152,21 +141,16 @@ export function ProfileController() {
 
     // Chamada sempre que o valor de um input MUDAR
     const handleChange = e => {
-        // Pega o nome e valor da input que disparou o evento
         const { name, value } = e.target;
-        // Atualiza o estado 'fields', modificando APENAS a propriedade alterada
         setFields(prev => ({ ...prev, [name]: value }));
     };
 
-    // Função para validar TODOS os campos do formulário (chamada antes de salvar)
     const validate = () => {
-        // Definindo quais validadores do arquivo utils usar para cada campo
         const profileValidators = {
             nome: validators.name,
             telefone: validators.phone,
         };
         const newErrors = validateFields(fields, profileValidators);
-        // Adicionando validação específica para data
         if (!fields.dataNascimento) {
             newErrors.dataNascimento = 'Data de nascimento é obrigatória.';
         }
@@ -177,29 +161,30 @@ export function ProfileController() {
     // Chamada ao clicar no botão "Salvar Mudanças"
     const handleSubmit = e => {
         e.preventDefault();
-        // Roda a validação. Se houver erros interrompe a função
         if (!validate()) return;
 
-        const userId =  1;
-        // Cria o objeto com os dados a serem enviados para a API
-        // Inclui os campos do estado 'fields' e a URL de preview do avatar
+        const userId = user?.id;
+        if (!userId) {
+            Swal.fire('Erro', 'Sessão expirada. Faça login novamente.', 'error');
+            return;
+        }
         const payload = {
             ...fields,
             avatarUrl: avatarPreview,
+            email: displayUser.email,
         };
 
 
         request
-            .patch(`/usuarios/${userId}`, payload)
+            .put(`/usuarios/${userId}`, payload)
             .then(response => {
                 const data = response.data;
-                // Atualiza o estado 'displayUser' para refletir as mudanças na tela de visualização
                 setDisplayUser({
+                    ...displayUser,
                     ...data,
                     dataNascimentoDisplay: formatDateForDisplay(data.dataNascimento),
-                    memberSinceDisplay: formatDateForDisplay(data.createdAt),
+                    memberSinceDisplay: formatDateForDisplay(data.dataCadastro),
                 });
-                // Atualiza também o localStorage para que, se o usuário der F5, os dados novos permaneçam
                 const localData = getUserData();
                 saveUserData({ ...localData, ...data });
 

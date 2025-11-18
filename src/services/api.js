@@ -3,8 +3,8 @@ import { getUserData } from '../utils/auth'; // Importa a função que pega dado
 
 // Configuração da instância do axios
 const api = axios.create({
-  // baseURL: 'http://localhost:8080',
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://localhost:8080',
+  // baseURL: 'http://localhost:3001',
   timeout: 30000, // timeout de 30 segundos (para uploads)
   headers: {
     'Content-Type': 'application/json',
