@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { PendingOrderSelectedView } from '../view/pending-order-selected.view';
 import { api } from '../../../services/api';
 import { maskCep } from '../../../utils/mask/mask.utils';
+import { getStatusIdFromDescription } from '../../../utils/helper/status-pedido-helper';
 import Swal from 'sweetalert2';
 
 export function PendingOrderSelectedController() {
@@ -78,7 +79,8 @@ export function PendingOrderSelectedController() {
           deliveryDate: deliveryDate,
           deliveryTime: deliveryTime,
           address: enderecoFormatado,
-          statusPedidoId: pedidoData.statusPedidoId,
+          statusPedido: pedidoData.statusPedido, // Manter a descrição do status
+          statusId: getStatusIdFromDescription(pedidoData.statusPedido) || 3, // Calcular ID do status
           // Dados do cliente vindos do backend
           customer: {
             name: clienteData?.nome || 'Cliente',
@@ -115,7 +117,8 @@ export function PendingOrderSelectedController() {
     setError(null);
     try {
       // Avançar para o próximo status ou aceitar (status 6 = Em produção)
-      const currentStatus = order?.statusPedidoId || 3;
+      // Obter ID do status a partir da descrição ou usar statusId já calculado
+      const currentStatus = order?.statusId || getStatusIdFromDescription(order?.statusPedido) || 3;
       let nextStatus = 4;
       
       if (currentStatus === 3) nextStatus = 4; // Aceito pela confeiteira -> Validado pelo fornecedor
