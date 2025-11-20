@@ -1,6 +1,8 @@
 import { Alert, Box, CircularProgress, Stack, Typography } from '@mui/material';
 
-export function WeeklyOrder({ weeklyData, loading, error }) {
+export function WeeklyOrder({ weeklyData }) {
+
+  const { weeklyData: data, weeklyLoading: loading, weeklyError: error } = weeklyData;
 
   if (loading) {
     return (
@@ -32,7 +34,7 @@ export function WeeklyOrder({ weeklyData, loading, error }) {
     );
   }
 
-  const sixDays = weeklyData.slice(0, 6);
+  const sixDays = data.slice(0, 6);
 
   return (
     <>

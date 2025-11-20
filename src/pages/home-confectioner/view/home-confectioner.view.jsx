@@ -3,7 +3,7 @@ import { Header } from '../components/header/header.component';
 import { WeeklyOrder } from '../components/weekly-order/weekly-order.component';
 import { ListNewOrdersComponent } from '../components/list-new-orders/list-new-orders.component';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
-export function HomeConfectionerView({ user, weeklyData, loading, error }) {
+export function HomeConfectionerView({ user, weeklyData, newOrders }) {
   const lineGolden = {
     width: '100%',
     height: '5px',
@@ -39,8 +39,6 @@ export function HomeConfectionerView({ user, weeklyData, loading, error }) {
             </Stack>
             <WeeklyOrder
               weeklyData={weeklyData}
-              loading={loading}
-              error={error}
             />
           </Stack>
         </Stack>
@@ -64,11 +62,11 @@ export function HomeConfectionerView({ user, weeklyData, loading, error }) {
           Ver Calendario
         </Button>
       </Box>
-      <Stack spacing={2} mt={4} px={2}>
+      <Stack spacing={2} mt={4} px={2} mb={11}>
         <Typography variant='subTitle' fontWeight={'semiBold'}>
           Novos Pedidos
         </Typography>
-        <ListNewOrdersComponent />
+        <ListNewOrdersComponent newOrders={newOrders} />
       </Stack>
       <BottomNavigationComponent />
     </Container>

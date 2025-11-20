@@ -1,54 +1,102 @@
-import { Box, Stack, Typography } from '@mui/material';
-import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
+import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import calendarioGray from '../../../../assets/calendario-gray.svg';
+import relogioGray from '../../../../assets/relogio-gray.svg';
 
-export function ListNewOrdersComponent() {
-  const ordersData = 
-  [
-    {
-      id_pedido: 14255,
-      data_pedido: '2025-09-16',
-      hora_pedido: '23:54:00',
-      status: 'premium',
-      itens: [
-        {
-          id_item: 1,
-          tipo: 'premium',
-          tema: 'Genérico',
-          peso: '1kg',
-          preco: 100.0,
-        },
-        {
-          id_item: 2,
-          tipo: 'basico',
-          tema: 'Ben 10',
-          peso: '1kg',
-          preco: 80.0,
-        },
-      ],
-    },
-    {
-        id_pedido: 14256,
-        data_pedido: '2025-09-17',
-        hora_pedido: '10:30:00',
-        status: 'basico',
-        itens: [
-          {
-            id_item: 3,
-            tipo: 'basico',
-            tema: 'Minnie',
-            peso: '2kg',
-            preco: 120.0,
-          }
-        ],
-    }
-  ];
+export function ListNewOrdersComponent({ newOrders }) {
+  const { newOrders: orders, isLoading, error } = newOrders;
+  console.log('New Orders Data:', orders);
   return (
     <>
       <Stack spacing={2}>
-        <FilterChipsComponent />
-        <Stack spacing={1}>
-            {}
-        </Stack>
+        {orders.map((order, index) => (
+          <Box
+            key={`order-${index}-${order.id}`}
+            sx={{
+              border: '2px solid #38090D',
+              borderRadius: 2,
+              padding: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Stack
+              spacing={1}
+              sx={{
+                width: '100%',
+              }}
+            >
+              <Typography
+                variant='text'
+                fontWeight={'semiBold'}
+                color='primary.main'
+              >
+                Pedido #{order.id_pedido}
+              </Typography>
+              <Typography variant='textLittle' fontWeight={'semiBold'}>
+                Informações da entrega:
+              </Typography>
+              <Stack spacing={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <img src={calendarioGray} alt='' />
+                  <Typography
+                    variant='textLittle'
+                    color='gray'
+                    fontWeight={'medium'}
+                  >
+                    Data: {order.data_pedido}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <img src={relogioGray} alt='' />
+                  <Typography
+                    variant='textLittle'
+                    color='gray'
+                    fontWeight={'medium'}
+                  >
+                    Hora: {order.hora_pedido}
+                  </Typography>
+                </Box>
+              </Stack>
+              <Divider />
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+                <Stack spacing={0.5}>
+                  <Typography
+                    variant='textLittle'
+                    fontWeight={'semiBold'}
+                    color='gray'
+                  >
+                    Valor Total:
+                  </Typography>
+                  <Typography variant='subTitleLittle' fontWeight={'medium'}>
+                    {order.itens[0].preco}
+                  </Typography>
+                </Stack>
+                <Stack spacing={0.5}>
+                  <Typography
+                    variant='textLittle'
+                    fontWeight={'semiBold'}
+                    color='gray'
+                  >
+                    50% do Valor:
+                  </Typography>
+                  <Typography variant='subTitleLittle' fontWeight={'medium'}>
+                    {order.itens[0].preco}
+                  </Typography>
+                </Stack>
+              </Box>
+            </Stack>
+            <Button variant='outlined' sx={{ px: 4 }}>
+              Detalhes
+            </Button>
+          </Box>
+        ))}
       </Stack>
     </>
   );
