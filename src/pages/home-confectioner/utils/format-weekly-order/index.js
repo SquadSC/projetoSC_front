@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGetOrderCountDay } from '../../hooks/use-get-order-count-day';
-import { useGetTodayDate } from '../../hooks/use-get-today-date';
 
 export function useFormatWeeklyOrder() {
   const {
@@ -8,21 +7,12 @@ export function useFormatWeeklyOrder() {
     error: orderError,
     loading: orderLoading,
   } = useGetOrderCountDay();
-  const {
-    data: todayData,
-    error: todayError,
-    loading: todayLoading,
-  } = useGetTodayDate();
 
   const [weeklyData, setWeeklyData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const generateWeekDays = useCallback(currentDate => {
-    const [year, month, day] = currentDate.split('-').map(Number);
-    const today = new Date(year, month - 1, day);
-
-    const weekDays = [];
+  const transformOrders = useCallback((ordersList = []) => {
     const dayNames = [
       'Domingo',
       'Segunda-feira',
@@ -32,84 +22,42 @@ export function useFormatWeeklyOrder() {
       'Sexta-feira',
       'Sábado',
     ];
+    const todayStr = new Date().toISOString().split('T')[0];
 
-    let currentDay = new Date(today);
-    let daysAdded = 0;
-
-    while (daysAdded < 7) {
-      const dayIndex = currentDay.getDay();
-      const dateString = currentDay.toISOString().split('T')[0];
-
-      weekDays.push({
-        data: dateString,
-        dayWeek: dayNames[dayIndex],
-        dayWeekShort: dayNames[dayIndex].substring(0, 3),
-        count: 0,
-        isToday: dateString === currentDate,
-        isSunday: dayIndex === 0,
-      });
-
-      daysAdded++;
-
-      currentDay.setDate(currentDay.getDate() + 1);
-    }
-
-    return weekDays;
-  }, []);
-
-  const mergeOrderData = useCallback((weekDays, ordersList) => {
-    return weekDays.map(day => {
-      if (day.isSunday) {
-        return {
-          ...day,
-          count: 0,
-          hasOrders: false,
-        };
-      }
-
-      const orderForDay = ordersList?.find(order => order.data === day.data);
+    return ordersList.map(order => {
+      const [year, month, day] = (order.data || '').split('-').map(Number);
+      const dateObj = new Date(year, (month || 1) - 1, day || 1);
+      const dayIndex = dateObj.getDay();
 
       return {
-        ...day,
-        count: orderForDay?.quantidade || 0,
-        hasOrders: orderForDay ? true : false,
+        data: order.data,
+        dayWeek: dayNames[dayIndex],
+        dayWeekShort: dayNames[dayIndex].substring(0, 3),
+        count: order.quantidade || 0,
+        isToday: order.data === todayStr,
+        isSunday: dayIndex === 0,
+        hasOrders: (order.quantidade || 0) > 0,
       };
     });
   }, []);
 
   useEffect(() => {
-    if (!orderLoading && !todayLoading) {
+    if (!orderLoading) {
       setLoading(true);
       setError(null);
-
       try {
-        const currentDate = todayData?.date;
-
-        if (!currentDate) {
-          throw new Error('Data atual não disponível do backend');
-        }
-
-        const weekDays = generateWeekDays(currentDate);
-        const formattedWeek = mergeOrderData(weekDays, orderData);
-        setWeeklyData(formattedWeek);
-
+        const formatted = transformOrders(orderData || []);
+        setWeeklyData(formatted);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     }
-  }, [
-    orderData,
-    todayData,
-    orderLoading,
-    todayLoading,
-    generateWeekDays,
-    mergeOrderData,
-  ]);
+  }, [orderData, orderLoading, transformOrders]);
 
-  const hasError = orderError || todayError || error;
-  const isLoading = orderLoading || todayLoading || loading;
+  const hasError = orderError || error;
+  const isLoading = orderLoading || loading;
 
   const getTotalOrders = useCallback(() => {
     return weeklyData.reduce((total, day) => total + day.count, 0);
@@ -127,7 +75,6 @@ export function useFormatWeeklyOrder() {
   const getAveragePerDay = useCallback(() => {
     const daysWithOrders = getDaysWithOrders();
     if (daysWithOrders.length === 0) return 0;
-
     const total = getTotalOrders();
     return Math.round(total / daysWithOrders.length);
   }, [getDaysWithOrders, getTotalOrders]);
@@ -143,7 +90,6 @@ export function useFormatWeeklyOrder() {
     getAveragePerDay,
 
     rawOrderData: orderData,
-    rawTodayData: todayData,
   };
 }
 
@@ -185,23 +131,14 @@ export function getWeeklyStats(weeklyData) {
   };
 }
 
-export function validateBackendData(orderData, todayData) {
+export function validateBackendData(orderData) {
   const errors = [];
-
-  if (!todayData || !todayData.date) {
-    errors.push('Data atual não fornecida pelo backend');
-  }
-
-  if (todayData?.date && !/^\d{4}-\d{2}-\d{2}$/.test(todayData.date)) {
-    errors.push('Formato de data inválido (esperado: YYYY-MM-DD)');
-  }
 
   if (orderData && Array.isArray(orderData)) {
     orderData.forEach((order, index) => {
-      if (!order.data || !order.quantidade) {
+      if (!order.data || order.quantidade === undefined) {
         errors.push(`Pedido ${index + 1} com dados incompletos`);
       }
-
       if (order.data && !/^\d{4}-\d{2}-\d{2}$/.test(order.data)) {
         errors.push(`Pedido ${index + 1} com formato de data inválido`);
       }
