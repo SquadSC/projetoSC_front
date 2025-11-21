@@ -25,7 +25,7 @@ export function useNewOrders(autoFetch = true) {
     if (autoFetch) {
       newOrdersData();
     }
-  }, []);
+  }, [autoFetch, newOrdersData]);
 
   return {
     newOrders,

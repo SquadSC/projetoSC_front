@@ -51,10 +51,11 @@ export function WeeklyOrder({ weeklyData }) {
         {sixDays.map((order, index) => (
           <Box
             key={`order-${index}-${order.data}`}
+            backgroundColor={order.isToday ? '#601016' : 'tertiary.main'}
+            color={order.isToday ? 'white' : 'black'}
             sx={{
               display: 'flex',
               flex: 1,
-              backgroundColor: 'tertiary.main',
               maxWidth: '50px',
               minWidth: '50px',
               maxHeight: '88px',
@@ -69,6 +70,7 @@ export function WeeklyOrder({ weeklyData }) {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 width: '100%',
+                background: 'transparent',
               }}
             >
               <Box
@@ -77,6 +79,7 @@ export function WeeklyOrder({ weeklyData }) {
                   flex: 1,
                   alignItems: 'center',
                   justifyContent: 'center',
+                  background: 'transparent',
                 }}
               >
                 <Typography variant='textLittle'>{order.dayWeekShort}</Typography>
@@ -87,7 +90,6 @@ export function WeeklyOrder({ weeklyData }) {
                   flex: 3,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  bgcolor: 'background.default',
                 }}
               >
                 <Typography

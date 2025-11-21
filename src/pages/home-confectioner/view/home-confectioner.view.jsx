@@ -37,9 +37,7 @@ export function HomeConfectionerView({ user, weeklyData, newOrders }) {
                 Março:
               </Typography>
             </Stack>
-            <WeeklyOrder
-              weeklyData={weeklyData}
-            />
+            <WeeklyOrder weeklyData={weeklyData} />
           </Stack>
         </Stack>
       </Box>
