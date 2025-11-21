@@ -6,6 +6,7 @@ export const ROUTES_PATHS = {
 
   // Rotas confeiteira
   HOME_CONFECTIONER: '/home-confectioner',
+  AGENDA: '/agenda',
   EDIT_ORDER: '/edit-order-details',
   PRODUCTS: '/products',
   EDIT_PRODUCT: '/products/edit/:id',

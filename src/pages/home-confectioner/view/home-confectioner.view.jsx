@@ -3,6 +3,8 @@ import { Header } from '../components/header/header.component';
 import { WeeklyOrder } from '../components/weekly-order/weekly-order.component';
 import { ListNewOrdersComponent } from '../components/list-new-orders/list-new-orders.component';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 export function HomeConfectionerView({ user, weeklyData, newOrders }) {
   const lineGolden = {
     width: '100%',
@@ -10,6 +12,7 @@ export function HomeConfectionerView({ user, weeklyData, newOrders }) {
     background:
       'linear-gradient(90deg, #CDA243 0%, #F3E4AA 50.48%, #C59736 100%)',
   };
+  const navigate = useNavigate();
   return (
     <Container sx={{ padding: 0, width: '100%' }} maxWidth={false}>
       <Box bgcolor={'secondary.main'} height={'auto'} p={2} pb={4}>
@@ -56,6 +59,7 @@ export function HomeConfectionerView({ user, weeklyData, newOrders }) {
             transform: 'translateX(-50%)',
             minWidth: '150px',
           }}
+          onClick={() => navigate(ROUTES_PATHS.AGENDA)}
         >
           Ver Calendario
         </Button>
