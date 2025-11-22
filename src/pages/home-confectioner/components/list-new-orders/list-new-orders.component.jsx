@@ -7,8 +7,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import calendarioGray from '../../../../assets/calendario-gray.svg';
-import relogioGray from '../../../../assets/relogio-gray.svg';
+import calendarioGray from '../../../../assets/icons/calendario-gray.svg';
+import relogioGray from '../../../../assets/icons/relogio-gray.svg';
 import {
   formatDateBrazilian,
   formatTimeShort,
@@ -17,7 +17,6 @@ import { formatCurrencyBRL } from '../../../../utils/formatter/currency-formatte
 
 export function ListNewOrdersComponent({ newOrders }) {
   const { newOrders: orders, newOrdersLoading, newOrdersError } = newOrders;
-  console.log(orders);
 
   if (newOrdersLoading) {
     return (

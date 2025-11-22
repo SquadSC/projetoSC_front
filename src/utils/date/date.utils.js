@@ -57,3 +57,14 @@ export function formatTimeWithDayjs(timeString) {
     return formatTimeShort(timeString);
   }
 }
+
+// ✅ Nova função: '2025-01-12' → 'Janeiro'
+export function getMonthName(dateString) {
+  if (!dateString) return '';
+
+  try {
+    return dayjs(dateString).format('MMMM');
+  } catch {
+    return '';
+  }
+}

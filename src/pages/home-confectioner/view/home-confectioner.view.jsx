@@ -5,7 +5,7 @@ import { ListNewOrdersComponent } from '../components/list-new-orders/list-new-o
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
-export function HomeConfectionerView({ user, weeklyData, newOrders }) {
+export function HomeConfectionerView({ user, weeklyData, newOrders, monthName }) {
   const lineGolden = {
     width: '100%',
     height: '5px',
@@ -37,7 +37,7 @@ export function HomeConfectionerView({ user, weeklyData, newOrders }) {
                 fontWeight={'semiBold'}
                 color='primary.main'
               >
-                Março:
+                {monthName}:
               </Typography>
             </Stack>
             <WeeklyOrder weeklyData={weeklyData} />
