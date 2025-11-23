@@ -8,7 +8,7 @@ export function AddressMenuComponent({
   selectedAddressId,
   onSelectAddress,
   onAddNewAddress,
-  onConfirm,
+  onFinishDelivery,
 }) {
   return (
     // Box principal
@@ -67,7 +67,8 @@ export function AddressMenuComponent({
           variant='contained'
           fullWidth
           sx={{ borderRadius: '24px', height: '48px' }}
-          onClick={onConfirm}
+          onClick={onFinishDelivery}
+          disabled={!selectedAddressId}
         >
           Confirmar
         </Button>

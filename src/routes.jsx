@@ -84,7 +84,6 @@ export const routeHelpers = {
 };
 
 export default function AppRoutes() {
-  // Rotas públicas (qualquer pessoa pode acessar)
   const publicRoutes = [
     {
       path: ROUTES_PATHS.LOGIN,

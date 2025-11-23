@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PendingOrderView } from '../view/pending-order.view';
 import { api } from '../../../services/api';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import { getStatusIdFromDescription } from '../../../utils/helper/status-pedido-helper';
 
 export function PendingOrderController() {
   const navigate = useNavigate();
@@ -25,12 +26,14 @@ export function PendingOrderController() {
         // Usar o novo endpoint para buscar pedidos pendentes
         const response = await api.get('/pedidos/pendentes');
         if (response && response.data && Array.isArray(response.data)) {
-          // Mapear os pedidos - o statusPedidoId já vem do backend
-          const ordersData = response.data.map(order => ({
-            ...order,
-            statusId: order.statusPedidoId || order.statusId || 3, // Fallback para 3 se não houver
-            statusPedidoId: order.statusPedidoId || order.statusId || 3,
-          }));
+          // Mapear os pedidos - converter statusPedido (descrição) para ID
+          const ordersData = response.data.map(order => {
+            const statusId = getStatusIdFromDescription(order.statusPedido) || 3;
+            return {
+              ...order,
+              statusId: statusId,
+            };
+          });
           setOrders(ordersData);
         } else {
           setOrders([]);
@@ -68,7 +71,8 @@ export function PendingOrderController() {
   // Avança o pedido para a próxima etapa ou aceita (status 6)
   const handleAdvance = async (order) => {
     const orderId = order.idPedido || order.id;
-    const currentStatusId = order.statusPedidoId || order.statusId;
+    // Obter ID do status a partir da descrição ou usar statusId já calculado
+    const currentStatusId = order.statusId || getStatusIdFromDescription(order.statusPedido) || 3;
     const nextStatusId = getNextStatus(currentStatusId);
 
     setActionLoading(orderId);
@@ -81,20 +85,22 @@ export function PendingOrderController() {
       );
 
       if (response.status === 200) {
-        // Atualizar a lista de pedidos
-        setOrders((prevOrders) =>
-          prevOrders.map((o) =>
-            (o.idPedido || o.id) === orderId
-              ? { ...o, statusPedidoId: nextStatusId, statusId: nextStatusId }
-              : o
-          )
-        );
+        // Atualizar a lista de pedidos - recarregar para obter status atualizado
+        const refreshResponse = await api.get('/pedidos/pendentes');
+        if (refreshResponse && refreshResponse.data && Array.isArray(refreshResponse.data)) {
+          const ordersData = refreshResponse.data.map(o => {
+            const statusId = getStatusIdFromDescription(o.statusPedido) || 3;
+            return {
+              ...o,
+              statusId: statusId,
+            };
+          });
+          setOrders(ordersData);
+        }
 
-        // Se foi para status 6 (Em produção), remover da lista de pendentes
+        // Se foi para status 6 (Em produção), o pedido já foi removido da lista ao recarregar
+        // pois o endpoint /pedidos/pendentes só retorna status 3, 4 e 5
         if (nextStatusId === 6) {
-          setOrders((prevOrders) =>
-            prevOrders.filter((o) => (o.idPedido || o.id) !== orderId)
-          );
           alert('Pedido aceito e inserido na agenda com sucesso!');
         } else {
           alert('Etapa avançada com sucesso!');
