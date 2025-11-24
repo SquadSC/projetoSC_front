@@ -14,6 +14,7 @@ import {
   formatTimeShort,
 } from '../../../../utils/date/date.utils';
 import { formatCurrencyBRL } from '../../../../utils/formatter/currency-formatter/currency-formatter';
+import dayjs from 'dayjs';
 
 export function ListNewOrdersComponent({ newOrders }) {
   const { newOrders: orders, newOrdersLoading, newOrdersError } = newOrders;
@@ -73,16 +74,31 @@ export function ListNewOrdersComponent({ newOrders }) {
         </Box>
       ) : (
         ordersList.map((order, index) => {
-          const totalPrice =
-            order.itens?.reduce((sum, item) => {
+          // Usar precoTotal do pedido ou calcular a partir dos itens
+          const totalPrice = order.precoTotal || 
+            (order.itensPedido?.reduce((sum, item) => {
               return sum + (item.preco || 0);
-            }, 0) || 0;
+            }, 0) || 0);
 
           const halfPrice = totalPrice / 2;
 
+          // Formatar data e hora de entrega
+          const dtEntrega = order.dtEntregaEsperada || order.dtPedido;
+          
+          const dataEntrega = dtEntrega 
+            ? formatDateBrazilian(dtEntrega)
+            : 'Data não informada';
+          
+          const horaEntrega = dtEntrega 
+            ? dayjs(dtEntrega).format('HH:mm')
+            : 'Hora não informada';
+
+          // Usar idPedido ou id como fallback
+          const orderId = order.idPedido || order.id || `pedido-${index}`;
+
           return (
             <Box
-              key={`order-${index}-${order.id}`}
+              key={`order-${index}-${orderId}`}
               sx={{
                 border: '2px solid #38090D',
                 borderRadius: 2,
@@ -104,7 +120,7 @@ export function ListNewOrdersComponent({ newOrders }) {
                   fontWeight={'semiBold'}
                   color='primary.main'
                 >
-                  Pedido #{order.id_pedido}
+                  Pedido #{orderId}
                 </Typography>
                 <Typography variant='textLittle' fontWeight={'semiBold'}>
                   Informações da entrega:
@@ -117,7 +133,7 @@ export function ListNewOrdersComponent({ newOrders }) {
                       color='gray'
                       fontWeight={'medium'}
                     >
-                      Data: {formatDateBrazilian(order.data_pedido)}
+                      Data: {dataEntrega}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -127,7 +143,7 @@ export function ListNewOrdersComponent({ newOrders }) {
                       color='gray'
                       fontWeight={'medium'}
                     >
-                      Hora: {formatTimeShort(order.hora_pedido)}
+                      Hora: {horaEntrega}
                     </Typography>
                   </Box>
                 </Stack>

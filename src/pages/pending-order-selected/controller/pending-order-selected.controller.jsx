@@ -80,7 +80,7 @@ export function PendingOrderSelectedController() {
           deliveryTime: deliveryTime,
           address: enderecoFormatado,
           statusPedido: pedidoData.statusPedido, // Manter a descrição do status
-          statusId: getStatusIdFromDescription(pedidoData.statusPedido) || 3, // Calcular ID do status
+          statusId: getStatusIdFromDescription(pedidoData.statusPedido) || 2, // Calcular ID do status
           // Dados do cliente vindos do backend
           customer: {
             name: clienteData?.nome || 'Cliente',
@@ -108,28 +108,28 @@ export function PendingOrderSelectedController() {
   }, [id]);
 
   /**
-   * Avança o pedido para a próxima etapa ou aceita ( se o status 6 = Em produção)
-   * Status 3 -> 4 -> 5 -> 6
-   * Quando status for 6, agenda o pedido no Google Calendar também
+   * Avança o pedido para a próxima etapa ou aceita (status 5 = Produção)
+   * Status 2 -> 3 -> 4 -> 5
+   * Quando status for 5, agenda o pedido no Google Calendar também
    */
   const handleAccept = async () => {
     setActionLoading(true);
     setError(null);
     try {
-      // Avançar para o próximo status ou aceitar (status 6 = Em produção)
+      // Avançar para o próximo status ou aceitar (status 5 = Produção)
       // Obter ID do status a partir da descrição ou usar statusId já calculado
-      const currentStatus = order?.statusId || getStatusIdFromDescription(order?.statusPedido) || 3;
-      let nextStatus = 4;
+      const currentStatus = order?.statusId || getStatusIdFromDescription(order?.statusPedido) || 2;
+      let nextStatus = 3;
       
-      if (currentStatus === 3) nextStatus = 4; // Aceito pela confeiteira -> Validado pelo fornecedor
-      else if (currentStatus === 4) nextStatus = 5; // Validado pelo fornecedor -> Agendamento confirmado
-      else if (currentStatus === 5) nextStatus = 6; // Agendamento confirmado -> Em produção (aceitar)
+      if (currentStatus === 2) nextStatus = 3; // Enviado -> Validação
+      else if (currentStatus === 3) nextStatus = 4; // Validação -> Pagamento
+      else if (currentStatus === 4) nextStatus = 5; // Pagamento -> Produção (aceitar)
 
       // Atualizar status do pedido
       await api.patch(`/pedidos/alterarStatus/${id}/status/${nextStatus}`);
       
-      // Se foi para status 6 (Em produção), agendar no Google Calendar
-      if (nextStatus === 6) {
+      // Se foi para status 5 (Produção), agendar no Google Calendar
+      if (nextStatus === 5) {
         try {
           await api.post(`/calendario/${id}`);
         } catch (calendarErr) {
