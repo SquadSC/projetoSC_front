@@ -1,6 +1,7 @@
 import { HomeConfectionerView } from '../view/home-confectioner.view';
 import { useUser } from '../../../hooks/use-user/useUser';
 import { useFormatWeeklyOrder } from '../utils/format-weekly-order';
+import { useNewOrders } from '../hooks/use-get-new-orders';
 
 export function HomeConfectionerController() {
   const { user } = useUser();
@@ -11,12 +12,29 @@ export function HomeConfectionerController() {
     error: weeklyError,
   } = useFormatWeeklyOrder();
 
+  const {
+    newOrders,
+    isLoading: newOrdersLoading,
+    error: newOrdersError,
+  } = useNewOrders();
+
+  const weeklyOrder = {
+    weeklyData,
+    weeklyLoading,
+    weeklyError,
+  };
+
+  const newOrder = {
+    newOrders,
+    newOrdersLoading,
+    newOrdersError,
+  };
+
   return (
     <HomeConfectionerView
       user={user}
-      weeklyData={weeklyData}
-      loading={weeklyLoading}
-      error={weeklyError}
+      weeklyData={weeklyOrder}
+      newOrders={newOrder}
     />
   );
 }
