@@ -82,15 +82,14 @@ export function DetailOrderController() {
         // Usando endpoint: GET /pedidos/carrinho?idUsuario={id}
         console.log(`[DetailOrder] Buscando pedido do carrinho...`);
 
-        const pedidoResponse = await api.get(
-          `/pedidos/carrinho?idUsuario=${id}`,
-        );
+        const pedidoResponse = await api.get(`/pedidos/${id}`);
         const pedidoData = pedidoResponse.data;
 
         console.log('[DetailOrder] RESPOSTA COMPLETA da API:', pedidoResponse);
         console.log('[DetailOrder] pedidoData:', pedidoData);
         console.log('[DetailOrder] Tipo de pedidoData:', typeof pedidoData);
         console.log('[DetailOrder] É array?', Array.isArray(pedidoData));
+        console.log(">>> API DATA RAW:", JSON.stringify(pedidoResponse.data, null, 2));
 
         // Tentar extrair dados se vier em formato inesperado
         let dadosPedido = pedidoData;
@@ -151,7 +150,6 @@ export function DetailOrderController() {
         // 3️⃣ Formatar endereço com CEP mascarado
         const endereco = dadosPedido.endereco;
         let enderecoFormatado = 'Endereço não informado';
-
         if (endereco) {
           const cepFormatado = endereco.cep ? maskCep(endereco.cep) : '';
           const complementoStr = endereco.complemento
@@ -183,8 +181,7 @@ export function DetailOrderController() {
 
         // 6️⃣ Processar itens do pedido - TODOS OS BOLOS (não apenas o primeiro!)
         const itensPedidoAtivos = dadosPedido.itensPedido
-          ? dadosPedido.itensPedido.filter(item => item.ativo === true)
-          : [];
+          
 
         console.log(
           `[DetailOrder] Total de bolos ativos: ${itensPedidoAtivos.length}`,
@@ -258,9 +255,10 @@ export function DetailOrderController() {
           cakeDetails: {
             theme: informacaoBolo.tema || 'Não especificado',
             cakeType: primeiroItem?.descricao || 'Não especificado',
-            filling: 'Não especificado', // Backend não retorna recheio específico
-            additions: primeiroItem?.ingredientes?.map(ing => ing.nome) || [],
-            weightKg: 0, // Backend não retorna peso
+            batter: primeiroItem?.ingredientes?.filter(ing => ing.descricao === 'massa').map(ing => ing.nome)  || [],
+            filling: primeiroItem?.ingredientes?.filter(ing => ing.descricao === 'cobertura') || [], 
+            additions: primeiroItem?.ingredientes?.filter(ing => ing.descricao === 'adicionais')|| [],
+            weightKg: primeiroItem?.quantidade || 0, // Backend não retorna peso
             notes: informacaoBolo.detalhes || 'Sem observações',
           },
         };
