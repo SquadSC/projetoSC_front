@@ -28,12 +28,48 @@ export function DetailOrderController() {
   const [selectedReferenceImage, setSelectedReferenceImage] = useState(null); // Imagem selecionada
   const [refImages, setRefImages] = useState({}); // Images map: { anexoId: blobUrl }
 
-  const fetchReferenceImage = async anexoId => {
-    if (!anexoId) return null;
+  const fetchReferenceImage = async anexoData => {
+    // Validar se anexoData é válido e tem ID
+    if (!anexoData || typeof anexoData !== 'object') {
+      console.warn(`[DetailOrder] anexoData inválido:`, anexoData);
+      return null;
+    }
+
+    const anexoId = anexoData.idAnexo;
+    if (!anexoId || typeof anexoId !== 'number') {
+      console.warn(`[DetailOrder] ID do anexo inválido:`, anexoId);
+      return null;
+    }
+
+    // Verificar se já temos esta imagem em cache
+    if (refImages[anexoId]) {
+      console.log(`[DetailOrder] Imagem ${anexoId} já está em cache`);
+      return refImages[anexoId];
+    }
 
     try {
       console.log(`[DetailOrder] Buscando imagem anexo ${anexoId}...`);
 
+      // Se já temos a imagem em base64, usar ela diretamente
+      if (anexoData.imagemAnexo && typeof anexoData.imagemAnexo === 'string') {
+        console.log(`[DetailOrder] Usando imagem base64 do anexo ${anexoId}`);
+
+        // Verificar se já tem o prefixo data:image
+        let base64Image = anexoData.imagemAnexo;
+        if (!base64Image.startsWith('data:')) {
+          base64Image = `data:image/jpeg;base64,${anexoData.imagemAnexo}`;
+        }
+
+        // Armazenar no mapa de imagens
+        setRefImages(prev => ({
+          ...prev,
+          [anexoId]: base64Image,
+        }));
+
+        return base64Image;
+      }
+
+      // Caso contrário, buscar via API
       const response = await api.get(`/anexos/${anexoId}`, {
         responseType: 'arraybuffer', // ← Receber como bytes
       });
@@ -43,7 +79,7 @@ export function DetailOrderController() {
       const blobUrl = URL.createObjectURL(blob);
 
       console.log(
-        `[DetailOrder] Imagem anexo ${anexoId} carregada com sucesso`,
+        `[DetailOrder] Imagem anexo ${anexoId} carregada com sucesso via API`,
       );
 
       // Armazenar no mapa de imagens
@@ -72,216 +108,229 @@ export function DetailOrderController() {
     };
   }, [refImages]);
 
+  // ========================================
+  // HELPER FUNCTIONS
+  // ========================================
+
+  const validateOrderData = data => {
+    if (!data) return false;
+
+    // Extrair dados se vier como array
+    const orderData = Array.isArray(data) ? data[0] : data;
+
+    // Verificar se tem pelo menos um campo essencial
+    return (
+      orderData &&
+      (orderData.idPedido !== null ||
+        orderData.itensPedido !== null ||
+        orderData.precoTotal !== null)
+    );
+  };
+
+  const formatAddress = endereco => {
+    if (!endereco) return 'Endereço não informado';
+
+    const cepFormatado = endereco.cep ? maskCep(endereco.cep) : '';
+    const complementoStr = endereco.complemento
+      ? ` - ${endereco.complemento}`
+      : '';
+
+    return `${endereco.logradouro}, ${endereco.numero}${complementoStr} - ${cepFormatado}`;
+  };
+
+  const formatDateTime = dateTimeString => {
+    if (!dateTimeString) return { date: 'Não definida', time: 'Não definida' };
+
+    const dtEntrega = new Date(dateTimeString);
+
+    return {
+      date: dtEntrega.toLocaleDateString('pt-BR'),
+      time: dtEntrega.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+  };
+
+  const processOrderItems = async (items = []) => {
+    return Promise.all(
+      items.map(async item => {
+        const informacaoBolo = item.informacaoBolo || {};
+        let imagemUrl = null;
+
+        // Processar imagem de referência se houver anexo válido
+        if (informacaoBolo.anexo?.idAnexo) {
+          console.log(`[DetailOrder] Processando anexo:`, informacaoBolo.anexo);
+          imagemUrl = await fetchReferenceImage(informacaoBolo.anexo);
+        } else {
+          console.log(
+            `[DetailOrder] Item sem anexo válido:`,
+            item.idItemPedido,
+          );
+        }
+
+        return {
+          ...item,
+          imagemUrl: imagemUrl,
+        };
+      }),
+    );
+  };
+
+  const extractCakeDetails = firstItem => {
+    if (!firstItem) {
+      return {
+        theme: 'Não especificado',
+        cakeType: 'Não especificado',
+        batter: [],
+        filling: [],
+        additions: [],
+        weightKg: 0,
+        notes: 'Sem observações',
+      };
+    }
+
+    const informacaoBolo = firstItem.informacaoBolo || {};
+    const ingredientes = firstItem.ingredientes || [];
+
+    return {
+      theme: informacaoBolo.tema || 'Não especificado',
+      cakeType: firstItem.descricao || 'Não especificado',
+      batter: ingredientes
+        .filter(ing => ing.descricao === 'massa')
+        .map(ing => ing.nome),
+      filling: ingredientes
+        .filter(ing => ing.descricao === 'cobertura')
+        .map(ing => ing.nome),
+      additions: ingredientes
+        .filter(ing => ing.descricao === 'adicionais')
+        .map(ing => ing.nome),
+      weightKg: firstItem.quantidade || 0,
+      notes: informacaoBolo.detalhes || 'Sem observações',
+    };
+  };
+
+  const fetchCustomerData = async clienteId => {
+    if (!clienteId) return null;
+
+    try {
+      console.log(`[DetailOrder] Buscando dados do cliente ${clienteId}...`);
+      const response = await api.get(`/usuarios/${clienteId}`);
+      console.log('[DetailOrder] Cliente carregado:', response.data);
+      return response.data;
+    } catch (err) {
+      console.warn('[DetailOrder] Erro ao buscar cliente:', err);
+      return null;
+    }
+  };
+
+  const mapOrderForView = (orderData, customerData, processedItems) => {
+    const { date: deliveryDate, time: deliveryTime } = formatDateTime(
+      orderData.dtEntregaEsperada,
+    );
+    const memberSince = customerData?.dataUltimoLogin
+      ? new Date(customerData.dataUltimoLogin).toLocaleDateString('pt-BR')
+      : 'Data não disponível';
+
+    return {
+      // Identificadores
+      idPedido: orderData.idPedido,
+      id: orderData.idPedido,
+
+      // Preços
+      precoTotal: orderData.precoTotal || 0,
+      total: orderData.precoTotal || 0,
+      paidPercent: 50, // Valor padrão (backend não retorna este campo)
+
+      // Datas
+      dtEntregaEsperada: orderData.dtEntregaEsperada,
+      deliveryDate,
+      deliveryTime,
+
+      // Localização
+      address: formatAddress(orderData.endereco),
+      isRetirada: orderData.isRetirada,
+
+      // Status
+      statusPedidoId: orderData.statusPedidoId,
+      statusPedido: orderData.statusPedido,
+
+      // Forma de pagamento
+      formaPagamento: formatFormaPagamento(orderData.formaPagamento),
+
+      // Dados do cliente
+      customer: {
+        name: customerData?.nome || 'Cliente',
+        memberSince: memberSince,
+        avatar: customerData?.fotoPerfil,
+      },
+
+      // Itens do pedido
+      itensPedido: processedItems,
+
+      // Detalhes do bolo (do primeiro item)
+      cakeDetails: extractCakeDetails(processedItems[0]),
+    };
+  };
+
+  // ========================================
+  // MAIN FETCH FUNCTION
+  // ========================================
+
   useEffect(() => {
     const fetchOrderData = async () => {
+      if (!id) {
+        setError('ID do pedido não fornecido');
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       setError(null);
 
       try {
+        console.log(`[DetailOrder] Buscando pedido ${id}...`);
+
         // 1️⃣ Buscar dados do pedido
-        // Usando endpoint: GET /pedidos/carrinho?idUsuario={id}
-        console.log(`[DetailOrder] Buscando pedido do carrinho...`);
-
         const pedidoResponse = await api.get(`/pedidos/${id}`);
-        const pedidoData = pedidoResponse.data;
+        const rawData = pedidoResponse.data;
 
-        console.log('[DetailOrder] RESPOSTA COMPLETA da API:', pedidoResponse);
-        console.log('[DetailOrder] pedidoData:', pedidoData);
-        console.log('[DetailOrder] Tipo de pedidoData:', typeof pedidoData);
-        console.log('[DetailOrder] É array?', Array.isArray(pedidoData));
-        console.log(">>> API DATA RAW:", JSON.stringify(pedidoResponse.data, null, 2));
+        console.log('[DetailOrder] Dados brutos recebidos:', rawData);
 
-        // Tentar extrair dados se vier em formato inesperado
-        let dadosPedido = pedidoData;
-        if (Array.isArray(pedidoData) && pedidoData.length > 0) {
-          console.log(
-            '[DetailOrder] Dados vieram como array, pegando o primeiro item',
-          );
-          dadosPedido = pedidoData[0];
-        }
-
-        // Validação melhorada: verificar se tem pelo menos um campo não-null
-        const temDadosValidos =
-          dadosPedido &&
-          (dadosPedido.idPedido !== null ||
-            dadosPedido.itensPedido !== null ||
-            dadosPedido.precoTotal !== null);
-
-        console.log('[DetailOrder] Validação de dados:', {
-          temDados: !!dadosPedido,
-          temIdPedido: !!dadosPedido?.idPedido,
-          temItens: !!dadosPedido?.itensPedido,
-          temPreco: !!dadosPedido?.precoTotal,
-          temDadosValidos: temDadosValidos,
-          chaves: dadosPedido ? Object.keys(dadosPedido) : 'N/A',
-        });
-
-        if (!temDadosValidos) {
-          console.error(
-            '[DetailOrder] Nenhum pedido encontrado para este usuário',
-          );
+        // 2️⃣ Validar e extrair dados do pedido
+        if (!validateOrderData(rawData)) {
+          console.error('[DetailOrder] Dados do pedido inválidos:', rawData);
           setError(
-            'Nenhum pedido encontrado para este usuário. Verifique o ID.',
+            'Nenhum pedido encontrado para este ID. Verifique se o ID está correto.',
           );
-          setLoading(false);
           return;
         }
 
-        console.log('[DetailOrder] Pedido carregado:', dadosPedido);
+        const orderData = Array.isArray(rawData) ? rawData[0] : rawData;
+        console.log('[DetailOrder] Dados do pedido validados:', orderData);
 
-        // Buscar dados do cliente (se houver clienteId)
-        let clienteData = null;
-        if (dadosPedido.clienteId) {
-          try {
-            console.log(
-              `[DetailOrder] Buscando dados do cliente ${dadosPedido.clienteId}...`,
-            );
-            const clienteResponse = await api.get(
-              `/usuarios/${dadosPedido.clienteId}`,
-            );
-            clienteData = clienteResponse.data;
-            console.log('[DetailOrder] Cliente carregado:', clienteData);
-          } catch (clienteErr) {
-            console.warn('[DetailOrder] Erro ao buscar cliente:', clienteErr);
-            // Continua mesmo com erro - usar dados default
-          }
-        }
+        // 3️⃣ Buscar dados do cliente (paralelo com processamento de itens)
+        const [customerData, processedItems] = await Promise.all([
+          fetchCustomerData(orderData.clienteId),
+          processOrderItems(orderData.itensPedido),
+        ]);
 
-        // 3️⃣ Formatar endereço com CEP mascarado
-        const endereco = dadosPedido.endereco;
-        let enderecoFormatado = 'Endereço não informado';
-        if (endereco) {
-          const cepFormatado = endereco.cep ? maskCep(endereco.cep) : '';
-          const complementoStr = endereco.complemento
-            ? ` - ${endereco.complemento}`
-            : '';
-          enderecoFormatado = `${endereco.logradouro}, ${endereco.numero}${complementoStr} - ${cepFormatado}`;
-        }
+        console.log('[DetailOrder] Itens processados:', processedItems);
 
-        // 4️⃣ Formatar data e hora de entrega
-        const dtEntrega = dadosPedido.dtEntregaEsperada
-          ? new Date(dadosPedido.dtEntregaEsperada)
-          : null;
-
-        const deliveryDate = dtEntrega
-          ? dtEntrega.toLocaleDateString('pt-BR')
-          : 'Não definida';
-
-        const deliveryTime = dtEntrega
-          ? dtEntrega.toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })
-          : 'Não definida';
-
-        // 5️⃣ Formatar data de membro (primeira compra/último login)
-        const memberSince = clienteData?.dataUltimoLogin
-          ? new Date(clienteData.dataUltimoLogin).toLocaleDateString('pt-BR')
-          : 'Data não disponível';
-
-        // 6️⃣ Processar itens do pedido - TODOS OS BOLOS (não apenas o primeiro!)
-        const itensPedidoAtivos = dadosPedido.itensPedido
-          
-
-        console.log(
-          `[DetailOrder] Total de bolos ativos: ${itensPedidoAtivos.length}`,
+        // 4️⃣ Mapear dados para formato da view
+        const mappedOrder = mapOrderForView(
+          orderData,
+          customerData,
+          processedItems,
         );
 
-        // 7️⃣ Para cada bolo, buscar imagem de referência (se houver)
-        const bolosComImagens = await Promise.all(
-          itensPedidoAtivos.map(async item => {
-            const informacaoBolo = item.informacaoBolo || {};
-            let imagemUrl = null;
-
-            // Se houver anexo, buscar imagem
-            if (informacaoBolo.anexo) {
-              imagemUrl = await fetchReferenceImage(informacaoBolo.anexo);
-            }
-
-            return {
-              ...item,
-              imagemUrl: imagemUrl,
-            };
-          }),
-        );
-
-        console.log(
-          '[DetailOrder] Bolos com imagens processados:',
-          bolosComImagens,
-        );
-
-        // 8️⃣ Extrair detalhes do primeiro bolo para display principal
-        const primeiroItem = bolosComImagens[0];
-        const informacaoBolo = primeiroItem?.informacaoBolo || {};
-
-        // 9️⃣ Mapear dados para formato da view
-        const orderMapped = {
-          // Identificadores
-          idPedido: dadosPedido.idPedido,
-          id: dadosPedido.idPedido,
-
-          // Preços
-          precoTotal: dadosPedido.precoTotal || 0,
-          total: dadosPedido.precoTotal || 0,
-          paidPercent: 50, // Valor padrão (backend não retorna este campo)
-
-          // Datas
-          dtEntregaEsperada: pedidoData.dtEntregaEsperada,
-          deliveryDate: deliveryDate,
-          deliveryTime: deliveryTime,
-
-          // Localização
-          address: enderecoFormatado,
-          isRetirada: pedidoData.isRetirada,
-
-          // Status
-          statusPedidoId: pedidoData.statusPedidoId,
-          statusPedido: pedidoData.statusPedido,
-
-          // Forma de pagamento
-          formaPagamento: formatFormaPagamento(pedidoData.formaPagamento),
-
-          // Dados do cliente
-          customer: {
-            name: clienteData?.nome || 'Cliente',
-            memberSince: memberSince,
-            avatar: clienteData?.fotoPerfil,
-          },
-
-          // Itens do pedido
-          itensPedido: bolosComImagens,
-
-          // Detalhes do bolo (do primeiro item)
-          cakeDetails: {
-            theme: informacaoBolo.tema || 'Não especificado',
-            cakeType: primeiroItem?.descricao || 'Não especificado',
-            batter: primeiroItem?.ingredientes?.filter(ing => ing.descricao === 'massa').map(ing => ing.nome)  || [],
-            filling: primeiroItem?.ingredientes?.filter(ing => ing.descricao === 'cobertura') || [], 
-            additions: primeiroItem?.ingredientes?.filter(ing => ing.descricao === 'adicionais')|| [],
-            weightKg: primeiroItem?.quantidade || 0, // Backend não retorna peso
-            notes: informacaoBolo.detalhes || 'Sem observações',
-          },
-        };
-
-        setOrder(orderMapped);
-        console.log('[DetailOrder] Pedido formatado com sucesso:', orderMapped);
+        setOrder(mappedOrder);
+        console.log('[DetailOrder] Pedido formatado com sucesso:', mappedOrder);
+        console.log('[DetailOrder] RefImages state:', refImages);
       } catch (err) {
         console.error('[DetailOrder] Erro ao buscar pedido:', err);
 
-        // Determinar mensagem de erro apropriada
-        let errorMessage = 'Não foi possível carregar os dados do pedido.';
-
-        if (err.response?.status === 404) {
-          errorMessage = 'Pedido não encontrado.';
-        } else if (err.response?.status === 403) {
-          errorMessage = 'Você não tem permissão para acessar este pedido.';
-        } else if (err.response?.status === 500) {
-          errorMessage =
-            'Erro no servidor. Tente novamente em alguns instantes.';
-        } else if (err.message === 'Network Error') {
-          errorMessage = 'Erro de conexão. Verifique sua internet.';
-        }
-
+        const errorMessage = getErrorMessage(err);
         setError(errorMessage);
         setOrder(null);
       } finally {
@@ -289,14 +338,26 @@ export function DetailOrderController() {
       }
     };
 
-    // Executar fetch apenas se houver ID
-    if (id) {
-      fetchOrderData();
-    } else {
-      setError('ID do pedido não fornecido');
-      setLoading(false);
-    }
+    fetchOrderData();
   }, [id]);
+
+  // ========================================
+  // ERROR HANDLER
+  // ========================================
+
+  const getErrorMessage = error => {
+    if (error.response?.status === 404) {
+      return 'Pedido não encontrado.';
+    } else if (error.response?.status === 403) {
+      return 'Você não tem permissão para acessar este pedido.';
+    } else if (error.response?.status === 500) {
+      return 'Erro no servidor. Tente novamente em alguns instantes.';
+    } else if (error.message === 'Network Error') {
+      return 'Erro de conexão. Verifique sua internet.';
+    }
+
+    return 'Não foi possível carregar os dados do pedido.';
+  };
 
   // ========================================
   // HELPER: Formatar Forma de Pagamento
@@ -408,6 +469,8 @@ export function DetailOrderController() {
     );
   }
 
+  console.log('refImage ----------------------------', refImages);
+
   // ========================================
   // RENDER: NORMAL VIEW
   // ========================================
@@ -417,7 +480,13 @@ export function DetailOrderController() {
       refImages={{
         loading: false,
         error: null,
-        images: refImages, // Mapa de { anexoId: blobUrl }
+        images: Object.entries(refImages)
+          .filter(([anexoId, imageUrl]) => imageUrl) // Filtrar apenas imagens válidas
+          .map(([anexoId, imageUrl]) => ({
+            id_anexo: parseInt(anexoId),
+            imagem_anexo: imageUrl,
+            nome_arquivo: `anexo_${anexoId}.jpg`,
+          })),
         refetch: () => {},
         userUploadedImage: null,
         selectedReferenceImage: selectedReferenceImage,

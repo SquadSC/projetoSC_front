@@ -119,7 +119,13 @@ export default function OrderDetailsView({
           >
             <Grid container spacing={2} alignItems='center'>
               <Grid item>
-                <Avatar sx={{ width: 48, height: 48, bgcolor: 'primary.main' }}>
+                <Avatar
+                  sx={{
+                    width: '48px',
+                    height: '48px',
+                    bgcolor: 'primary.main',
+                  }}
+                >
                   {order.customer.avatar ? (
                     <img
                       src={order.customer.avatar}
@@ -219,15 +225,32 @@ export default function OrderDetailsView({
               </Box>
             ) : refImages.images && refImages.images.length > 0 ? (
               <>
-                <Typography
-                  sx={theme => ({
-                    mb: 0,
-                    fontFamily: theme.typography?.fontFamily,
-                    fontSize: theme.typography?.textBold?.fontSize,
-                    fontWeight: theme.typography?.fontWeightMedium,
-                  })}
-                ></Typography>
-                <CarouselReferenceComponent refImages={refImages} />
+              <Typography variant='subTitle' fontWeight="medium" color='primary.main'>Imagem de Referência</Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <img
+                    src={refImages.images[0]?.imagem_anexo}
+                    alt='Bolo personalizado'
+                    style={{
+                      width: '100%',
+                      maxWidth: 320,
+                      height: 300,
+                      objectFit: 'cover',
+                      margin: '0 auto',
+                      borderRadius: 16,
+                      padding: 8,
+                    }}
+                    onError={e => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </Box>
+                {/* <CarouselReferenceComponent refImages={refImages} /> */}
               </>
             ) : (
               <Typography
@@ -256,24 +279,47 @@ export default function OrderDetailsView({
 
           <List disablePadding>
             {[
-                ['Produto:', order.cakeDetails.cakeType],
-                ['Tema Personalizado:', order.cakeDetails.theme],
-                ['Tipo de Massa:', order.cakeDetails.batter],
-                [
+              ['Produto:', order.cakeDetails.cakeType],
+              ['Tema Personalizado:', order.cakeDetails.theme],
+              [
+                'Tipo de Massa:',
+                order.cakeDetails.batter.join(', ') || 'Não especificado',
+              ],
+              [
                 'Recheio do Bolo:',
-                <ul style={{ listStyleType: 'disc' }}>
-                  {order.cakeDetails.filling.map(f => (
-                    <li key={f.nome}>{f.nome}</li>
-                  ))}
-                </ul>,
+                order.cakeDetails.filling.length > 0 ? (
+                  <ul
+                    style={{
+                      listStyleType: 'disc',
+                      margin: 0,
+                      paddingLeft: '20px',
+                    }}
+                  >
+                    {order.cakeDetails.filling.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  'Não especificado'
+                ),
               ],
               [
                 'Adicionais do Bolo:',
-                <ul style={{ listStyleType: 'disc' }}>
-                  {order.cakeDetails.additions.map(f => (
-                    <li key={f.nome}>{f.nome}</li>
-                  ))}
-                </ul>,
+                order.cakeDetails.additions.length > 0 ? (
+                  <ul
+                    style={{
+                      listStyleType: 'disc',
+                      margin: 0,
+                      paddingLeft: '20px',
+                    }}
+                  >
+                    {order.cakeDetails.additions.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  'Não especificado'
+                ),
               ],
               ['Peso (KG):', order.cakeDetails.weightKg],
             ].map(([label, value]) => (
