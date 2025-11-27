@@ -43,6 +43,11 @@ export function AgendaView({ selectViewModeAgenda, weeklyOrder, monthName }) {
         ) : (
           <Typography variant='text'>Olá mundo em calendário!</Typography>
         )}
+        <Stack spacing={2}>
+          <Typography variant='subTitle' fontWeight={'semiBold'} color='primary.main'>
+            Pedidos do dia
+          </Typography>
+        </Stack>
       </Stack>
       <BottomNavigationComponent />
     </Container>
