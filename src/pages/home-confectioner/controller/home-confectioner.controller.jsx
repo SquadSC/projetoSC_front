@@ -1,6 +1,6 @@
 import { HomeConfectionerView } from '../view/home-confectioner.view';
 import { useUser } from '../../../hooks/use-user/useUser';
-import { useFormatWeeklyOrder } from '../utils/format-weekly-order';
+import { getWeekMonthName, useFormatWeeklyOrder } from '../utils/format-weekly-order';
 import { useNewOrders } from '../hooks/use-get-new-orders';
 
 export function HomeConfectionerController() {
@@ -11,6 +11,8 @@ export function HomeConfectionerController() {
     loading: weeklyLoading,
     error: weeklyError,
   } = useFormatWeeklyOrder();
+
+  const monthName = getWeekMonthName(weeklyData);
 
   const {
     newOrders,
@@ -35,6 +37,7 @@ export function HomeConfectionerController() {
       user={user}
       weeklyData={weeklyOrder}
       newOrders={newOrder}
+      monthName={monthName}
     />
   );
 }

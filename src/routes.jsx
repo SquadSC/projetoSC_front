@@ -27,6 +27,7 @@ import { PendingOrderController } from './pages/pending-order/controller/pending
 import { PendingOrderSelectedController } from './pages/pending-order-selected/controller/pending-order-selected.controller.jsx';
 import { CakeDetailsController } from './pages/pending-order-selected/components/cake-details/cake-details.controller';
 import { HomeConfectionerController } from './pages/home-confectioner/index.page.jsx';
+import { AgendaController } from './pages/agenda/index.page.jsx';
 
 // ========================================
 // CONFIGURAÇÃO CENTRALIZADA DE ROTAS
@@ -43,6 +44,7 @@ export const CLIENT_ROUTES_PATHS = [
 
 export const CONFECTIONER_ROUTES_PATHS = [
   ROUTES_PATHS.HOME_CONFECTIONER,
+  ROUTES_PATHS.AGENDA,
   ROUTES_PATHS.PRODUCTS,
   ROUTES_PATHS.ADD_PRODUCT,
   ROUTES_PATHS.EDIT_PRODUCT,
@@ -131,6 +133,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.HOME_CONFECTIONER,
       element: <HomeConfectionerController />,
+    },
+    {
+      path: ROUTES_PATHS.AGENDA,
+      element: <AgendaController />,
     },
     {
       path: ROUTES_PATHS.PRODUCTS,
