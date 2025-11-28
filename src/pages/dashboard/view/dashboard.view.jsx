@@ -9,6 +9,7 @@ import {
   Skeleton,
 } from '@mui/material';
 import theme from '../../../theme';
+import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
 
 // Components
 import { MetricCard } from '../components/metric-card/metric-card.component';
@@ -70,96 +71,102 @@ export function DashboardView() {
 
   if (loading) {
     return (
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Box mb={4}>
-          <Skeleton variant="text" width={200} height={40} />
-          <Skeleton variant="text" width={300} height={24} />
-        </Box>
-        <Grid container spacing={3}>
-          {[...Array(4)].map((_, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card>
-                <CardContent>
-                  <Skeleton variant="text" width="60%" />
-                  <Skeleton variant="text" width="40%" />
-                  <Skeleton variant="rectangular" height={60} sx={{ mt: 2 }} />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+      <>
+        <Container maxWidth="xl" sx={{ py: 4, pb: 10 }}>
+          <Box mb={4}>
+            <Skeleton variant="text" width={200} height={40} />
+            <Skeleton variant="text" width={300} height={24} />
+          </Box>
+          <Grid container spacing={3}>
+            {[...Array(4)].map((_, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card>
+                  <CardContent>
+                    <Skeleton variant="text" width="60%" />
+                    <Skeleton variant="text" width="40%" />
+                    <Skeleton variant="rectangular" height={60} sx={{ mt: 2 }} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+        <BottomNavigationComponent />
+      </>
     );
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Box mb={3}>
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            fontWeight: 'bold',
-            color: theme.palette.primary.main,
-            mb: 1
-          }}
-        >
-          Dashboard
-        </Typography>
-      </Box>
+    <>
+      <Container maxWidth="xl" sx={{ py: 4, pb: 10 }}>
+        <Box mb={3}>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 'bold',
+              color: theme.palette.primary.main,
+              mb: 1
+            }}
+          >
+            Dashboard
+          </Typography>
+        </Box>
 
-      <Grid container spacing={2}>
-        {/* Métricas principais em linha - cards menores */}
-        <Grid item xs={12} sm={4}>
-          <MetricCard
-            title="Novos Clientes"
-            value={dashboardData.newClientsToday}
-            subtitle="hoje"
-            icon="👥"
-            color={theme.palette.primary.main}
-            trend={{ value: 25.0, isPositive: true }}
-            compact={true}
-          />
-        </Grid>
+        <Grid container spacing={2}>
+          {/* Métricas principais em linha - cards menores */}
+          <Grid item xs={12} sm={4}>
+            <MetricCard
+              title="Novos Clientes"
+              value={dashboardData.newClientsToday}
+              subtitle="hoje"
+              icon="👥"
+              color={theme.palette.primary.main}
+              trend={{ value: 25.0, isPositive: true }}
+              compact={true}
+            />
+          </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <MetricCard
-            title="Total de Pedidos"
-            value={dashboardData.totalOrders}
-            subtitle="hoje"
-            icon="📦"
-            color={theme.palette.secondary.main}
-            trend={{ value: 8.5, isPositive: true }}
-            compact={true}
-          />
-        </Grid>
+          <Grid item xs={12} sm={4}>
+            <MetricCard
+              title="Total de Pedidos"
+              value={dashboardData.totalOrders}
+              subtitle="hoje"
+              icon="📦"
+              color={theme.palette.secondary.main}
+              trend={{ value: 8.5, isPositive: true }}
+              compact={true}
+            />
+          </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <MetricCard
-            title="Hora de Pico"
-            value="16h"
-            subtitle="42 pedidos"
-            icon="🔥"
-            color={theme.palette.error.main}
-            compact={true}
-          />
-        </Grid>
+          <Grid item xs={12} sm={4}>
+            <MetricCard
+              title="Hora de Pico"
+              value="16h"
+              subtitle="42 pedidos"
+              icon="🔥"
+              color={theme.palette.error.main}
+              compact={true}
+            />
+          </Grid>
 
-        {/* Gráfico de horários com mais pedidos */}
-        <Grid item xs={12} lg={6}>
-          <HourlyOrdersChart data={dashboardData.hourlyOrders} />
-        </Grid>
+          {/* Gráfico de horários com mais pedidos */}
+          <Grid item xs={12} lg={6}>
+            <HourlyOrdersChart data={dashboardData.hourlyOrders} />
+          </Grid>
 
-        {/* Top ingredientes */}
-        <Grid item xs={12} lg={6}>
-          <TopIngredientsChart data={dashboardData.topIngredients} />
-        </Grid>
+          {/* Top ingredientes */}
+          <Grid item xs={12} lg={6}>
+            <TopIngredientsChart data={dashboardData.topIngredients} />
+          </Grid>
 
-        {/* Top clientes - ocupa a largura total */}
-        <Grid item xs={12}>
-          <TopClientsTable data={dashboardData.topClients} />
+          {/* Top clientes - ocupa a largura total */}
+          <Grid item xs={12}>
+            <TopClientsTable data={dashboardData.topClients} />
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+      <BottomNavigationComponent />
+    </>
   );
 }

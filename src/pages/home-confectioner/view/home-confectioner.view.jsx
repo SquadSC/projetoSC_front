@@ -3,6 +3,7 @@ import { Header } from '../components/header/header.component';
 import { WeeklyOrder } from '../components/weekly-order/weekly-order.component';
 import { ListNewOrdersComponent } from '../components/list-new-orders/list-new-orders.component';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
+
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 export function HomeConfectionerView({ user, weeklyData, newOrders, monthName }) {
