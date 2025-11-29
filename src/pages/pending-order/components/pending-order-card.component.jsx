@@ -19,14 +19,14 @@ export function PendingOrderCard({
 }) {
   // Determina a etapa atual baseado no status
   const getCurrentStep = () => {
-    // Status 3 = Aceito pela confeiteira (Etapa 1)
-    // Status 4 = Validado pelo fornecedor (Etapa 2)
-    // Status 5 = Agendamento confirmado (Etapa 3)
+    // Status 2 = Enviado (Etapa 1)
+    // Status 3 = Validação (Etapa 2)
+    // Status 4 = Pagamento (Etapa 3)
     // Usar statusId se já estiver calculado, senão converter da descrição
-    const statusId = order.statusId || getStatusIdFromDescription(order.statusPedido) || 3;
-    if (statusId === 3) return 1;
-    if (statusId === 4) return 2;
-    if (statusId === 5) return 3;
+    const statusId = order.statusId || getStatusIdFromDescription(order.statusPedido) || 2;
+    if (statusId === 2) return 1;
+    if (statusId === 3) return 2;
+    if (statusId === 4) return 3;
     return 1; // Default
   };
 

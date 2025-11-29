@@ -9,34 +9,48 @@
  * @returns {number|null} ID do status ou null se não encontrado
  */
 export function getStatusIdFromDescription(statusDescricao) {
-  if (!statusDescricao) return null;
+  console.log('🔑 [StatusHelper] getStatusIdFromDescription chamado com:', statusDescricao);
+  
+  if (!statusDescricao) {
+    console.log('⚠️ [StatusHelper] statusDescricao é vazio/null');
+    return null;
+  }
 
   const statusMap = {
-    'Aberto': 1,
+    'Criado': 1,
     'Enviado': 2,
+    'Validação': 3,
+    'Pagamento': 4,
+    'Produção': 5,
+    'Concluído': 7,
+    'Concluido': 7, // Variação possível
+    'Cancelado': 8,
+    // Mapeamentos antigos para compatibilidade
+    'Aberto': 1,
     'Aceito pela confeiteira': 3,
     'Validado pelo fornecedor': 4,
     'Agendamento confirmado': 5,
-    'Em producao': 6,
-    'Em produção': 6, // Variação possível
-    'Concluido': 7,
-    'Concluído': 7, // Variação possível
-    'Cancelado': 8,
+    'Em producao': 5,
+    'Em produção': 5,
   };
 
   // Busca exata
   if (statusMap[statusDescricao]) {
+    console.log('✅ [StatusHelper] Encontrado mapeamento exato:', statusDescricao, '->', statusMap[statusDescricao]);
     return statusMap[statusDescricao];
   }
 
   // Busca case-insensitive
   const statusLower = statusDescricao.toLowerCase().trim();
+  console.log('🔍 [StatusHelper] Buscando case-insensitive:', statusLower);
   for (const [key, value] of Object.entries(statusMap)) {
     if (key.toLowerCase() === statusLower) {
+      console.log('✅ [StatusHelper] Encontrado mapeamento case-insensitive:', key, '->', value);
       return value;
     }
   }
 
+  console.log('❌ [StatusHelper] Nenhum mapeamento encontrado para:', statusDescricao);
   return null;
 }
 
@@ -49,12 +63,11 @@ export function getStatusDescriptionFromId(statusId) {
   if (!statusId) return null;
 
   const statusMap = {
-    1: 'Aberto',
+    1: 'Criado',
     2: 'Enviado',
-    3: 'Aceito pela confeiteira',
-    4: 'Validado pelo fornecedor',
-    5: 'Agendamento confirmado',
-    6: 'Em produção',
+    3: 'Validação',
+    4: 'Pagamento',
+    5: 'Produção',
     7: 'Concluído',
     8: 'Cancelado',
   };
@@ -63,7 +76,7 @@ export function getStatusDescriptionFromId(statusId) {
 }
 
 /**
- * Verifica se um pedido está pendente (status 3, 4 ou 5)
+ * Verifica se um pedido está pendente (status 2, 3 ou 4)
  * @param {string|number} status - Descrição ou ID do status
  * @returns {boolean} true se o pedido está pendente
  */
@@ -72,11 +85,11 @@ export function isPendingOrder(status) {
 
   // Se for número, verifica diretamente
   if (typeof status === 'number') {
-    return [3, 4, 5].includes(status);
+    return [2, 3, 4].includes(status);
   }
 
   // Se for string, converte para ID primeiro
   const statusId = getStatusIdFromDescription(status);
-  return statusId !== null && [3, 4, 5].includes(statusId);
+  return statusId !== null && [2, 3, 4].includes(statusId);
 }
 

@@ -11,11 +11,16 @@ export function useNewOrders(autoFetch = true) {
     setError(null);
 
     try {
-      const response = await api.get('/new-orders');
-      setNewOrders(response.data);
+      const response = await api.get('/pedidos/pendentes');
+      if (response && response.data && Array.isArray(response.data)) {
+        setNewOrders(response.data);
+      } else {
+        setNewOrders([]);
+      }
     } catch (error) {
       console.error('Error fetching new orders:', error);
       setError(error.response?.data?.message || 'Error fetching new orders');
+      setNewOrders([]);
     } finally {
       setIsLoading(false);
     }
