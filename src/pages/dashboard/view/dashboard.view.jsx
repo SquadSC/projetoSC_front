@@ -1,167 +1,165 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  Box, // Container flexível para layout
-  Container, // Container responsivo com largura máxima
-  Typography, // Componente de texto com estilos
-  Card, // Card para agrupar conteúdo
-  CardContent, // Conteúdo interno do card
-  Stack, // Stack para layout vertical/horizontal simples
-  Tabs, // Componente de abas/tabs
-  Tab, // Item individual de uma tab
+  Box,
+  Container,
+  Grid,
+  Typography,
+  Card,
+  CardContent,
+  Skeleton,
 } from '@mui/material';
-import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
-import { MetricCard } from '../components/metric-card.component';
-import { CategorySection } from '../components/category-section.component';
+import theme from '../../../theme';
 
-export function DashboardView({ data }) {
-  // Estado para controlar qual tab está ativa (0 = Bolos, 1 = Complementares)
-  const [activeTab, setActiveTab] = useState(0);
+// Components
+import { MetricCard } from '../components/metric-card/metric-card.component';
+import { HourlyOrdersChart } from '../components/hourly-orders-chart/hourly-orders-chart.component';
+import { TopIngredientsChart } from '../components/top-ingredients-chart/top-ingredients-chart.component';
+import { TopClientsTable } from '../components/top-clients-table/top-clients-table.component';
 
-  // Função para lidar com mudança de tab
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue); // Atualiza o estado com a nova tab selecionada
+export function DashboardView() {
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Simula delay de carregamento
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Mock data para desenvolvimento
+      setDashboardData({
+        // Top 5 horários com mais pedidos (histórico geral, não apenas hoje)
+        hourlyOrders: [
+          { hour: '16h', orders: 285 }, // Horário de pico - lanche da tarde
+          { hour: '15h', orders: 267 }, // Segunda opção mais popular
+          { hour: '17h', orders: 245 }, // Final da tarde
+          { hour: '14h', orders: 198 }, // Início da tarde
+          { hour: '18h', orders: 175 }, // Início da noite
+        ],
+        topIngredients: [
+          { name: 'Chocolate', count: 248, percentage: 28 },
+          { name: 'Morango', count: 195, percentage: 22 },
+          { name: 'Brigadeiro', count: 167, percentage: 19 },
+          { name: 'Doce de Leite', count: 142, percentage: 16 },
+          { name: 'Coco', count: 98, percentage: 11 },
+        ],
+        topClients: [
+          { name: 'Maria Silva Santos', orders: 18, total: 2450.75 },
+          { name: 'João Pedro Oliveira', orders: 15, total: 1980.50 },
+          { name: 'Ana Carolina Costa', orders: 12, total: 1675.25 },
+          { name: 'Pedro Henrique Lima', orders: 10, total: 1420.80 },
+          { name: 'Lucia Fernanda Souza', orders: 8, total: 1150.40 },
+          { name: 'Carlos Eduardo Rocha', orders: 7, total: 985.60 },
+          { name: 'Beatriz Almeida Cruz', orders: 6, total: 820.30 },
+        ],
+        newClientsToday: 12,
+        totalOrders: 156,
+        averageRating: 4.8,
+      });
+    } catch (err) {
+      console.error('Erro ao carregar dashboard (mock):', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Retorna o JSX que será renderizado na tela
+  if (loading) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Box mb={4}>
+          <Skeleton variant="text" width={200} height={40} />
+          <Skeleton variant="text" width={300} height={24} />
+        </Box>
+        <Grid container spacing={3}>
+          {[...Array(4)].map((_, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Card>
+                <CardContent>
+                  <Skeleton variant="text" width="60%" />
+                  <Skeleton variant="text" width="40%" />
+                  <Skeleton variant="rectangular" height={60} sx={{ mt: 2 }} />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    );
+  }
+
   return (
-    // Container principal da página com fundo padrão e altura total da viewport
-    <Box
-      sx={{
-        backgroundColor: 'background.default', // Cor de fundo padrão do tema
-        minHeight: '100vh', // Altura mínima = 100% da viewport
-        p: 3, // Padding interno de 24px
-      }}
-    >
-      {/* Header */}
-      <PageHeader
-        titulo='Dashboard'
-        showBackButton={true}
-        width='100%'
-      ></PageHeader>
-
-      {/* SEÇÃO DE KPIs - Cards com métricas principais */}
-      <Box
-        sx={{
-          mb: 4,
-          width: '100%',
-          py: 2,
-          display: 'flex',
-          gap: 2,
-        }}
-      >
-        {/* Card de Pedidos */}
-        <Box sx={{ flex: 1 }}>
-          <MetricCard
-            title='Pedidos' // Título do card
-            value={data.metrics.orders.value} // Valor numérico (38)
-            trend={data.metrics.orders.trend} // Tendência (+7%)
-            isPositive={data.metrics.orders.isPositive} // Se a tendência é positiva
-          />
-        </Box>
-
-        {/* Card de Clientes Fidelizados */}
-        <Box sx={{ flex: 1 }}>
-          <MetricCard
-            title='Clientes fidelizados' // Título do card
-            value={data.metrics.loyalCustomers.value} // Valor numérico (24)
-            trend={data.metrics.loyalCustomers.trend} // Tendência (-2%)
-            isPositive={data.metrics.loyalCustomers.isPositive} // Se a tendência é positiva
-          />
-        </Box>
-      </Box>
-
-      {/* Container responsivo com largura máxima para mobile */}
-      <Container maxWidth='sm' sx={{ mt: 0, p: 0 }}>
-        {/* SEÇÃO "MAIS VENDIDOS" - Card principal com produtos mais vendidos */}
-        <Card
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box mb={3}>
+        <Typography
+          variant="h4"
+          component="h1"
           sx={{
-            backgroundColor: 'white', // Fundo branco
-            borderRadius: 3, // Bordas arredondadas
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)', // Sombra sutil
-            mb: 2, // Margem inferior
-            border: '1px solid #38090D', // Borda marrom da marca
-            '&:hover': {
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            },
+            fontWeight: 'bold',
+            color: theme.palette.primary.main,
+            mb: 1
           }}
         >
-          <CardContent sx={{ p: 0 }}>
-            {/* Título da seção */}
-            <Typography
-              variant='h6'
-              sx={{
-                fontWeight: 'bold', // Texto em negrito
-                color: '#38090D', // Cor marrom da marca
-                p: 2, // Padding interno
-                pb: 1, // Padding inferior menor
-              }}
-            >
-              Mais vendidos
-            </Typography>
+          Dashboard
+        </Typography>
+      </Box>
 
-            {/* Sistema de Tabs para alternar entre Bolos e Complementares */}
-            <Box sx={{ px: 2 }}>
-              <Tabs
-                value={activeTab} // Tab atualmente selecionada
-                onChange={handleTabChange} // Função chamada ao clicar em uma tab
-                sx={{
-                  // Estilo das tabs não selecionadas
-                  '& .MuiTab-root': {
-                    color: '#38090D', // Cor marrom da marca
-                    fontWeight: 'medium', // Peso da fonte médio
-                    textTransform: 'none', // Sem transformação de texto
-                    minHeight: 40, // Altura mínima
-                    borderRadius: 2, // Bordas arredondadas
-                    mx: 0.5, // Margem horizontal
-                  },
-                  // Estilo da tab selecionada
-                  '& .Mui-selected': {
-                    background:
-                      'linear-gradient(90deg, #CDA243 0%, #F3E4AA 50.48%, #C59736 100%)', // Gradiente dourado da marca
-                    color: '#38090D', // Cor marrom da marca
-                    fontWeight: 'bold', // Texto em negrito
-                  },
-                }}
-              >
-                <Tab label='Bolos' /> {/* Tab para produtos de bolos */}
-                <Tab label='Complementares' />{' '}
-                {/* Tab para produtos complementares */}
-              </Tabs>
-            </Box>
+      <Grid container spacing={2}>
+        {/* Métricas principais em linha - cards menores */}
+        <Grid item xs={12} sm={4}>
+          <MetricCard
+            title="Novos Clientes"
+            value={dashboardData.newClientsToday}
+            subtitle="hoje"
+            icon="👥"
+            color={theme.palette.primary.main}
+            trend={{ value: 25.0, isPositive: true }}
+            compact={true}
+          />
+        </Grid>
 
-            {/* Conteúdo dinâmico baseado na tab selecionada */}
-            <Box sx={{ p: 2 }}>
-              {/* Se a tab "Bolos" estiver ativa (activeTab === 0) */}
-              {activeTab === 0 && (
-                <>
-                  {/* Seção de Decorações com dados dos produtos */}
-                  <CategorySection
-                    title='Decorações'
-                    items={data.bestSellers.cakes.decorations}
-                  />
-                  {/* Seção de Recheios com dados dos produtos */}
-                  <CategorySection
-                    title='Recheios'
-                    items={data.bestSellers.cakes.fillings}
-                  />
-                  {/* Seção de Adicionais com dados dos produtos */}
-                  <CategorySection
-                    title='Adicionais'
-                    items={data.bestSellers.cakes.addons}
-                  />
-                </>
-              )}
+        <Grid item xs={12} sm={4}>
+          <MetricCard
+            title="Total de Pedidos"
+            value={dashboardData.totalOrders}
+            subtitle="hoje"
+            icon="📦"
+            color={theme.palette.secondary.main}
+            trend={{ value: 8.5, isPositive: true }}
+            compact={true}
+          />
+        </Grid>
 
-              {/* Se a tab "Complementares" estiver ativa (activeTab === 1) */}
-              {activeTab === 1 && (
-                <Typography variant='body2' color='text.secondary'>
-                  Dados de complementares em breve...
-                </Typography>
-              )}
-            </Box>
-          </CardContent>
-        </Card>
-      </Container>
-    </Box>
+        <Grid item xs={12} sm={4}>
+          <MetricCard
+            title="Hora de Pico"
+            value="16h"
+            subtitle="42 pedidos"
+            icon="🔥"
+            color={theme.palette.error.main}
+            compact={true}
+          />
+        </Grid>
+
+        {/* Gráfico de horários com mais pedidos */}
+        <Grid item xs={12} lg={6}>
+          <HourlyOrdersChart data={dashboardData.hourlyOrders} />
+        </Grid>
+
+        {/* Top ingredientes */}
+        <Grid item xs={12} lg={6}>
+          <TopIngredientsChart data={dashboardData.topIngredients} />
+        </Grid>
+
+        {/* Top clientes - ocupa a largura total */}
+        <Grid item xs={12}>
+          <TopClientsTable data={dashboardData.topClients} />
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
