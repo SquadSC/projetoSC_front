@@ -8,6 +8,8 @@ export function NewAddressComponent({
   onChange,
   onSubmit,
   onBack,
+  isCepDataLoaded,
+  areRequiredFieldsFilled,
 }) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -16,7 +18,7 @@ export function NewAddressComponent({
           p: 3,
         }}
       >
-        <Typography variant='text' sx={{ mb: 2 }}>
+        <Typography variant='text' sx={{ mb: 4, display: 'block' }}>
           Adicionando endereço de entrega
         </Typography>
 
@@ -41,73 +43,83 @@ export function NewAddressComponent({
             error={errors.cep}
             helperText={errors.cep}
           />
-          <CustomTextField
-            label='Logradouro'
-            type='text'
-            value={fields.logradouro}
-            onChange={e => onChange('logradouro', e.target.value)}
-            error={errors.logradouro}
-            helperText={errors.logradouro}
-          />
-          <CustomTextField
-            label='Bairro'
-            type='text'
-            value={fields.bairro}
-            onChange={e => onChange('bairro', e.target.value)}
-            error={errors.bairro}
-            helperText={errors.bairro}
-          />
+          
+          {/* Campos ocultos até que CEP válido seja preenchido */}
+          {isCepDataLoaded && (
+            <>
+              <CustomTextField
+                label='Logradouro'
+                type='text'
+                value={fields.logradouro}
+                onChange={e => onChange('logradouro', e.target.value)}
+                error={errors.logradouro}
+                helperText={errors.logradouro}
+                disabled
+              />
+              <CustomTextField
+                label='Bairro'
+                type='text'
+                value={fields.bairro}
+                onChange={e => onChange('bairro', e.target.value)}
+                error={errors.bairro}
+                helperText={errors.bairro}
+                disabled
+              />
 
-          <Stack direction='row' spacing={2}>
-            <CustomTextField
-              label='Cidade'
-              type='text'
-              value={fields.cidade}
-              onChange={e => onChange('cidade', e.target.value)}
-              error={errors.cidade}
-              helperText={errors.cidade}
-              fullWidth
-            />
-            <CustomTextField
-              label='Estado'
-              type='text'
-              value={fields.estado}
-              onChange={e => onChange('estado', e.target.value)}
-              error={errors.estado}
-              helperText={errors.estado}
-              // Define uma largura fixa para o campo de estado
-              sx={{ width: '150px' }}
-            />
-          </Stack>
+              <Stack direction='row' spacing={2}>
+                <CustomTextField
+                  label='Cidade'
+                  type='text'
+                  value={fields.cidade}
+                  onChange={e => onChange('cidade', e.target.value)}
+                  error={errors.cidade}
+                  helperText={errors.cidade}
+                  fullWidth
+                  disabled
+                />
+                <CustomTextField
+                  label='Estado'
+                  type='text'
+                  value={fields.estado}
+                  onChange={e => onChange('estado', e.target.value)}
+                  error={errors.estado}
+                  helperText={errors.estado}
+                  sx={{ width: '150px' }}
+                  disabled
+                />
+              </Stack>
 
-          <CustomTextField
-            label='Número'
-            type='text'
-            value={fields.numero}
-            onChange={e => onChange('numero', e.target.value)}
-            error={errors.numero}
-            helperText={errors.numero}
-          />
-          <CustomTextField
-            label='Complemento (Opcional)'
-            type='text'
-            value={fields.complemento}
-            onChange={e => onChange('complemento', e.target.value)}
-            error={errors.complemento}
-            helperText={errors.complemento}
-          />
-          <CustomTextField
-            label='Ponto de Referência (Opcional)'
-            type='text'
-            value={fields.pontoReferencia}
-            onChange={e => onChange('pontoReferencia', e.target.value)}
-            error={errors.pontoReferencia}
-            helperText={errors.pontoReferencia}
-          />
+              <CustomTextField
+                label='Número'
+                type='text'
+                value={fields.numero}
+                onChange={e => onChange('numero', e.target.value)}
+                error={errors.numero}
+                helperText={errors.numero}
+              />
+              <CustomTextField
+                label='Complemento (Opcional)'
+                type='text'
+                value={fields.complemento}
+                onChange={e => onChange('complemento', e.target.value)}
+                error={errors.complemento}
+                helperText={errors.complemento}
+              />
+              <CustomTextField
+                label='Ponto de Referência (Opcional)'
+                type='text'
+                value={fields.pontoReferencia}
+                onChange={e => onChange('pontoReferencia', e.target.value)}
+                error={errors.pontoReferencia}
+                helperText={errors.pontoReferencia}
+              />
+            </>
+          )}
           <Button
             type='submit'
             variant='contained'
             sx={{ width: '100%', height: '48px', mt: 1 }}
+            disabled={!areRequiredFieldsFilled}
           >
             Cadastrar Endereço
           </Button>
