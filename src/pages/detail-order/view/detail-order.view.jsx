@@ -119,7 +119,13 @@ export default function OrderDetailsView({
           >
             <Grid container spacing={2} alignItems='center'>
               <Grid item>
-                <Avatar sx={{ width: 48, height: 48, bgcolor: 'primary.main' }}>
+                <Avatar
+                  sx={{
+                    width: '48px',
+                    height: '48px',
+                    bgcolor: 'primary.main',
+                  }}
+                >
                   {order.customer.avatar ? (
                     <img
                       src={order.customer.avatar}
