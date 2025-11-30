@@ -10,6 +10,8 @@ export function AddressRedirectorComponent({ ...props }) {
       onChange={props.onChange}
       onSubmit={props.onSubmit}
       onBack={props.onBackToAddressMenu}
+      isCepDataLoaded={props.isCepDataLoaded}
+      areRequiredFieldsFilled={props.areRequiredFieldsFilled}
     />
   ) : (
     <AddressMenuComponent
