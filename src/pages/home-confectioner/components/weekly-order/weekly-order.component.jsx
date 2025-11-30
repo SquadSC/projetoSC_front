@@ -6,8 +6,6 @@ export function WeeklyOrder({ weeklyData }) {
   const { weeklyData: data, weeklyLoading: loading, weeklyError: error } = weeklyData;
   const navigate = useNavigate();
 
-  console.log('WeeklyOrder data:', data);
-
   const handleDayClick = (day) => {
     console.log('Day clicked:', day);
     navigate(`/agenda?day=${day}`);

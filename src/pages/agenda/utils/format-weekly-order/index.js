@@ -160,16 +160,32 @@ export function validateBackendData(orderData) {
 
 export function getWeekMonthName(weeklyData) {
   if (!weeklyData || weeklyData.length === 0) {
-    return '';
+    return {
+      day: '',
+      month: '',
+      year: ''
+    };
   }
 
   const firstValidDate = weeklyData.find(day => day.data);
 
   if (!firstValidDate) {
-    return '';
+    return {
+      day: '',
+      month: '',
+      year: ''
+    };
   }
 
+  // Extrair partes da data (formato: YYYY-MM-DD)
+  const [year, month, day] = firstValidDate.data.split('-');
+  
+  // Converter mês numérico para nome
   const monthName = getMonthName(firstValidDate.data);
 
-  return monthName.charAt(0).toUpperCase() + monthName.slice(1);
+  return {
+    day: day,
+    month: monthName.charAt(0).toUpperCase() + monthName.slice(1),
+    year: year
+  };
 }
