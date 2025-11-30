@@ -88,6 +88,15 @@ export function OrderDeliveryStageController() {
   // Atualizar campos do formulário
   async function handleChange(field, value) {
     setFields(prev => ({ ...prev, [field]: value }));
+    
+    // Limpa erro do campo quando o usuário começa a preencher
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
 
     if (field === 'cep') {
       const cleanedCep = value.replace(/\D/g, '');
@@ -98,16 +107,42 @@ export function OrderDeliveryStageController() {
           setFields(prev => ({
             ...prev,
             cep: cleanedCep,
-            logradouro: addressData.logradouro,
-            bairro: addressData.bairro,
-            cidade: addressData.localidade,
-            estado: addressData.uf,
+            logradouro: addressData.logradouro || '',
+            bairro: addressData.bairro || '',
+            cidade: addressData.localidade || '',
+            estado: addressData.uf || '',
           }));
+          // Limpa erro do CEP quando obtido com sucesso
+          setErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors.cep;
+            return newErrors;
+          });
         } catch (error) {
           setErrors(prev => ({ ...prev, cep: error.message }));
         } finally {
           setIsCepLoading(false);
         }
+      } else {
+        // Limpa erro se o CEP não tiver 8 dígitos ainda (não mostra erro enquanto está digitando)
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors.cep;
+          return newErrors;
+        });
+      }
+    }
+  }
+
+  // Validar CEP quando o campo perder o foco
+  function handleCepBlur() {
+    if (fields.cep) {
+      const cleanedCep = fields.cep.replace(/\D/g, '');
+      if (cleanedCep.length > 0 && cleanedCep.length !== 8) {
+        setErrors(prev => ({
+          ...prev,
+          cep: 'CEP deve conter 8 dígitos',
+        }));
       }
     }
   }
@@ -144,10 +179,37 @@ export function OrderDeliveryStageController() {
     }
   }
 
+  // Verifica se o CEP foi preenchido e as informações foram obtidas
+  function isCepDataLoaded() {
+    return (
+      fields.cep &&
+      fields.cep.replace(/\D/g, '').length === 8 &&
+      fields.logradouro &&
+      fields.bairro &&
+      fields.cidade &&
+      fields.estado
+    );
+  }
+
+  // Verifica se todos os campos obrigatórios estão preenchidos
+  function areRequiredFieldsFilled() {
+    return (
+      fields.nomeEndereco &&
+      fields.cep &&
+      fields.cep.replace(/\D/g, '').length === 8 &&
+      isCepDataLoaded() &&
+      fields.numero
+    );
+  }
+
   function validate() {
     const newErrors = {};
-    if (!fields.nomeEndereco) newErrors.nomeEndereco = 'Nome obrigatório';
-    if (!fields.cep) newErrors.cep = 'CEP obrigatório';
+    if (!fields.nomeEndereco) newErrors.nomeEndereco = 'Campo obrigatório';
+    const cleanedCep = fields.cep ? fields.cep.replace(/\D/g, '') : '';
+    if (!cleanedCep || cleanedCep.length !== 8 || !isCepDataLoaded()) {
+      newErrors.cep = 'Campo obrigatório';
+    }
+    if (!fields.numero) newErrors.numero = 'Campo obrigatório';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -308,7 +370,10 @@ export function OrderDeliveryStageController() {
         onAddNewAddress: handleAddNewAddress,
         onBackToAddressMenu: handleBackToAddressMenu,
         onChange: handleChange,
+        onCepBlur: handleCepBlur,
         onSubmit: handleSubmit,
+        isCepDataLoaded: isCepDataLoaded(),
+        areRequiredFieldsFilled: areRequiredFieldsFilled(),
       }}
       onFinishDelivery={handleFinishDelivery}
       pedidoId={pedidoId}

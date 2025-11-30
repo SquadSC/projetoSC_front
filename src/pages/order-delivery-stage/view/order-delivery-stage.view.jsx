@@ -31,6 +31,8 @@ export function OrderDeliveryStageView({
     onBackToAddressMenu: handleBackToAddressMenu,
     onChange: handleChange,
     onSubmit: handleSubmit,
+    isCepDataLoaded,
+    areRequiredFieldsFilled,
   },
   onFinishDelivery: onFinishDelivery
 }) {
@@ -74,6 +76,8 @@ export function OrderDeliveryStageView({
             onChange={handleChange}
             onSubmit={handleSubmit}
             onFinishDelivery={onFinishDelivery}
+            isCepDataLoaded={isCepDataLoaded}
+            areRequiredFieldsFilled={areRequiredFieldsFilled}
           />
         ) : (
           <PickupLocationComponent onConfirm={onFinishDelivery} />

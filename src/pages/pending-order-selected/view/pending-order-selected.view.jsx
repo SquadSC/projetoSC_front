@@ -149,7 +149,7 @@ export function PendingOrderSelectedView({
               <CakeCard
                 key={item.idItemPedido}
                 item={item}
-                onViewDetails={onViewCakeDetails || (() => console.log('Ver detalhes do bolo:', item))}
+                onViewDetails={onViewCakeDetails || (() => {})}
               />
             ))}
           </Stack>

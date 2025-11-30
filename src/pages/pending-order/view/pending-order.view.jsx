@@ -63,7 +63,7 @@ export function PendingOrderView({
         <Stack spacing={2}>
           {orders && orders.length > 0 ? (
             // Renderiza um card para cada pedido pendente
-            orders.map(order => (
+            orders.map((order) => (
               <PendingOrderCard
                 key={order.idPedido || order.id}
                 order={order}

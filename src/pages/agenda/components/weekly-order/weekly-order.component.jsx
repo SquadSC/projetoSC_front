@@ -1,17 +1,8 @@
 import { Alert, Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 export function WeeklyOrder({ weeklyData }) {
 
   const { weeklyData: data, weeklyLoading: loading, weeklyError: error } = weeklyData;
-  const navigate = useNavigate();
-
-  console.log('WeeklyOrder data:', data);
-
-  const handleDayClick = (day) => {
-    console.log('Day clicked:', day);
-    navigate(`/agenda?day=${day}`);
-  }
 
   if (loading) {
     return (
@@ -72,7 +63,6 @@ export function WeeklyOrder({ weeklyData }) {
               borderRadius: 1,
               border: '2px solid #38090D',
             }}
-            onClick={() => handleDayClick(order.data)}
           >
             <Box
               sx={{
