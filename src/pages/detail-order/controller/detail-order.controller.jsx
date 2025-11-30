@@ -10,7 +10,7 @@ import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
  * DetailOrderController
  *
  * Responsabilidades:
- * - Buscar dados do pedido via GET /pedidos/carrinho?idUsuario={id}
+ * - Buscar dados do pedido via GET /pedidos/{idPedido}
  * - Buscar dados do cliente via GET /usuarios/{clienteId}
  * - Buscar anexos de imagens de referência
  * - Formatar dados para exibição na view
@@ -130,10 +130,10 @@ export function DetailOrderController() {
   const formatAddress = endereco => {
     if (!endereco) return 'Endereço não informado';
 
-          const cepFormatado = endereco.cep ? maskCep(endereco.cep) : '';
-          const complementoStr = endereco.complemento
-            ? ` - ${endereco.complemento}`
-            : '';
+    const cepFormatado = endereco.cep ? maskCep(endereco.cep) : '';
+    const complementoStr = endereco.complemento
+      ? ` - ${endereco.complemento}`
+      : '';
 
     return `${endereco.logradouro}, ${endereco.numero}${complementoStr} - ${cepFormatado}`;
   };
@@ -146,8 +146,8 @@ export function DetailOrderController() {
     return {
       date: dtEntrega.toLocaleDateString('pt-BR'),
       time: dtEntrega.toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
       }),
     };
   };
@@ -155,26 +155,26 @@ export function DetailOrderController() {
   const processOrderItems = async (items = []) => {
     return Promise.all(
       items.map(async item => {
-            const informacaoBolo = item.informacaoBolo || {};
-            let imagemUrl = null;
+        const informacaoBolo = item.informacaoBolo || {};
+        let imagemUrl = null;
 
         // Processar imagem de referência se houver anexo válido
         if (informacaoBolo.anexo?.idAnexo) {
           console.log(`[DetailOrder] Processando anexo:`, informacaoBolo.anexo);
-              imagemUrl = await fetchReferenceImage(informacaoBolo.anexo);
+          imagemUrl = await fetchReferenceImage(informacaoBolo.anexo);
         } else {
           console.log(
             `[DetailOrder] Item sem anexo válido:`,
             item.idItemPedido,
           );
-            }
+        }
 
-            return {
-              ...item,
-              imagemUrl: imagemUrl,
-            };
-          }),
-        );
+        return {
+          ...item,
+          imagemUrl: imagemUrl,
+        };
+      }),
+    );
   };
 
   const extractCakeDetails = firstItem => {
@@ -233,42 +233,42 @@ export function DetailOrderController() {
       : 'Data não disponível';
 
     return {
-          // Identificadores
+      // Identificadores
       idPedido: orderData.idPedido,
       id: orderData.idPedido,
 
-          // Preços
+      // Preços
       precoTotal: orderData.precoTotal || 0,
       total: orderData.precoTotal || 0,
-          paidPercent: 50, // Valor padrão (backend não retorna este campo)
+      paidPercent: 50, // Valor padrão (backend não retorna este campo)
 
-          // Datas
+      // Datas
       dtEntregaEsperada: orderData.dtEntregaEsperada,
       deliveryDate,
       deliveryTime,
 
-          // Localização
+      // Localização
       address: formatAddress(orderData.endereco),
       isRetirada: orderData.isRetirada,
 
-          // Status
+      // Status
       statusPedidoId: orderData.statusPedidoId,
       statusPedido: orderData.statusPedido,
 
-          // Forma de pagamento
+      // Forma de pagamento
       formaPagamento: formatFormaPagamento(orderData.formaPagamento),
 
-          // Dados do cliente
-          customer: {
+      // Dados do cliente
+      customer: {
         name: customerData?.nome || 'Cliente',
-            memberSince: memberSince,
+        memberSince: memberSince,
         avatar: customerData?.fotoPerfil,
-          },
+      },
 
-          // Itens do pedido
+      // Itens do pedido
       itensPedido: processedItems,
 
-          // Detalhes do bolo (do primeiro item)
+      // Detalhes do bolo (do primeiro item)
       cakeDetails: extractCakeDetails(processedItems[0]),
     };
   };
@@ -338,7 +338,7 @@ export function DetailOrderController() {
       }
     };
 
-      fetchOrderData();
+    fetchOrderData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
