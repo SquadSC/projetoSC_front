@@ -25,7 +25,6 @@ export function DetailOrderController() {
   const [order, setOrder] = useState(null); // Dados do pedido formatados
   const [loading, setLoading] = useState(true); // Loading inicial
   const [error, setError] = useState(null); // Mensagem de erro
-  const [selectedReferenceImage, setSelectedReferenceImage] = useState(null); // Imagem selecionada
   const [refImages, setRefImages] = useState({}); // Images map: { anexoId: blobUrl }
 
   const fetchReferenceImage = async anexoData => {
@@ -381,31 +380,6 @@ export function DetailOrderController() {
   };
 
   // ========================================
-  // HANDLER: EDITAR PEDIDO
-  // ========================================
-  const handleEdit = orderToEdit => {
-    console.log('[DetailOrder] Editar pedido:', orderToEdit.id);
-
-    // Navegar para tela de edição (se existir)
-    if (ROUTES_PATHS.EDIT_ORDER) {
-      navigate(ROUTES_PATHS.EDIT_ORDER, {
-        state: { order: orderToEdit },
-      });
-    } else {
-      // Mostrar mensagem (edição não implementada)
-      setError('A funcionalidade de editar pedidos está em desenvolvimento.');
-    }
-  };
-
-  // ========================================
-  // HANDLER: ATUALIZAR IMAGEM SELECIONADA
-  // ========================================
-  const handleSetSelectedReferenceImage = image => {
-    console.log('[DetailOrder] Imagem selecionada:', image);
-    setSelectedReferenceImage(image);
-  };
-
-  // ========================================
   // RENDER: LOADING STATE
   // ========================================
   if (loading) {
@@ -473,28 +447,39 @@ export function DetailOrderController() {
   console.log('refImage ----------------------------', refImages);
 
   // ========================================
+  // HANDLER: VER DETALHES DO BOLO
+  // ========================================
+  const handleViewCakeDetails = cakeItem => {
+    console.log('[DetailOrder] Ver detalhes do bolo:', cakeItem);
+
+    if (order?.idPedido && cakeItem?.idItemPedido) {
+      // Navegar para tela de detalhes do bolo (rota específica para clientes)
+      navigate(
+        `/detail-order/${order.idPedido}/cake/${cakeItem.idItemPedido}`,
+        {
+          state: {
+            item: cakeItem,
+            order: order,
+          },
+        },
+      );
+    } else {
+      console.warn(
+        '[DetailOrder] Dados insuficientes para navegar para detalhes do bolo',
+      );
+    }
+  };
+
+  // ========================================
   // RENDER: NORMAL VIEW
   // ========================================
   return (
     <OrderDetailsView
+      loading={false}
+      error={null}
       order={order}
-      refImages={{
-        loading: false,
-        error: null,
-        images: Object.entries(refImages)
-          .filter(([, imageUrl]) => imageUrl) // Filtrar apenas imagens válidas
-          .map(([anexoId, imageUrl]) => ({
-            id_anexo: parseInt(anexoId),
-            imagem_anexo: imageUrl,
-            nome_arquivo: `anexo_${anexoId}.jpg`,
-          })),
-        refetch: () => {},
-        userUploadedImage: null,
-        selectedReferenceImage: selectedReferenceImage,
-        setSelectedReferenceImage: handleSetSelectedReferenceImage,
-      }}
       onCancel={handleCancel}
-      onEdit={handleEdit}
+      onViewCakeDetails={handleViewCakeDetails}
     />
   );
 }
