@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import theme from '../../../../theme';
 
-export function TopClientsTable({ data = [] }) {
+export function TopClientsTable({ data = [], showReturnRate = false, title = "Top Clientes" }) {
   const getAvatarColor = (index) => {
     const colors = [
       theme.palette.primary.main,
@@ -36,7 +36,7 @@ export function TopClientsTable({ data = [] }) {
   };
 
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: '100%'  }}>
       <CardContent sx={{ p: 3 }}>
         <Box mb={3}>
           <Typography
@@ -47,7 +47,7 @@ export function TopClientsTable({ data = [] }) {
               mb: 1,
             }}
           >
-            Top Clientes (Recorrência)
+            {title} (Recorrência)
           </Typography>
           <Typography
             variant="body2"
@@ -57,7 +57,7 @@ export function TopClientsTable({ data = [] }) {
           </Typography>
         </Box>
 
-        <TableContainer sx={{ maxHeight: 350 }}>
+        <TableContainer sx={{ maxHeight: 350, width: 350 }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
@@ -67,6 +67,11 @@ export function TopClientsTable({ data = [] }) {
                 <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
                   Pedidos
                 </TableCell>
+                {showReturnRate && (
+                  <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
+                    Taxa Retorno
+                  </TableCell>
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -121,6 +126,13 @@ export function TopClientsTable({ data = [] }) {
                       }}
                     />
                   </TableCell>
+                  {showReturnRate && (
+                    <TableCell align="center">
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: theme.palette.success.main }}>
+                        {client.returnRate}x
+                      </Typography>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

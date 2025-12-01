@@ -32,7 +32,6 @@ export function CalendarUserComponent({
 
   return (
     <>
-      <HeaderComponent />
       <Container sx={{ p: 2 }}>
         <Typography
           variant='subtitle2'

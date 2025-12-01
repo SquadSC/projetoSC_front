@@ -13,7 +13,6 @@ import { BottomNavigationComponent } from '../../../components/bottomNavigation/
 
 // Components
 import { MetricCard } from '../components/metric-card/metric-card.component';
-import { HourlyOrdersChart } from '../components/hourly-orders-chart/hourly-orders-chart.component';
 import { TopIngredientsChart } from '../components/top-ingredients-chart/top-ingredients-chart.component';
 import { TopClientsTable } from '../components/top-clients-table/top-clients-table.component';
 
@@ -34,14 +33,6 @@ export function DashboardView() {
 
       // Mock data para desenvolvimento
       setDashboardData({
-        // Top 5 horários com mais pedidos (histórico geral, não apenas hoje)
-        hourlyOrders: [
-          { hour: '16h', orders: 285 }, // Horário de pico - lanche da tarde
-          { hour: '15h', orders: 267 }, // Segunda opção mais popular
-          { hour: '17h', orders: 245 }, // Final da tarde
-          { hour: '14h', orders: 198 }, // Início da tarde
-          { hour: '18h', orders: 175 }, // Início da noite
-        ],
         topIngredients: [
           { name: 'Chocolate', count: 248, percentage: 28 },
           { name: 'Morango', count: 195, percentage: 22 },
@@ -78,8 +69,8 @@ export function DashboardView() {
             <Skeleton variant="text" width={300} height={24} />
           </Box>
           <Grid container spacing={3}>
-            {[...Array(4)].map((_, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+            {[...Array(2)].map((_, index) => (
+              <Grid item xs={12} sm={6} md={6} key={index}>
                 <Card>
                   <CardContent>
                     <Skeleton variant="text" width="60%" />
@@ -114,8 +105,8 @@ export function DashboardView() {
         </Box>
 
         <Grid container spacing={2}>
-          {/* Métricas principais em linha - cards menores */}
-          <Grid item xs={12} sm={4}>
+          {/* Métricas principais - apenas 2 cards */}
+          <Grid item xs={12} sm={6}>
             <MetricCard
               title="Novos Clientes"
               value={dashboardData.newClientsToday}
@@ -127,7 +118,7 @@ export function DashboardView() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6}>
             <MetricCard
               title="Total de Pedidos"
               value={dashboardData.totalOrders}
@@ -139,29 +130,13 @@ export function DashboardView() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={4}>
-            <MetricCard
-              title="Hora de Pico"
-              value="16h"
-              subtitle="42 pedidos"
-              icon="🔥"
-              color={theme.palette.error.main}
-              compact={true}
-            />
-          </Grid>
-
-          {/* Gráfico de horários com mais pedidos */}
-          <Grid item xs={12} lg={6}>
-            <HourlyOrdersChart data={dashboardData.hourlyOrders} />
-          </Grid>
-
           {/* Top ingredientes */}
           <Grid item xs={12} lg={6}>
             <TopIngredientsChart data={dashboardData.topIngredients} />
           </Grid>
 
-          {/* Top clientes - ocupa a largura total */}
-          <Grid item xs={12}>
+          {/* Top clientes */}
+          <Grid item xs={12} lg={6}>
             <TopClientsTable data={dashboardData.topClients} />
           </Grid>
         </Grid>
