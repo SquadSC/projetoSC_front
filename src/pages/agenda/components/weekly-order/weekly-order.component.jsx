@@ -3,6 +3,7 @@ import { Alert, Box, CircularProgress, Stack, Typography } from '@mui/material';
 export function WeeklyOrder({ weeklyData }) {
 
   const { weeklyData: data, weeklyLoading: loading, weeklyError: error } = weeklyData;
+  console.log('WeeklyOrder data:', data);
 
   if (loading) {
     return (

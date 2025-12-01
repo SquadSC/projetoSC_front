@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AgendaView } from '../view/agenda.view';
 import {
   getWeekMonthName,
@@ -9,9 +9,13 @@ import { useSearchParams } from 'react-router-dom';
 export function AgendaController() {
   const [agendaView, setAgendaView] = useState('lista');
   const [searchParams] = useSearchParams();
+  const [selectedDate, setSelectedDate] = useState(null);
 
-  const selectedDate =
-    searchParams.get('day') || new Date().toISOString().split('T')[0];
+  useEffect(() => {
+    setSelectedDate(
+      searchParams.get('day') || new Date().toISOString().split('T')[0],
+    );
+  }, [searchParams, setSelectedDate]);
 
   const {
     weeklyData,
@@ -19,9 +23,7 @@ export function AgendaController() {
     error: weeklyError,
   } = useFormatWeeklyOrder();
 
-  const {
-
-  } = useFormatWeeklyOrder(selectedDate);
+  const {} = useFormatWeeklyOrder(selectedDate);
 
   const monthName = getWeekMonthName(weeklyData);
 
@@ -36,12 +38,17 @@ export function AgendaController() {
     weeklyError,
   };
 
+  const selectedDateOrder = {
+    selectedDate,
+    setSelectedDate,
+    monthName,
+  }
+
   return (
     <AgendaView
       selectViewModeAgenda={selectViewModeAgenda}
       weeklyOrder={weeklyOrder}
-      monthName={monthName}
-      selectedDate={selectedDate}
+      selectedDateOrder={selectedDateOrder}
     />
   );
 }

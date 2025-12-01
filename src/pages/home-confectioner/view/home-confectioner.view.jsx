@@ -62,7 +62,7 @@ export function HomeConfectionerView({ user, weeklyData, newOrders, monthName })
           }}
           onClick={() => navigate(ROUTES_PATHS.AGENDA)}
         >
-          Ver Calendario
+          Ver Agenda
         </Button>
       </Box>
       <Stack spacing={2} mt={4} px={2} mb={11}>
