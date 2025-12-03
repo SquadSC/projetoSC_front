@@ -21,7 +21,7 @@ export function OrderSummaryCakeController() {
   const [dataLoading, setDataLoading] = useState(true);
   const [apiError, setApiError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // Hooks personalizados
   const stepController = useStepController(4);
   const ingredientSelection = useIngredientSelection(ingredients);
@@ -33,7 +33,7 @@ export function OrderSummaryCakeController() {
     images,
     loading: imagesLoading,
     error: imagesError,
-  } = useReferencesImages();
+  } = useReferencesImages(false); // Desabilitar: backend /anexos está retornando 400/500
 
   // Carrega dados iniciais da API
   useEffect(() => {
@@ -46,7 +46,16 @@ export function OrderSummaryCakeController() {
         ]);
 
         setIngredients(ingredientsResponse.data);
-        setEssentials(essentialsResponse.data);
+
+        // Garantir que essentials seja um array
+        let essentialsData = essentialsResponse.data;
+        if (!Array.isArray(essentialsData)) {
+          // Se não for array, tentar extrair dados de propriedades comuns
+          essentialsData =
+            essentialsData?.data || essentialsData?.produtos || [];
+        }
+
+        setEssentials(essentialsData);
         setApiError(null);
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -101,7 +110,7 @@ export function OrderSummaryCakeController() {
       );
       let finalOrderObject = { ...orderObject };
 
-      finalOrderObject.forma_pagamento ='Pix'
+      finalOrderObject.forma_pagamento = 'Pix';
       finalOrderObject.quantidade = priceCalculator.weight; // Quantidade igual ao peso
 
       // Se existe uma imagem uploadada pelo usuário que ainda não foi enviada ao backend
@@ -168,19 +177,20 @@ export function OrderSummaryCakeController() {
 
       console.log('Enviando pedido completo:', finalOrderObject);
 
-      const response = await request.post('/pedidos/adicionarProduto', finalOrderObject);
-      
+      const response = await request.post(
+        '/pedidos/adicionarProduto',
+        finalOrderObject,
+      );
+
       console.log('Resposta do servidor:', response);
 
-      if(response.status == 201){
+      if (response.status == 201) {
         console.log('Pedido enviado com sucesso!');
-        navigate(ROUTES_PATHS.CART)
+        navigate(ROUTES_PATHS.CART);
       }
-      
-      
+
       // Opcional: redirecionar para carrinho ou home após sucesso
       // navigate(ROUTES_PATHS.CART);
-      
     } catch (error) {
       console.error('Erro ao enviar pedido:', error);
       alert('Erro ao finalizar pedido. Tente novamente.');

@@ -5,7 +5,7 @@
 
 /**
  * Mapeia a descrição do status para o ID correspondente
- * @param {string} statusDescricao - Descrição do status (ex: "Aceito pela confeiteira")
+ * @param {string} statusDescricao - Descrição do status
  * @returns {number|null} ID do status ou null se não encontrado
  */
 export function getStatusIdFromDescription(statusDescricao) {
@@ -69,7 +69,7 @@ export function getStatusDescriptionFromId(statusId) {
     4: 'Pagamento',
     5: 'Produção',
     7: 'Concluído',
-    8: 'Cancelado',
+    8: 'Cancelado'
   };
 
   return statusMap[statusId] || null;
@@ -83,13 +83,12 @@ export function getStatusDescriptionFromId(statusId) {
 export function isPendingOrder(status) {
   if (!status) return false;
 
-  // Se for número, verifica diretamente
+  // Se for número, usa direto
   if (typeof status === 'number') {
     return [2, 3, 4].includes(status);
   }
 
-  // Se for string, converte para ID primeiro
+  // Se for string, converte primeiro
   const statusId = getStatusIdFromDescription(status);
   return statusId !== null && [2, 3, 4].includes(statusId);
 }
-
