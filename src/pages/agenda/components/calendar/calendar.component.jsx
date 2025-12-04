@@ -1,6 +1,7 @@
 import * as React from 'react';
 import dayjs from 'dayjs';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';
+import 'dayjs/locale/pt-br';
 import { styled } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -8,6 +9,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 
 dayjs.extend(isBetweenPlugin);
+dayjs.locale('pt-br');
 
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: prop => prop !== 'isSelected' && prop !== 'isHovered',
@@ -69,7 +71,6 @@ export function Calendar({ selectedDateOrder, setViewCalendar }) {
   const { selectedDate, setSelectedDate } = selectedDateOrder;
   const [hoveredDay, setHoveredDay] = React.useState(null);
 
-  // Função para garantir que sempre temos um dayjs válido
   const getSafeDate = date => {
     if (!date) return dayjs();
 
@@ -82,11 +83,12 @@ export function Calendar({ selectedDateOrder, setViewCalendar }) {
   const safeSelectedDate = getSafeDate(selectedDate);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='pt-br'>
       <DateCalendar
         value={safeSelectedDate}
         onChange={newValue => {
-          setSelectedDate(newValue);
+          const dateString = newValue ? newValue.format('YYYY-MM-DD') : null;
+          setSelectedDate(dateString);
           setViewCalendar(false);
         }}
         showDaysOutsideCurrentMonth
