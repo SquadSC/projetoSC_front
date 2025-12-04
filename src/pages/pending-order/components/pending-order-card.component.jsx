@@ -46,14 +46,18 @@ export function PendingOrderCard({
       const dataEntrega = order.dtEntregaEsperada;
       if (dataEntrega) {
         try {
-          const dataFormatada = new Date(dataEntrega).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-          });
-          return `Entrega agendada para ${dataFormatada}`;
+          const dataObj = new Date(dataEntrega);
+          // Validar se a data é válida
+          if (!isNaN(dataObj.getTime())) {
+            const dataFormatada = dataObj.toLocaleDateString('pt-BR', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            });
+            return `Entrega agendada para ${dataFormatada}`;
+          }
         } catch (e) {
-          return 'Verificar disponibilidade na agenda';
+          // Se houver erro, retornar mensagem padrão
         }
       }
       return 'Verificar disponibilidade na agenda';

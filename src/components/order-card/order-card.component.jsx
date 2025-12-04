@@ -41,17 +41,18 @@ export function OrderCard({ order, onViewDetails, loading }) {
       const dataEntrega = order.dtEntregaEsperada;
       if (dataEntrega) {
         try {
-          const dataFormatada = new Date(dataEntrega).toLocaleDateString(
-            'pt-BR',
-            {
+          const dataObj = new Date(dataEntrega);
+          // Validar se a data é válida
+          if (!isNaN(dataObj.getTime())) {
+            const dataFormatada = dataObj.toLocaleDateString('pt-BR', {
               day: '2-digit',
               month: '2-digit',
               year: 'numeric',
-            },
-          );
-          return `Entrega agendada para ${dataFormatada}`;
+            });
+            return `Entrega agendada para ${dataFormatada}`;
+          }
         } catch {
-          return 'Verificar disponibilidade na agenda';
+          // Se houver erro, retornar mensagem padrão
         }
       }
       return 'Verificar disponibilidade na agenda';
