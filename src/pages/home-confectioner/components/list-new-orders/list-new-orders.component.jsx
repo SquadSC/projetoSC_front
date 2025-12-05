@@ -15,9 +15,12 @@ import {
 } from '../../../../utils/date/date.utils';
 import { formatCurrencyBRL } from '../../../../utils/formatter/currency-formatter/currency-formatter';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../../utils/enums/routes-url';
 
 export function ListNewOrdersComponent({ newOrders }) {
   const { newOrders: orders, newOrdersLoading, newOrdersError } = newOrders;
+  const navigate = useNavigate();
 
   if (newOrdersLoading) {
     return (
@@ -180,7 +183,7 @@ export function ListNewOrdersComponent({ newOrders }) {
                   </Stack>
                 </Box>
               </Stack>
-              <Button variant='outlined' sx={{ px: 4 }}>
+              <Button variant='outlined' sx={{ px: 4 }} onClick={() => navigate(`${ROUTES_PATHS.PENDING_ORDER_SELECTED.replace(':id', orderId)}`)}>
                 Detalhes
               </Button>
             </Box>

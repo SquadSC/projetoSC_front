@@ -6,6 +6,7 @@ import {
 } from '../../agenda/utils/format-weekly-order';
 import { useSearchParams } from 'react-router-dom';
 import { useGetWeeklyOrderCount } from '../hooks/use-get-weekly-order-count';
+import { useGetOrderDay } from '../hooks/use-get-order-day';
 
 export function AgendaController() {
   const [agendaView, setAgendaView] = useState('lista');
@@ -67,6 +68,16 @@ export function AgendaController() {
     error: selectedWeekError,
   } = useGetWeeklyOrderCount(selectedDate !== null, selectedDate);
 
+  const {
+    orderData: selectedDayData,
+    isLoading: selectedDayLoading,
+    error: selectedDayError,
+  } = useGetOrderDay(selectedDate !== null, selectedDate);
+
+  const safeSelectedDayData = Array.isArray(selectedDayData)
+    ? selectedDayData
+    : [];
+
   const isUsingSelectedDate = selectedDate !== null;
 
   const formattedSelectedWeekData = selectedWeekData
@@ -111,6 +122,11 @@ export function AgendaController() {
       selectViewModeAgenda={selectViewModeAgenda}
       weeklyOrder={weeklyOrder}
       selectedDateOrder={selectedDateOrder}
+      selectDayOrderData={{
+        selectedDayData: safeSelectedDayData,
+        selectedDayLoading,
+        selectedDayError,
+      }}
     />
   );
 }

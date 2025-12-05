@@ -2,10 +2,6 @@ import {
   Box,
   Button,
   Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   Typography,
 } from '@mui/material';
@@ -14,11 +10,15 @@ import { BottomNavigationComponent } from '../../../components/bottomNavigation/
 import { WeeklyOrder } from '../../agenda/components/weekly-order/weekly-order.component';
 import { useState } from 'react';
 import { Calendar } from '../components/calendar/calendar.component';
+import { CardOrderDayComponent } from '../components/card-order-day/card-order-day.component';
 
-export function AgendaView({ selectViewModeAgenda, weeklyOrder, selectedDateOrder }) {
-  const { agendaView, setAgendaView } = selectViewModeAgenda;
+export function AgendaView({
+  weeklyOrder,
+  selectedDateOrder,
+  selectDayOrderData,
+}) {
   const [viewCalendar, setViewCalendar] = useState(false);
-  const { selectedDate, setSelectedDate, monthName } = selectedDateOrder;
+  const { monthName } = selectedDateOrder;
   return (
     <Container sx={{ padding: 0, width: '100%' }} maxWidth={false}>
       {viewCalendar && (
@@ -46,9 +46,12 @@ export function AgendaView({ selectViewModeAgenda, weeklyOrder, selectedDateOrde
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
-            <Calendar selectedDateOrder={selectedDateOrder} setViewCalendar={setViewCalendar} />
+            <Calendar
+              selectedDateOrder={selectedDateOrder}
+              setViewCalendar={setViewCalendar}
+            />
           </Box>
         </Box>
       )}
@@ -72,7 +75,7 @@ export function AgendaView({ selectViewModeAgenda, weeklyOrder, selectedDateOrde
             Trocar semana
           </Button>
         </Box>
-        <Stack spacing={2}>
+        <Stack spacing={2} pb={9}>
           <Typography
             variant='subTitle'
             fontWeight={'semiBold'}
@@ -80,6 +83,7 @@ export function AgendaView({ selectViewModeAgenda, weeklyOrder, selectedDateOrde
           >
             Pedidos do dia
           </Typography>
+          <CardOrderDayComponent selectDayOrderData={selectDayOrderData} />
         </Stack>
       </Stack>
       <BottomNavigationComponent />

@@ -59,14 +59,18 @@ export function WeeklyOrder({ weeklyData }) {
 
           let backgroundColor, textColor, borderColor;
 
-          if (isToday) {
+          if (isSelected && isToday) {
             backgroundColor = '#601016';
             textColor = 'white';
             borderColor = '#38090D';
           } else if (isSelected) {
-            backgroundColor = '#E3F2FD';
-            textColor = '#1976D2';
-            borderColor = '#1976D2';
+            backgroundColor = '#601016';
+            textColor = 'white';
+            borderColor = '#38090D';
+          } else if (isToday) {
+            backgroundColor = '#F4E1D7';
+            textColor = '#38090D';
+            borderColor = '#38090D';
           } else {
             backgroundColor = 'tertiary.main';
             textColor = 'black';
@@ -88,18 +92,16 @@ export function WeeklyOrder({ weeklyData }) {
                 borderRadius: 1,
                 border: `2px solid ${borderColor}`,
                 boxShadow:
-                  isSelected && !isToday
-                    ? '0 2px 8px rgba(25, 118, 210, 0.3)'
-                    : 'none',
+                  isSelected && !isToday ? '0 2px 8px #38090D' : 'none',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease-in-out',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
                   transform: 'scale(1.05)',
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
                 },
               }}
               onClick={() => {
-                if (setSelectedDate) {
+                if (setSelectedDate && selectedDate !== order.data) {
                   setSelectedDate(order.data);
                 }
               }}
