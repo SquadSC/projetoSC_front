@@ -1,52 +1,89 @@
 import {
+  Box,
+  Button,
   Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   Typography,
 } from '@mui/material';
 import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
 import { WeeklyOrder } from '../../agenda/components/weekly-order/weekly-order.component';
+import { useState } from 'react';
+import { Calendar } from '../components/calendar/calendar.component';
+import { CardOrderDayComponent } from '../components/card-order-day/card-order-day.component';
 
-export function AgendaView({ selectViewModeAgenda, weeklyOrder, monthName }) {
-  const { agendaView, setAgendaView } = selectViewModeAgenda;
+export function AgendaView({
+  weeklyOrder,
+  selectedDateOrder,
+  selectDayOrderData,
+}) {
+  const [viewCalendar, setViewCalendar] = useState(false);
+  const { monthName } = selectedDateOrder;
   return (
     <Container sx={{ padding: 0, width: '100%' }} maxWidth={false}>
+      {viewCalendar && (
+        <Box
+          sx={{
+            position: 'absolute',
+            zIndex: 10,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onClick={() => setViewCalendar(false)}
+        >
+          <Box
+            sx={{
+              zIndex: 11,
+              width: 'auto',
+              height: 'auto',
+              backgroundColor: 'white',
+              opacity: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <Calendar
+              selectedDateOrder={selectedDateOrder}
+              setViewCalendar={setViewCalendar}
+            />
+          </Box>
+        </Box>
+      )}
       <Stack spacing={2} p={2}>
         <PageHeader titulo='Agenda' showBackButton={true} />
-        <FormControl fullWidth>
-          <InputLabel id='demo-simple-select-label'>
-            Visualizar como:
-          </InputLabel>
-          <Select
-            labelId='demo-simple-select-label'
-            id='demo-simple-select'
-            value={agendaView}
-            label='Visualizar como:'
-            onChange={e => setAgendaView(e.target.value)}
+        <Stack spacing={1}>
+          <Typography
+            variant='subTitle'
+            fontWeight={'semiBold'}
+            color='primary.main'
           >
-            <MenuItem value={'lista'}>Semana</MenuItem>
-            <MenuItem value={'calendario'}>Calendário</MenuItem>
-          </Select>
-        </FormControl>
-        {agendaView === 'lista' ? (
-          <>
-            <Stack spacing={1}>
-              <Typography variant='subTitle' fontWeight={'semiBold'} color='primary.main'>Semana de Pedidos!</Typography>
-              <Typography variant='text' fontWeight={'medium'} color='primary.main'>{monthName}</Typography>
-            </Stack>
-            <WeeklyOrder weeklyData={weeklyOrder} />
-          </>
-        ) : (
-          <Typography variant='text'>Olá mundo em calendário!</Typography>
-        )}
-        <Stack spacing={2}>
-          <Typography variant='subTitle' fontWeight={'semiBold'} color='primary.main'>
+            Semana de Pedidos!
+          </Typography>
+          <Typography variant='text' fontWeight={'medium'} color='primary.main'>
+            {monthName.month} {monthName.year}
+          </Typography>
+        </Stack>
+        <WeeklyOrder weeklyData={weeklyOrder} />
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Button variant='contained' onClick={() => setViewCalendar(true)}>
+            Trocar semana
+          </Button>
+        </Box>
+        <Stack spacing={2} pb={9}>
+          <Typography
+            variant='subTitle'
+            fontWeight={'semiBold'}
+            color='primary.main'
+          >
             Pedidos do dia
           </Typography>
+          <CardOrderDayComponent selectDayOrderData={selectDayOrderData} />
         </Stack>
       </Stack>
       <BottomNavigationComponent />
