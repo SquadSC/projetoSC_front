@@ -3,13 +3,17 @@ import { Header } from '../components/header/header.component';
 import { WeeklyOrder } from '../components/weekly-order/weekly-order.component';
 import { ListNewOrdersComponent } from '../components/list-new-orders/list-new-orders.component';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
-export function HomeConfectionerView({ user, weeklyData, loading, error }) {
+
+import { useNavigate } from 'react-router-dom';
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+export function HomeConfectionerView({ user, weeklyData, newOrders, monthName }) {
   const lineGolden = {
     width: '100%',
     height: '5px',
     background:
       'linear-gradient(90deg, #CDA243 0%, #F3E4AA 50.48%, #C59736 100%)',
   };
+  const navigate = useNavigate();
   return (
     <Container sx={{ padding: 0, width: '100%' }} maxWidth={false}>
       <Box bgcolor={'secondary.main'} height={'auto'} p={2} pb={4}>
@@ -34,14 +38,10 @@ export function HomeConfectionerView({ user, weeklyData, loading, error }) {
                 fontWeight={'semiBold'}
                 color='primary.main'
               >
-                Março:
+                {monthName}:
               </Typography>
             </Stack>
-            <WeeklyOrder
-              weeklyData={weeklyData}
-              loading={loading}
-              error={error}
-            />
+            <WeeklyOrder weeklyData={weeklyData} />
           </Stack>
         </Stack>
       </Box>
@@ -60,15 +60,16 @@ export function HomeConfectionerView({ user, weeklyData, loading, error }) {
             transform: 'translateX(-50%)',
             minWidth: '150px',
           }}
+          onClick={() => navigate(ROUTES_PATHS.AGENDA)}
         >
-          Ver Calendario
+          Ver Agenda
         </Button>
       </Box>
-      <Stack spacing={2} mt={4} px={2}>
+      <Stack spacing={2} mt={4} px={2} mb={11}>
         <Typography variant='subTitle' fontWeight={'semiBold'}>
           Novos Pedidos
         </Typography>
-        <ListNewOrdersComponent />
+        <ListNewOrdersComponent newOrders={newOrders} />
       </Stack>
       <BottomNavigationComponent />
     </Container>

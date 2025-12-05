@@ -1,53 +1,93 @@
 import { useEffect, useState } from 'react';
-import { OrdersView } from '../view/orders.view.jsx'; // Verifique o caminho correto para sua view
-import mockData from '../../../../bdMock.json'; // Verifique o caminho correto para o seu mock
+import { useNavigate } from 'react-router-dom';
+import { OrdersView } from '../view/orders.view.jsx';
+import { api } from '../../../services/api';
+import { getUserData } from "../../../utils/auth.js";
+import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+
+// 🔄 Função ajustada para normalizar status
+function normalizarStatus(status = '') {
+  const map = {
+    'Enviado': 'Pendente',
+    'Aceito pela confeiteira': 'Em Andamento',
+    'Validado pelo fornecedor': 'Em Andamento',
+    'Agendamento confirmado': 'Em Andamento',
+    'Em produção': 'Em Andamento',
+    'Concluído': 'Concluído',
+    'Cancelado': 'Cancelado',
+  };
+
+  return map[status] || 'Pendente'; // fallback seguro
+}
 
 export function OrdersController() {
+  const navigate = useNavigate();
+
   const [pedidosPendentes, setPedidosPendentes] = useState([]);
   const [pedidosEmAndamento, setPedidosEmAndamento] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulando a busca de dados e adicionando status para a lógica da UI
-    const pedidosComStatus = mockData.pedidos.map((pedido, index) => {
-      if (index < 2) {
-        return {
-          ...pedido,
-          id: `#1425${index + 6}`, // IDs de exemplo como na imagem
-          tipo: index % 2 === 0 ? 'Híbrido' : 'Personalizado',
-          status: 'Pendente',
-          deliveryDate: `1${index + 6} Setembro, 2025`, // Datas de exemplo
-          deliveryTime: '11:54 PM', // Horário de exemplo
-        };
-      } else {
-        return {
-          ...pedido,
-          id: `#1425${index + 6}`,
-          tipo: 'Híbrido',
-          status: 'Em Andamento',
-          fase:
-            index === 2
-              ? 'Confeiteira está verificando disponibilidade'
-              : 'Preparando seu pedido',
-          progresso: index === 2 ? 25 : 50, // Progresso em %
-          deliveryDate: '16 Setembro, 2025',
-          deliveryTime: '11:54 PM',
-        };
-      }
-    });
+    async function fetchPedidos() {
+      try {
+        setLoading(true);
+        setError(null);
 
-    // Filtrando pedidos por status
-    setPedidosPendentes(
-      pedidosComStatus.filter((p) => p.status === 'Pendente')
-    );
-    setPedidosEmAndamento(
-      pedidosComStatus.filter((p) => p.status === 'Em Andamento')
-    );
+        const userData = getUserData();
+        const idUsuario = userData?.id;
+
+        if (!idUsuario) {
+          setError('Usuário não identificado');
+          setLoading(false);
+          return;
+        }
+
+        const response = await api.get('/pedidos/listar', {
+          params: { idUsuario },
+        });
+
+        const pedidos = Array.isArray(response.data) ? response.data : [];
+
+        const pedidosNormalizados = pedidos.map(p => ({
+          ...p,
+          statusNormalizado: normalizarStatus(p.statusPedido),
+        }));
+
+        setPedidosPendentes(
+          pedidosNormalizados.filter(p => p.statusNormalizado === 'Pendente')
+        );
+
+        setPedidosEmAndamento(
+          pedidosNormalizados.filter(p => p.statusNormalizado === 'Em Andamento')
+        );
+
+      } catch (err) {
+        console.error('[Orders] Erro ao buscar pedidos:', err);
+        setError(
+          err.response?.data?.message ||
+          err.message ||
+          'Erro ao buscar pedidos'
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPedidos();
   }, []);
+
+  const handleViewDetails = pedido => {
+    navigate(`${ROUTES_PATHS.DETAIL_ORDER}/${pedido.idPedido}`);
+  };
 
   return (
     <OrdersView
       pedidosPendentes={pedidosPendentes}
       pedidosEmAndamento={pedidosEmAndamento}
+      onViewDetails={handleViewDetails}
+      loading={loading}
+      error={error}
     />
   );
 }

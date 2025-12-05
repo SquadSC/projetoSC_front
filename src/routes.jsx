@@ -26,7 +26,10 @@ import { OrdersController } from './pages/orders/controller/orders.controller.js
 import { PendingOrderController } from './pages/pending-order/controller/pending-order.controller.jsx';
 import { PendingOrderSelectedController } from './pages/pending-order-selected/controller/pending-order-selected.controller.jsx';
 import { CakeDetailsController } from './pages/pending-order-selected/components/cake-details/cake-details.controller';
+import { CakeDetailsClientController } from './pages/detail-order/components/cake-details-client/cake-details-client.controller';
 import { HomeConfectionerController } from './pages/home-confectioner/index.page.jsx';
+import { AgendaController } from './pages/agenda/index.page.jsx';
+import { DetailOrderController } from './pages/detail-order/index.page.jsx';
 
 // ========================================
 // CONFIGURAÇÃO CENTRALIZADA DE ROTAS
@@ -36,6 +39,8 @@ export const CLIENT_ROUTES_PATHS = [
   ROUTES_PATHS.HOME,
   ROUTES_PATHS.CART,
   ROUTES_PATHS.ORDERS,
+  ROUTES_PATHS.DETAIL_ORDER,
+  ROUTES_PATHS.CAKE_DETAILS_CLIENT,
   ROUTES_PATHS.ORDER_DELIVERY_STAGE,
   ROUTES_PATHS.ORDER_SUMMARY_CAKE,
   ROUTES_PATHS.NUMBER_GUESTS,
@@ -43,6 +48,7 @@ export const CLIENT_ROUTES_PATHS = [
 
 export const CONFECTIONER_ROUTES_PATHS = [
   ROUTES_PATHS.HOME_CONFECTIONER,
+  ROUTES_PATHS.AGENDA,
   ROUTES_PATHS.PRODUCTS,
   ROUTES_PATHS.ADD_PRODUCT,
   ROUTES_PATHS.EDIT_PRODUCT,
@@ -54,7 +60,6 @@ export const CONFECTIONER_ROUTES_PATHS = [
 ];
 
 export const routeHelpers = {
-
   canUserAccessRoute: (userRole, routePath) => {
     if (userRole === 'confeiteira') {
       return CONFECTIONER_ROUTES_PATHS.includes(routePath);
@@ -113,6 +118,14 @@ export default function AppRoutes() {
       element: <OrdersController />,
     },
     {
+      path: ROUTES_PATHS.DETAIL_ORDER + '/:id',
+      element: <DetailOrderController />,
+    },
+    {
+      path: ROUTES_PATHS.CAKE_DETAILS_CLIENT,
+      element: <CakeDetailsClientController />,
+    },
+    {
       path: ROUTES_PATHS.ORDER_DELIVERY_STAGE,
       element: <OrderDeliveryStageController />,
     },
@@ -131,6 +144,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.HOME_CONFECTIONER,
       element: <HomeConfectionerController />,
+    },
+    {
+      path: ROUTES_PATHS.AGENDA,
+      element: <AgendaController />,
     },
     {
       path: ROUTES_PATHS.PRODUCTS,

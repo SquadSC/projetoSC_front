@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
-import profileIcon from '../../../../assets/user-perfil.svg';
+import profileIcon from '../../../../assets/icons/user-perfil.svg';
 
 export function Header({ user }) {
   return (

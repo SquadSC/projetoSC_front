@@ -10,7 +10,7 @@ export function useGetOrderCountDay(autoFetch = true) {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get('/orders-count-day');
+      const response = await api.get('/pedidos/PedidosSemana');
       setData(response.data);
     } catch (error) {
       console.error('Erro ao buscar contagem de pedidos:', error);

@@ -29,7 +29,7 @@ export function useOrderBuilder() {
     } = params;
 
     return {
-      idCliente: userId, // ✅ Agora usa o userId passado como parâmetro
+      idCliente: userId, // Agora usa o userId passado como parâmetro
       idProduto: productId,
       quantidade: weight, // Quantidade baseada no peso
       preco: totalPrice,

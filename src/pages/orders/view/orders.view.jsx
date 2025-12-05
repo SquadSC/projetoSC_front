@@ -1,94 +1,114 @@
-import {
-  Box,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  Stack,
-  LinearProgress,
-} from '@mui/material';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import {
-  cardStyle,
-  iconAndTextStyle,
-  mainContainer,
-  sectionTitle,
-} from '../styles/orders.styles.js';
-import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx'; 
-import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component.jsx'; 
+import { Box, Container, Typography, CircularProgress } from '@mui/material';
+import { OrderCard } from '../../../components/order-card';
+import { mainContainer, sectionTitle } from '../styles/orders.styles.js';
+import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx';
+import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component.jsx';
 
-export function OrdersView({ pedidosPendentes, pedidosEmAndamento }) {
-  const renderPedidoCard = (pedido, showProgress = false) => (
-    <Card key={pedido.id} sx={{cardStyle, mb: 1, color: 'primary.main'}}>
-      <CardContent>
-        <Stack spacing={2}>
-          {/* Seção Superior do Card */}
-          <Box display="flex" justifyContent="space-between">
-            <Stack>
-              <Typography variant="subtitle1" fontWeight="bold">
-                Ordem {pedido.id}
-              </Typography>
-              <Box sx={iconAndTextStyle}>
-                <CalendarTodayIcon sx={{ fontSize: 16, mr: 0.5 }} />
-                <Typography variant="caption">{pedido.deliveryDate}</Typography>
-              </Box>
-            </Stack>
-            <Stack alignItems="flex-end">
-              <Typography variant="subtitle1" fontWeight="bold">
-                {pedido.tipo}
-              </Typography>
-              <Box sx={iconAndTextStyle}>
-                <AccessTimeIcon sx={{ fontSize: 16, mr: 0.5 }} />
-                <Typography variant="caption">{pedido.deliveryTime}</Typography>
-              </Box>
-            </Stack>
-          </Box>
+export function OrdersView({
+  pedidosPendentes,
+  pedidosEmAndamento,
+  onViewDetails,
+  loading,
+  error,
+}) {
+  if (loading) {
+    return (
+      <Box sx={mainContainer}>
+        <NavbarComponent />
+        <Container
+          sx={{
+            py: 3,
+            mb: 8,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+          }}
+        >
+          <CircularProgress />
+        </Container>
+        <BottomNavigationComponent />
+      </Box>
+    );
+  }
 
-          {/* Seção de Progresso (apenas para pedidos em andamento) */}
-          {showProgress && (
-            <Box>
-              <Typography variant="body2" fontWeight="bold" gutterBottom>
-                Fase do pedido
-              </Typography>
-              <Box sx={iconAndTextStyle} mb={1}>
-                <AccessTimeIcon sx={{ fontSize: 18, mr: 1, color: 'primary.main' }} />
-                <Typography variant="body2">{pedido.fase}</Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={pedido.progresso}
-                sx={{ height: 6, borderRadius: 5 }}
-              />
-            </Box>
-          )}
-        </Stack>
-      </CardContent>
-    </Card>
-  );
+  if (error) {
+    return (
+      <Box sx={mainContainer}>
+        <NavbarComponent />
+        <Container sx={{ py: 3, mb: 8 }}>
+          <Typography
+            variant='h5'
+            fontWeight='bold'
+            gutterBottom
+            sx={{ color: 'primary.main' }}
+          >
+            Meus Pedidos
+          </Typography>
+          <Typography variant='body1' color='error' sx={{ mt: 2 }}>
+            {error}
+          </Typography>
+        </Container>
+        <BottomNavigationComponent />
+      </Box>
+    );
+  }
+
+  const temPedidos =
+    pedidosPendentes.length > 0 || pedidosEmAndamento.length > 0;
 
   return (
     <Box sx={mainContainer}>
       <NavbarComponent />
       <Container sx={{ py: 3, mb: 8 }}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: 'primary.main' }}>
+        <Typography
+          variant='h5'
+          fontWeight='bold'
+          gutterBottom
+          sx={{ color: 'primary.main' }}
+        >
           Meus Pedidos
         </Typography>
 
-        {/* Seção de Pedidos Pendentes */}
-        <Box mb={3}>
-          <Typography sx={sectionTitle}>Pendentes:</Typography>
-          {pedidosPendentes.map((pedido) => renderPedidoCard(pedido, false))}
-        </Box>
+        {!temPedidos ? (
+          <Typography variant='body1' color='text.secondary' sx={{ mt: 2 }}>
+            Você não tem pedidos no momento.
+          </Typography>
+        ) : (
+          <>
+            {/* Seção de Pedidos Pendentes */}
+            {pedidosPendentes.length > 0 && (
+              <Box mb={3}>
+                <Typography sx={sectionTitle}>Pendentes:</Typography>
+                {pedidosPendentes.map(pedido => (
+                  <OrderCard
+                    key={pedido.idPedido}
+                    order={pedido}
+                    onViewDetails={() => onViewDetails(pedido)}
+                    loading={loading}
+                  />
+                ))}
+              </Box>
+            )}
 
-        {/* Seção de Pedidos em Andamento */}
-        <Box>
-          <Typography sx={sectionTitle}>Em Andamento:</Typography>
-          {pedidosEmAndamento.map((pedido) => renderPedidoCard(pedido, true))}
-        </Box>
+            {/* Seção de Pedidos em Andamento */}
+            {pedidosEmAndamento.length > 0 && (
+              <Box>
+                <Typography sx={sectionTitle}>Em Andamento:</Typography>
+                {pedidosEmAndamento.map(pedido => (
+                  <OrderCard
+                    key={pedido.idPedido}
+                    order={pedido}
+                    onViewDetails={() => onViewDetails(pedido)}
+                    loading={loading}
+                  />
+                ))}
+              </Box>
+            )}
+          </>
+        )}
       </Container>
-      {/* Certifique-se de que seu componente de navegação inferior se chama BottomNavigationComponent ou ajuste o nome */}
-      <BottomNavigationComponent/>
+      <BottomNavigationComponent />
     </Box>
   );
 }

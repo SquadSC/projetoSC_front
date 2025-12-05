@@ -1,22 +1,21 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from '../../../../services/api';
 
-export function useGetTodayDate(autoFetch = true) {
+export function useGetOrderCountDay(autoFetch = true) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const todayDate = useCallback(async () => {
+  const orderCountDayData = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await api.get('/today-date');
+      const response = await api.get('/pedidos/PedidosSemana');
       setData(response.data);
     } catch (error) {
-      console.error('Erro ao buscar a data de hoje:', error);
+      console.error('Erro ao buscar contagem de pedidos:', error);
       setError(
-        error.response?.data?.message || 'Erro ao buscar a data de hoje',
+        error.response?.data?.message || 'Erro ao buscar contagem de pedidos',
       );
     } finally {
       setLoading(false);
@@ -25,14 +24,14 @@ export function useGetTodayDate(autoFetch = true) {
 
   useEffect(() => {
     if (autoFetch) {
-      todayDate();
+      orderCountDayData();
     }
-  }, [autoFetch, todayDate]);
+  }, []);
 
   return {
     data,
     loading,
     error,
-    todayDate,
+    orderCountDayData,
   };
 }

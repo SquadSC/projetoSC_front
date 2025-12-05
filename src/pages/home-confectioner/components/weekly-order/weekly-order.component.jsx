@@ -1,6 +1,15 @@
 import { Alert, Box, CircularProgress, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-export function WeeklyOrder({ weeklyData, loading, error }) {
+export function WeeklyOrder({ weeklyData }) {
+
+  const { weeklyData: data, weeklyLoading: loading, weeklyError: error } = weeklyData;
+  const navigate = useNavigate();
+
+  const handleDayClick = (day) => {
+    console.log('Day clicked:', day);
+    navigate(`/agenda?day=${day}`);
+  }
 
   if (loading) {
     return (
@@ -32,7 +41,7 @@ export function WeeklyOrder({ weeklyData, loading, error }) {
     );
   }
 
-  const sixDays = weeklyData.slice(0, 6);
+  const sixDays = data.slice(0, 6);
 
   return (
     <>
@@ -49,10 +58,11 @@ export function WeeklyOrder({ weeklyData, loading, error }) {
         {sixDays.map((order, index) => (
           <Box
             key={`order-${index}-${order.data}`}
+            backgroundColor={order.isToday ? '#601016' : 'tertiary.main'}
+            color={order.isToday ? 'white' : 'black'}
             sx={{
               display: 'flex',
               flex: 1,
-              backgroundColor: 'tertiary.main',
               maxWidth: '50px',
               minWidth: '50px',
               maxHeight: '88px',
@@ -60,6 +70,7 @@ export function WeeklyOrder({ weeklyData, loading, error }) {
               borderRadius: 1,
               border: '2px solid #38090D',
             }}
+            onClick={() => handleDayClick(order.data)}
           >
             <Box
               sx={{
@@ -67,6 +78,7 @@ export function WeeklyOrder({ weeklyData, loading, error }) {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 width: '100%',
+                background: 'transparent',
               }}
             >
               <Box
@@ -75,6 +87,7 @@ export function WeeklyOrder({ weeklyData, loading, error }) {
                   flex: 1,
                   alignItems: 'center',
                   justifyContent: 'center',
+                  background: 'transparent',
                 }}
               >
                 <Typography variant='textLittle'>{order.dayWeekShort}</Typography>
@@ -85,7 +98,6 @@ export function WeeklyOrder({ weeklyData, loading, error }) {
                   flex: 3,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  bgcolor: 'background.default',
                 }}
               >
                 <Typography

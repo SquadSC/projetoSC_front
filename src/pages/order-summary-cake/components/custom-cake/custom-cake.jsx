@@ -68,7 +68,7 @@ export default function CustomCake({
   };
 
   // Função para lidar com seleção de ingredientes
-  const onIngredientToggle = (type, ingredientId, isSelected) => {
+  const onIngredientToggle = (type, ingredientId) => {
     toggleIngredient(type, ingredientId);
   };
 
@@ -86,10 +86,7 @@ export default function CustomCake({
         }}
       >
         <Stack spacing={3}>
-          <Typography
-            variant='subTitleLittle'
-            fontWeight='semiBold'
-          >
+          <Typography variant='subTitleLittle' fontWeight='semiBold'>
             Personalize seu bolo
           </Typography>
 
