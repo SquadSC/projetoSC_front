@@ -9,7 +9,7 @@ import { AddressRedirectorComponent } from '../components/address-redirector/add
 
 export function OrderDeliveryStageView({
   stepConfig: { nextStep, activeStep, maxStepReached, setActiveStep },
-  methodDeliveryConfig: { methodDelivery, driveMethodDelivery, addAddress },
+  methodDeliveryConfig: { methodDelivery, driveMethodDelivery },
   calendarConfig: {
     date,
     horario,
@@ -17,6 +17,7 @@ export function OrderDeliveryStageView({
     onDateChange,
     onHorarioChange,
     onNext,
+    formattedDateTime,
   },
   addressConfig: {
     addresses,
@@ -30,7 +31,10 @@ export function OrderDeliveryStageView({
     onBackToAddressMenu: handleBackToAddressMenu,
     onChange: handleChange,
     onSubmit: handleSubmit,
+    isCepDataLoaded,
+    areRequiredFieldsFilled,
   },
+  onFinishDelivery: onFinishDelivery
 }) {
   const steps = ['Etapa 1', 'Etapa 2', 'Etapa 3'];
 
@@ -46,6 +50,7 @@ export function OrderDeliveryStageView({
             onDateChange={onDateChange}
             onHorarioChange={onHorarioChange}
             onNext={onNext}
+            formattedDateTime={formattedDateTime}
           />
         );
       case 1:
@@ -57,7 +62,7 @@ export function OrderDeliveryStageView({
           />
         );
       case 2:
-        return methodDelivery === 'delivery' && addAddress ? (
+        return methodDelivery === false ? (
           <AddressRedirectorComponent
             addresses={addresses}
             selectedAddressId={selectedAddressId}
@@ -70,9 +75,12 @@ export function OrderDeliveryStageView({
             onBackToAddressMenu={handleBackToAddressMenu}
             onChange={handleChange}
             onSubmit={handleSubmit}
+            onFinishDelivery={onFinishDelivery}
+            isCepDataLoaded={isCepDataLoaded}
+            areRequiredFieldsFilled={areRequiredFieldsFilled}
           />
         ) : (
-          <PickupLocationComponent nextStep={nextStep} />
+          <PickupLocationComponent onConfirm={onFinishDelivery} />
         );
     }
   };

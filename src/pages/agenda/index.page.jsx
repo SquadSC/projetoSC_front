@@ -1,0 +1,1 @@
+export { AgendaController } from './controller/agenda.controller';

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { LoginView } from '../view/login.view';
 import { request } from '../../../services/api';
 import { saveUserData } from '../../../utils/auth';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { routeHelpers } from '../../../routes';
 import {
   validateFields,
   validators,
@@ -12,12 +12,16 @@ import Swal from 'sweetalert2';
 
 export function LoginController() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [fields, setFields] = useState({
     email: '',
     password: '',
   });
 
   const [error, setError] = useState({});
+
+  // Pega a rota de origem para redirecionamento após login
+  const from = location.state?.from;
 
   function validate() {
     const loginValidators = {
@@ -48,8 +52,8 @@ export function LoginController() {
         const userData = response.data;
         if (response.status === 200) {
           let userRole = 'cliente';
-          if (userData.tipo && userData.tipo.toLowerCase() === "confeiteira") {
-            userRole = "confeiteira";
+          if (userData.tipo && userData.tipo.toLowerCase() === 'confeiteira') {
+            userRole = 'confeiteira';
           }
           const normalizedUserData = {
             id: userData.id,
@@ -62,14 +66,18 @@ export function LoginController() {
           };
 
           saveUserData(normalizedUserData);
-          saveUserData(userData);
+
           Swal.fire({
             icon: 'success',
             title: 'Login bem-sucedido',
             showConfirmButton: false,
             timer: 1500,
           });
-          navigate(ROUTES_PATHS.HOME);
+
+          // Redirecionamento inteligente baseado no tipo de usuário
+          const redirectPath = routeHelpers.getRedirectPath(userRole, from);
+          navigate(redirectPath);
+          console.log('userRole', userRole, 'redirecting to:', redirectPath);
         } else {
           Swal.fire({
             icon: 'error',

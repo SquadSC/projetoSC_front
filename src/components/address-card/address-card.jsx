@@ -1,10 +1,11 @@
 import { Box, Stack, Typography } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn'; // Ícone de localização
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'; // Ícone de seta
+import { maskCep } from '../../utils/mask/mask.utils';
 
 export function AddressCard({ address, onSelect, isSelected }) {
   const addressText = `${address.logradouro}, ${address.numero} - ${address.bairro}`;
-  const cityAndCep = `${address.cidade}, ${address.cep}`;
+  const cityAndCep = `${address.cidade}, ${maskCep(address.cep)}`;
 
   return (
     <Box
@@ -30,13 +31,17 @@ export function AddressCard({ address, onSelect, isSelected }) {
         />
 
         {/* Textos do Endereço */}
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant='text' fontWeight='bold'>
+        <Stack direction='column' spacing={0.5} sx={{ flexGrow: 1 }}>
+          <Typography variant='text' fontWeight='bold' sx={{ display: 'block' }}>
             {`Endereço: ${address.nomeEndereco}`}
           </Typography>
-          <Typography variant='textLittle'>{addressText}</Typography>
-          <Typography variant='textLittle'>{cityAndCep}</Typography>
-        </Box>
+          <Typography variant='textLittle' sx={{ display: 'block' }}>
+            {addressText}
+          </Typography>
+          <Typography variant='textLittle' sx={{ display: 'block' }}>
+            {cityAndCep}
+          </Typography>
+        </Stack>
 
         {/* Ícone de Seta */}
         {/* Opcional: usar uma cor do tema para a seta também */}

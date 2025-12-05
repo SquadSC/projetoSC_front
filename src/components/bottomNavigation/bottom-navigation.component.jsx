@@ -10,27 +10,33 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../utils/enums/routes-url';
 import { getUserRole } from '../../utils/auth';
 
+// import das imagens dos ícones
+import homeIcon from '../../assets/icons/home.svg';
+import graphUpIcon from '../../assets/icons/graph-up-linear.svg';
+import listCatalogo from '../../assets/icons/list-catalogo.svg';
+import relogio from '../../assets/icons/relogio.svg';
+import solarUser from '../../assets/icons/solar-user.svg';
+
 export function BottomNavigationComponent() {
   const navigate = useNavigate();
   const userRole = getUserRole();
 
   const clienteTabs = [
-    { label: "Início", icon: <HomeFilledIcon sx={iconStyle} />, path: ROUTES_PATHS.HOME },
-    { label: "Pedidos", icon: <AssignmentIcon sx={iconStyle} />, path: ROUTES_PATHS.CART },
-    { label: "Loja", icon: <ShoppingBagIcon sx={iconStyle} />, path: ROUTES_PATHS.SEARCH },
-    { label: "Perfil", icon: <PersonIcon sx={iconStyle} />, path: ROUTES_PATHS.PROFILE },
+    { label: "Início", icon: <img src={homeIcon} alt="Início" style={iconStyle} />, path: ROUTES_PATHS.HOME },
+    { label: "Pedidos", icon: <img src={listCatalogo} alt="Catálogo" style={iconStyle} />, path: ROUTES_PATHS.ORDERS },
+    // { label: "Loja", icon: <ShoppingBagIcon sx={iconStyle} />, path: ROUTES_PATHS.HOME },
+    { label: "Perfil", icon: <img src={solarUser} alt="Perfil" style={iconStyle} />, path: ROUTES_PATHS.PROFILE },
   ];
 
   const confeiteiraTabs = [
-    { label: "Início", icon: <HomeFilledIcon sx={iconStyle} />, path: ROUTES_PATHS.HOME },
-    { label: "Pendentes", icon: <QueryBuilderIcon sx={iconStyle} />, path: ROUTES_PATHS.PENDING },
-    { label: "Catálogo", icon: <AssignmentIcon sx={iconStyle} />, path: ROUTES_PATHS.CATALOG },
-    { label: "Dashboard", icon: <DashboardIcon sx={iconStyle} />, path: ROUTES_PATHS.DASHBOARD },
-    { label: "Perfil", icon: <PersonIcon sx={iconStyle} />, path: ROUTES_PATHS.PROFILE },
+    { label: "Início", icon: <img src={homeIcon} alt="Início" style={iconStyle} />, path: ROUTES_PATHS.HOME },
+    { label: "Pendentes", icon: <img src={relogio} alt="Pendentes" style={iconStyle} />, path: ROUTES_PATHS.PENDING_ORDERS },
+    { label: "Catálogo", icon: <img src={listCatalogo} alt="Catálogo" style={iconStyle} />, path: ROUTES_PATHS.PRODUCTS },
+    { label: "Dashboard", icon: <img src={graphUpIcon} alt="Dashboard" style={iconStyle} />, path: ROUTES_PATHS.DASHBOARD },
+    { label: "Perfil", icon: <img src={solarUser} alt="Perfil" style={iconStyle} />, path: ROUTES_PATHS.PROFILE },
   ];
 
   const tabs = userRole === "cliente" ? clienteTabs : confeiteiraTabs;
-  console.log('User Role:', userRole);
 
   return (
     <Box
@@ -58,13 +64,14 @@ export function BottomNavigationComponent() {
             label={tab.label}
             icon={tab.icon}
             sx={{
-              height: "70px",
+              height: "80px",
               minWidth: 'auto',
               padding: '8px 0',
               '& .MuiBottomNavigationAction-label': {
-                fontSize: '0.75rem',
+                fontSize: '0.65rem',
                 opacity: 1,
                 transition: 'none',
+                paddingTop: '6px'
               },
               '& .MuiBottomNavigationAction-wrapper': {
                 display: 'flex',
@@ -76,7 +83,7 @@ export function BottomNavigationComponent() {
               '&.Mui-selected': {
                 color: '#B4916C',
               },
-              color: '#666666',
+              color: 'primary.main',
             }}
           />
         ))}

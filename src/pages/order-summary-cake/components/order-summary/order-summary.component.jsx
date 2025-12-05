@@ -103,7 +103,7 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        mt: 4,
+        mt: 2,
         pb: 4,
         color: 'primary.main',
       }}
@@ -149,7 +149,7 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
               margin: '0 8px',
             }}
           >
-            <Typography color='text.secondary'>
+            <Typography variant='text' color='text.secondary'>
               Nenhuma imagem anexada
             </Typography>
           </Box>
@@ -157,10 +157,10 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
       </Box>
 
       <Box sx={{ mb: 2 }}>
-        <Typography variant='h6' fontWeight={600} sx={{ mb: 1 }}>
+        <Typography variant='h6' fontWeight={600}>
           Valor do Pedido
         </Typography>
-        <Stack direction='row' justifyContent='space-between' sx={{ mb: 1 }}>
+        <Stack direction='row' justifyContent='space-between' sx={{ mb: 1, mt: 3 }}>
           <Typography variant='text' fontWeight={600}>
             Valor total:
           </Typography>
@@ -182,51 +182,50 @@ export function OrderSummary({ cakeData, ingredients, essentials, onSubmit }) {
         <Typography variant='h6' fontWeight={600} sx={{ mb: 1 }}>
           Detalhes
         </Typography>
-        <Typography variant='subtitle1' fontWeight={600} sx={{ mt: 1 }}>
-          Tema:
-        </Typography>
-        <Typography variant='textLittle' sx={{ mt: 1, color: 'grey', mb: 2 }}>
-          {theme || 'Nenhum tema especificado.'}
-        </Typography>
-        <Typography variant='subtitle1' fontWeight={600}>
-          Bolo:
-        </Typography>
-        <ul style={{ marginTop: 1, marginBottom: 8, color: 'grey', gap: 4 }}>
-          {selectedIngredientsList?.map((ingred, idx) => (
-            <li key={idx}>
-              {capitalizeFirst(ingred.tipoIngrediente?.descricao)
-                ? `${capitalizeFirst(ingred.tipoIngrediente?.descricao)}: `
-                : ''}
-              {ingred.nome}
-              {ingred.premium ? ' (premium)' : ''}
-            </li>
-          ))}
-        </ul>
-        <Typography variant='subtitle1' fontWeight={600} sx={{ mt: 1 }}>
-          Detalhes adicionais do pedido:
-        </Typography>
-        <Typography variant='textLittle' sx={{ mt: 1, color: 'grey' }}>
-          {observation || 'Nenhuma observação adicional.'}
-        </Typography>
-      </Box>
-
-      {/* Debug info em desenvolvimento */}
-      {process.env.NODE_ENV === 'development' && (
-        <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-          <Typography variant='subtitle2' sx={{ mb: 1 }}>
-            Objeto a ser enviado (DEV):
+        <Stack spacing={1} sx={{ mb: 2 }}>
+          <Typography variant='subtitle1' fontWeight={600} sx={{ mt: 1 }}>
+            Tema:
           </Typography>
-          <pre
+          <Typography variant='text' sx={{ mt: 1, color: 'grey' }}>
+            {theme || 'Nenhum tema especificado.'}
+          </Typography>
+        </Stack>
+
+        <Stack sx={{ display: 'flex', gap: 1, mb: 2 }}>
+          <Typography variant='subtitle1' fontWeight={600}>
+            Bolo:
+          </Typography>
+          <ul
             style={{
-              fontSize: '0.8rem',
-              overflow: 'auto',
-              whiteSpace: 'pre-wrap',
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: 1,
+              marginBottom: 8,
+              color: 'grey',
+              gap: 6,
             }}
           >
-            {JSON.stringify(orderObject, null, 2)}
-          </pre>
-        </Box>
-      )}
+            {selectedIngredientsList?.map((ingred, idx) => (
+              <li key={idx} style={{ marginBottom: 2, fontSize: '14px' }}>
+                <label style={{ fontWeight: 600 }}>
+                  {capitalizeFirst(ingred.tipoIngrediente?.descricao)}:{' '}
+                </label>
+                {ingred.nome}
+                {ingred.premium ? ' (premium)' : ''}
+              </li>
+            ))}
+          </ul>
+        </Stack>
+
+        <Stack spacing={1}>
+          <Typography variant='subTitleLittle' fontWeight={600} sx={{ mt: 1 }}>
+            Detalhes adicionais do pedido:
+          </Typography>
+          <Typography variant='text' sx={{ mt: 1, color: 'grey' }}>
+            {observation || 'Nenhuma observação adicional.'}
+          </Typography>
+        </Stack>
+      </Box>
 
       <Button
         variant='contained'

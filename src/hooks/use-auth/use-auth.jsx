@@ -1,0 +1,61 @@
+import { useState, useEffect } from 'react';
+import {
+  getUserData,
+  isLoggedIn,
+  logout as authLogout,
+} from '../../utils/auth';
+
+export function useAuth() {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState('cliente');
+  const [loading, setLoading] = useState(true);
+
+  // Verifica o estado de autenticação ao montar o componente
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  // Função para verificar o status atual de autenticação
+  const checkAuthStatus = () => {
+    try {
+      const userData = getUserData();
+      const authenticated = isLoggedIn();
+
+      setUserRole(userData.tipo === 'confeiteira' ? 'confeiteira' : 'cliente');
+
+      setUser(userData);
+      setIsAuthenticated(authenticated);
+    } catch (error) {
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para fazer logout
+  const logout = () => {
+    try {
+      authLogout();
+      setUser(null);
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  };
+
+  // Função para atualizar o estado do usuário após login
+  const updateAuthStatus = () => {
+    checkAuthStatus();
+  };
+
+  return {
+    user,
+    isAuthenticated,
+    userRole,
+    loading,
+    logout,
+    updateAuthStatus,
+  };
+}

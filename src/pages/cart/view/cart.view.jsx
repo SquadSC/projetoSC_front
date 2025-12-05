@@ -8,18 +8,29 @@ import {
   CardContent,
   IconButton,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import { bottomAbsolute, lineGolden } from '../styles/cart.styles.js';
 import { NavbarComponent } from '../../../components/navbar/navbar.component.jsx';
 
-export function CartView({ produtos }) {
+export function CartView({ produtos, onDeleteItem }) {
   const navigate = useNavigate();
 
-  const isEmpty = produtos.length === 0; // corrigi aqui
-  const valorTotal = produtos.reduce((acc, item) => acc + item.preco, 0);
+  // Tratativa para casos onde produtos pode ser null ou undefined
+  const produtosList = produtos?.itensPedido || [];
+  const isEmpty = !produtos || !produtos.itensPedido || produtos.itensPedido.length === 0;
+  const valorTotal = produtos?.precoTotal || 0;
+  const pedidoId = produtos?.idPedido;
+
+  const handleContinueOrder = () => {
+    if (pedidoId) {
+      navigate(`${ROUTES_PATHS.ORDER_DELIVERY_STAGE}?pedidoId=${pedidoId}`);
+    } else {
+      navigate(ROUTES_PATHS.HOME);
+    }
+  };
 
   return (
     <>
@@ -73,7 +84,7 @@ export function CartView({ produtos }) {
                 p: 2,
               }}
             >
-              {produtos.map((item, index) => (
+              {produtosList.map((item, index) => (
                 <Card key={index} variant='outlined' sx={{ borderRadius: 2 }}>
                   <CardContent
                     sx={{
@@ -84,18 +95,61 @@ export function CartView({ produtos }) {
                   >
                     <Box>
                       <Typography variant='subtitle1' fontWeight='bold'>
-                        {item.nome}
+                        {item?.descricao || 'Produto sem descrição'}
                       </Typography>
                       <Typography variant='textLittle' color='text.secondary'>
-                        {item.descricao}
+                        Tema: {item?.informacaoBolo?.tema || 'Genérico'}
+                        {item?.quantidade && (
+                        <Typography variant='caption' color='text.secondary' sx={{ display: 'block' }}>
+                          Peso: {item.quantidade} kg
+                        </Typography>
+                      )}
                       </Typography>
+                      
+                      {/* Lista de ingredientes com tratativa */}
+                      {item?.ingredientes && Array.isArray(item.ingredientes) && item.ingredientes.length > 0 ? (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 'bold' }}>
+                            Ingredientes:
+                          </Typography>
+                          <Typography variant='caption' color='text.secondary' sx={{ display: 'block' }}>
+                            {item.ingredientes
+                              .filter(ingrediente => ingrediente && ingrediente.nome) // Filtra ingredientes válidos
+                              .map((ingrediente, idx, validIngredients) => (
+                                <span key={idx}>
+                                  {ingrediente.nome}
+                                  {idx < validIngredients.length - 1 ? ', ' : ''}
+                                </span>
+                              ))}
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>
+                          Ingredientes: Não especificados
+                        </Typography>
+                      )}
+                      
+            
+                      
+                      
+                      {/* Observações se existir */}
+                      {item?.observacao && (
+                        <Typography variant='caption' color='text.secondary' sx={{ display: 'block' }}>
+                          Obs: {item.observacao}
+                        </Typography>
+                      )}
                     </Box>
+                    
                     <Box display='flex' alignItems='flex-start'>
                       <Typography variant='subtitle1' fontWeight='bold' mr={1}>
-                        R${(item?.preco || 0).toFixed(2)}
+                        R${(item?.precoItem || 0).toFixed(2)}
                       </Typography>
-                      <IconButton size='small'>
-                        <MoreVertIcon />
+                      <IconButton 
+                        size='small'
+                        onClick={() => onDeleteItem(item?.idItemPedido)}
+                        color='error'
+                      >
+                        <DeleteIcon />
                       </IconButton>
                     </Box>
                   </CardContent>
@@ -114,24 +168,17 @@ export function CartView({ produtos }) {
 
                 <Stack spacing={1}>
                   <Box display='flex' justifyContent='space-between'>
+                    <Typography variant='text'>Itens:</Typography>
+                    <Typography variant='text'>
+                      {produtosList.length} {produtosList.length === 1 ? 'item' : 'itens'}
+                    </Typography>
+                  </Box>
+                  
+                  <Box display='flex' justifyContent='space-between'>
                     <Typography variant='text'>Valor Total:</Typography>
                     <Typography variant='text' fontWeight='bold'>
                       R${valorTotal.toFixed(2)}
                     </Typography>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='textLittle'>
-                      Data de Entrega:
-                    </Typography>
-                    <Typography variant='textLittle'>
-                      16 Setembro, 2025
-                    </Typography>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Typography variant='textLittle'>
-                      Horário de Entrega:
-                    </Typography>
-                    <Typography variant='textLittle'>11:54 PM</Typography>
                   </Box>
                 </Stack>
 
@@ -139,9 +186,9 @@ export function CartView({ produtos }) {
                   fullWidth
                   variant='contained'
                   sx={{ mt: 2, py: 1.5 }}
-                  onClick={() => navigate(ROUTES_PATHS.HOME)} // Quando a tela de pagamento estiver pronta, alterar essa navegação
+                  onClick={handleContinueOrder}
                 >
-                  Continuar o Pedido
+                  Finalizar Pedido
                 </Button>
               </Box>
             </Box>

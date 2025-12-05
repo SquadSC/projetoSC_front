@@ -47,6 +47,7 @@ export function RegisterUserController() {
     if (!validate()) return;
     const cleanPhone = fields.phone.replace(/\D/g, '');
 
+    console.log('teste');
     const user = {
       email: fields.email,
       senha: fields.password,

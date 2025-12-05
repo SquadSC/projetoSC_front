@@ -9,9 +9,6 @@ export function AddProductController() {
   const location = useLocation(); // Usado para saber se é um ingrediente
   const navigate = useNavigate();
 
-  // Detectar se é ingrediente ou produto baseado no location.state
-  const isAddingIngredient = location.state?.isIngredient === true;
-
   const [fields, setFields] = useState({
     mainCategory: '',
     subCategory: '',
@@ -19,6 +16,10 @@ export function AddProductController() {
     isPremium: false,
     price: '',
   });
+
+  // Detectar se é ingrediente ou produto baseado na categoria selecionada
+  // Componente de Bolo = Ingrediente, Itens Complementares = Produto
+  const isAddingIngredient = fields.mainCategory === 'componente-bolo';
   const [isLoading, setIsLoading] = useState(false);
 
   // Lida com a mudança de qualquer campo do formulário
@@ -38,7 +39,7 @@ export function AddProductController() {
     event.preventDefault();
 
     // Validação básica dos campos obrigatórios
-    if (!fields.name.trim()) {
+    if (!fields.name || !fields.name.trim()) {
       Swal.fire('Erro!', 'O nome do produto é obrigatório.', 'error');
       return;
     }
@@ -83,11 +84,12 @@ export function AddProductController() {
         unidadeMedida: 'unidade',
         ativo: true,
         temIngrediente: false,
+        observacao: null,
       };
     }
 
     try {
-      await request.post(endpoint, payload);
+      const response = await request.post(endpoint, payload);
       
       // Mostrar popup de sucesso com aviso de redirecionamento
       Swal.fire({
@@ -107,7 +109,17 @@ export function AddProductController() {
       }, 2000);
       
     } catch (error) {
-      Swal.fire('Erro!', 'Não foi possível criar o produto. Tente novamente em alguns instantes.', 'error');
+      let errorMessage = 'Não foi possível criar o produto. Tente novamente em alguns instantes.';
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.status === 400) {
+        errorMessage = 'Dados inválidos. Verifique se todos os campos estão preenchidos corretamente.';
+      } else if (error.response?.status === 500) {
+        errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
+      }
+      
+      Swal.fire('Erro!', errorMessage, 'error');
     } finally {
       setIsLoading(false);
     }

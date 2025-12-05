@@ -1,303 +1,183 @@
-import React from 'react'; // Removido useState e useEffect
-import PropTypes from 'prop-types';
 import {
-    Box,
-    Button,
-    Container,
-    IconButton,
-    Typography,
-    Avatar,
-    Grid,
-    Divider,
-    List,
-    ListItem,
-    ListItemText,
-    CircularProgress,
-    Paper, // Adicionando Paper ao import
+  Box,
+  Button,
+  Container,
+  Typography,
+  Stack,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PlaceIcon from '@mui/icons-material/Place';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { CarouselReferenceComponent } from '../../order-summary-cake/components/carousel-reference/carousel-refence.component.jsx';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { CakeCard } from '../../pending-order-selected/components/cake-card.component';
+import { infoRow } from '../styles/detail-order.style.js';
 
-// ***************************************************************
-// CORREÇÃO: Receber refImages como prop e remover estados/efeitos internos
-export default function OrderDetailsView({ order, onCancel, onEdit, refImages }) {
-    // REMOVIDOS: useState e useEffect. O componente agora é apresentacional.
-
-    if (!order || !refImages) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="300px">
-                <CircularProgress />
-            </Box>
-        );
-    }
-
+export default function OrderDetailsView({
+  loading,
+  error,
+  order,
+  onCancel,
+  onViewCakeDetails,
+}) {
+  // Tela de carregamento
+  if (loading) {
     return (
-        // Usamos Fragment (<>) para renderizar o Header fora do Container
-        <>
-            {/* Cabeçalho - De ponta a ponta (100% de largura) */}
-            <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                position: 'relative',
-                backgroundColor: 'secondary.light',
-                width: '100%',
-                px: 2, // Adiciona padding lateral para o conteúdo interno
-                py: 2,
-            }}>
-                <Button
-                    startIcon={<ArrowBackIcon />}
-                    onClick={onCancel}
-                    sx={{
-                        minWidth: 0,
-                        color: 'primary.main',
-                        position: 'absolute',
-                        left: 8,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                    }}
-                />
+      <Box
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
+        minHeight='80vh'
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Tela de erro (pedido não encontrado)
+  if (error || !order) {
+    return (
+      <Container sx={{ p: 3 }}>
+        <Alert severity='error'>{error || 'Pedido não encontrado.'}</Alert>
+        <Button onClick={onCancel} sx={{ mt: 2 }}>
+          Voltar
+        </Button>
+      </Container>
+    );
+  }
+
+  // Calcula o valor de 50% do pedido
+  const totalValue = order.total || order.precoTotal || 0;
+  const paidPercent = order.paidPercent || 50;
+  const halfValue = (totalValue * (paidPercent / 100)).toFixed(2);
+
+  // Formata data de entrega
+  const getDeliveryDate = () => {
+    if (order.deliveryDate) return order.deliveryDate;
+    if (order.dtEntregaEsperada) {
+      return new Date(order.dtEntregaEsperada).toLocaleDateString('pt-BR');
+    }
+    return 'N/A';
+  };
+
+  // Formata hora de entrega
+  const getDeliveryTime = () => {
+    if (order.deliveryTime) return order.deliveryTime;
+    if (order.dtEntregaEsperada) {
+      return new Date(order.dtEntregaEsperada).toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+    return 'N/A';
+  };
+
+  return (
+    <Box sx={{ minHeight: '100vh', pb: 10 }}>
+      {/* Header - Título do pedido e botão voltar */}
+      <Box sx={{ p: 3, pb: 0 }}>
+        <PageHeader
+          titulo={`Pedido #${order.idPedido || order.id}`}
+          showBackButton={true}
+        />
+      </Box>
+
+      {/* Container principal - Detalhes do pedido */}
+      <Container sx={{ p: 4, pb: 2 }}>
+        <Stack spacing={3}>
+          {/* Seção: Informações do Cliente e Entrega */}
+          <Stack spacing={2}>
+            {/* Nome do cliente e data de cadastro */}
+            <Box sx={infoRow}>
+              <PersonOutlineIcon
+                fontSize='small'
+                sx={{ mr: 1, color: 'primary.main' }}
+              />
+              <Box>
                 <Typography
-                    sx={(theme) => ({
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontFamily: theme.typography?.fontFamily,
-                        fontSize: theme.typography?.subTitle?.fontSize,
-                        fontWeight: theme.typography?.fontWeightMedium,
-                        color: 'primary.main',
-                    })}
+                  variant='body1'
+                  fontWeight='medium'
+                  color='primary.main'
                 >
-                    Detalhes do Pedido
+                  {order.customer?.name || 'N/A'}
                 </Typography>
-                <IconButton
-                    onClick={() => onEdit(order)}
-                    sx={{
-                        position: 'absolute',
-                        right: 8,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        color: 'primary.main',
-                    }}
-                >
-                    <EditOutlinedIcon />
-                </IconButton>
+                <Typography variant='caption' color='text.secondary'>
+                  Desde {order.customer?.memberSince || 'N/A'}
+                </Typography>
+              </Box>
             </Box>
 
-            {/* Conteúdo Principal - Dentro do Container para alinhamento */}
-            <Container sx={{}}>
-                <Box sx={{ mt: 3 }}>
+            {/* Data de entrega */}
+            <Box sx={infoRow}>
+              <CalendarTodayIcon
+                fontSize='small'
+                sx={{ mr: 1, color: 'primary.main' }}
+              />
+              <Typography variant='body2' color='primary.main'>
+                Data de entrega: {getDeliveryDate()}
+              </Typography>
+            </Box>
 
-                    {/* *************************************************************** */}
-                    {/* NOVO BLOCO: Dados do cliente e Entrega, usando a estrutura Paper/Grid */}
-                    {/* Removemos o 'p: 2' do Box externo e adicionamos padding ao Paper e outros Boxes */}
-                    <Paper 
-                        elevation={0} 
-                        sx={{ 
-                            p: 2, 
-                            borderRadius: 2, 
-                            mb: 2,
-                            // Cor de fundo do Paper mantida
-                            bgcolor: 'tertiary.main', 
-                        }}
-                    >
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item>
-                                <Avatar sx={{ width: 48, height: 48, bgcolor: 'primary.main' }}>
-                                    {order.customer.avatar ? <img src={order.customer.avatar} alt={order.customer.name} /> : <AccountCircleIcon />}
-                                </Avatar>
-                            </Grid>
-                            <Grid sx={{color: 'primary.main'}} item xs>
-                                <Typography variant="subtitle1" fontWeight="bold">{order.customer.name}</Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    Desde {order.customer.memberSince}
-                                </Typography>
-                            </Grid>
-                            
-                            {/* Bloco de Data, Hora e Local */}
-                            <Grid item xs={12} sx={{ mt: 1, color: 'primary.main' }}>
-                                {/* Este Grid agora será o contêiner vertical para os 3 itens */}
-                                <Grid container direction="column" spacing={1}>
-                                    
-                                    {/* Item 1: Data de Entrega */}
-                                    <Grid item xs={12} display="flex" alignItems="center"> 
-                                        <CalendarTodayIcon fontSize="small" sx={{ mr: 1, color: 'primary.main' }} />
-                                        <Typography variant="body2" sx={{ fontSize: '0.9rem' }}>
-                                            Data: {order.deliveryDate}
-                                        </Typography>
-                                    </Grid>
-                                    
-                                    {/* Item 2: Hora de Entrega (Agora alinhado verticalmente) */}
-                                    <Grid item xs={12} display="flex" alignItems="center">
-                                        <AccessTimeIcon fontSize="small" sx={{ mr: 1, color: 'primary.main' }} />
-                                        <Typography variant="body2" sx={{ fontSize: '0.9rem' }}>
-                                            Hora: {order.deliveryTime}
-                                        </Typography>
-                                    </Grid>
-                                    
-                                    {/* Item 3: Endereço/Local (Agora alinhado verticalmente) */}
-                                    <Grid item xs={12} display="flex" alignItems="center">
-                                        <PlaceIcon fontSize="small" sx={{ mr: 1, color: 'primary.main' }} />
-                                        <Typography variant="body2" sx={{ fontSize: '0.9rem' }}>
-                                            {order.address}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                    {/* FIM DO NOVO BLOCO */}
-                    {/* *************************************************************** */}
+            {/* Hora de entrega */}
+            <Box sx={infoRow}>
+              <AccessTimeIcon
+                fontSize='small'
+                sx={{ mr: 1, color: 'primary.main' }}
+              />
+              <Typography variant='body2' color='primary.main'>
+                Hora de entrega: {getDeliveryTime()}
+              </Typography>
+            </Box>
 
-                    <Divider sx={{ my: 3 }} />
+            {/* Endereço de entrega */}
+            <Box sx={infoRow}>
+              <LocationOnIcon
+                fontSize='small'
+                sx={{ mr: 1, color: 'primary.main' }}
+              />
+              <Typography variant='body2' color='primary.main'>
+                {order.address || 'N/A'}
+              </Typography>
+            </Box>
+          </Stack>
 
-                    {/* Total */}
-                    <Box textAlign="center">
-                        <Typography
-                            sx={(theme) => ({
-                                fontFamily: theme.typography?.fontFamily,
-                                fontSize: theme.typography?.subTitle?.fontSize,
-                                fontWeight: theme.typography?.fontWeightBold,
-                                color: 'primary.main',
-                            })}
-                        >
-                            Total: R${order.total}
-                        </Typography>
-                        <Typography
-                            sx={(theme) => ({
-                                fontFamily: theme.typography?.fontFamily,
-                                fontSize: theme.typography?.textBold?.fontSize,
-                                color: 'primary.main',
-                            })}
-                        >
-                            {order.paidPercent}% do valor: R$
-                            {Math.round((order.total * order.paidPercent) / 100)}
-                        </Typography>
-                    </Box>
+          {/* Seção: Total do pedido e valor parcial */}
+          <Box sx={{ textAlign: 'center', my: 2 }}>
+            <Typography variant='h6' fontWeight='bold' color='primary.main'>
+              Total: R${totalValue.toFixed(2)}
+            </Typography>
+            <Typography variant='body2' color='primary.main'>
+              {paidPercent}% do valor: R${halfValue}
+            </Typography>
+          </Box>
 
-                    <Divider sx={{ my: 3 }} />
-
-                    {/* Anexos */}
-                    <Box>
-                        
-
-                        {/* Renderização Condicional do Carrossel */}
-                        {refImages.loading ? (
-                            <Box display="flex" justifyContent="center" py={4}>
-                                <CircularProgress size={24} />
-                            </Box>
-                        ) : refImages.images && refImages.images.length > 0 ? (
-                            <>
-                                <Typography
-                                    sx={(theme) => ({
-                                        mb: 0,
-                                        fontFamily: theme.typography?.fontFamily,
-                                        fontSize: theme.typography?.textBold?.fontSize,
-                                        fontWeight: theme.typography?.fontWeightMedium,
-                                    })}
-                                >
-        
-                                </Typography>
-                                <CarouselReferenceComponent refImages={refImages} />
-                            </>
-                        ) : (
-                            <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-                                Nenhuma imagem de referência anexada.
-                            </Typography>
-                        )}
-                    </Box>
-
-                    <Divider sx={{ my: 3 }} />
-
-                    {/* Detalhes do bolo */}
-                   <Typography
-                        sx={(theme) => ({
-                            mb: 1,
-                            fontFamily: theme.typography?.fontFamily,
-                            fontSize: theme.typography?.subTitleLittleBold?.fontSize,
-                            fontWeight: theme.typography?.fontWeightSemiBold,
-                            color: 'primary.main',
-                        })}
-                    >
-                        Detalhes do Bolo:
-                    </Typography>
-
-                    <List disablePadding>
-                        {[
-                            ['Tema Personalizado:', order.cakeDetails.theme],
-                            ['Tipo de Massa:', order.cakeDetails.cakeType],
-                            ['Recheio do Bolo:', order.cakeDetails.filling],
-                            ['Adicionais do Bolo:', order.cakeDetails.additions.join(', ')],
-                            ['Peso (KG):', order.cakeDetails.weightKg],
-                        ].map(([label, value]) => (
-                            <ListItem key={label} disableGutters sx={{ flexDirection: 'column', alignItems: 'flex-start', py: 0.5 }}>
-                                <ListItemText
-                                    // O RÓTULO (Tema Personalizado:) é o primary
-                                    primary={label}
-                                    // O VALOR (Branca de Neve) é o secondary, que naturalmente fica abaixo
-                                    secondary={value}
-                                    
-                                    // Estilo para o RÓTULO
-                                    primaryTypographyProps={{
-                                        sx: (theme) => ({
-                                            fontFamily: theme.typography?.fontFamily,
-                                            fontSize: theme.typography?.textBold?.fontSize, // Título em negrito
-                                            fontWeight: theme.typography?.fontWeightSemiBold,
-                                        }),
-                                    }}
-                                    // Estilo para o VALOR
-                                    secondaryTypographyProps={{
-                                        sx: (theme) => ({
-                                            fontFamily: theme.typography?.fontFamily,
-                                            fontSize: theme.typography?.textLittleBold?.fontSize, // Valor com fonte normal
-                                            mt: 0.5, // Adiciona um pequeno espaçamento entre Rótulo e Valor
-                                            color: 'text.primary', // Garante que o texto secundário tenha uma cor legível
-                                        }),
-                                    }}
-                                />
-                            </ListItem>
-                        ))}
-
-                        <Divider sx={{ my: 2 }} />
-
-                        {/* Considerações do Cliente (Correção de estilo e tipografia) */}
-                        <ListItem disableGutters sx={{ flexDirection: 'column', alignItems: 'flex-start', pt: 0 }}>
-                            <Typography
-                                sx={(theme) => ({
-                                    fontFamily: theme.typography?.fontFamily,
-                                    fontSize: theme.typography?.textBold?.fontSize,
-                                    fontWeight: theme.typography?.fontWeightSemiBold,
-                                    color: 'primary.main', // Corrigido 'segundary' para 'secondary'
-                                })}
-                            >
-                                Considerações do Cliente
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                sx={(theme) => ({
-                                    fontFamily: theme.typography?.fontFamily,
-                                    fontSize: theme.typography?.textLittleBold?.fontSize,
-                                    mt: 0.5,
-                                })}
-                            >
-                                {order.cakeDetails.notes}
-                            </Typography>
-                        </ListItem>
-                    </List>
-                </Box>
-            </Container>
-        </>
-    );
+          {/* Seção: Cards dos bolos do pedido */}
+          {order.itensPedido && order.itensPedido.length > 0 ? (
+            <Stack spacing={2} sx={{ mt: 3 }}>
+              <Typography
+                variant='subtitle2'
+                fontWeight='bold'
+                color='primary.main'
+              >
+                Itens do Pedido
+              </Typography>
+              {order.itensPedido.map(item => (
+                <CakeCard
+                  key={item.idItemPedido || item.id}
+                  item={item}
+                  onViewDetails={() => onViewCakeDetails?.(item)}
+                />
+              ))}
+            </Stack>
+          ) : (
+            <Typography variant='body2' color='text.secondary' sx={{ mt: 3 }}>
+              Nenhum item neste pedido.
+            </Typography>
+          )}
+        </Stack>
+      </Container>
+    </Box>
+  );
 }
-
-OrderDetailsView.propTypes = {
-    order: PropTypes.object.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    refImages: PropTypes.object.isRequired,
-};
