@@ -3,29 +3,12 @@ import {
   CardContent,
   Typography,
   Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Avatar,
   Chip,
+  Avatar,
 } from '@mui/material';
 import theme from '../../../../theme';
 
 export function TopClientsTable({ data = [], showReturnRate = false, title = "Top Clientes" }) {
-  const getAvatarColor = (index) => {
-    const colors = [
-      theme.palette.primary.main,
-      theme.palette.secondary.main,
-      theme.palette.info.main,
-      theme.palette.success.main,
-      theme.palette.warning.main,
-    ];
-    return colors[index] || theme.palette.grey[500];
-  };
-
   const getInitials = (name) => {
     return name
       .split(' ')
@@ -36,108 +19,111 @@ export function TopClientsTable({ data = [], showReturnRate = false, title = "To
   };
 
   return (
-    <Card sx={{ height: '100%'  }}>
+    <Card sx={{ height: '100%', width: '100%' }}>
       <CardContent sx={{ p: 3 }}>
-        <Box mb={3}>
+        <Box mb={3} display="flex" alignItems="center" gap={1}>
+          <Avatar
+            sx={{
+              width: 24,
+              height: 24,
+              backgroundColor: 'transparent',
+              fontSize: '1rem',
+            }}
+          >
+            👥
+          </Avatar>
           <Typography
             variant="h6"
             sx={{
               fontWeight: 'bold',
               color: theme.palette.primary.main,
-              mb: 1,
+              mb: 0,
             }}
           >
-            {title} (Recorrência)
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: theme.palette.text.secondary }}
-          >
-            Clientes com mais pedidos no período
+            {title}
           </Typography>
         </Box>
 
-        <TableContainer sx={{ maxHeight: 350, width: 350 }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
-                  Cliente
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
-                  Pedidos
-                </TableCell>
-                {showReturnRate && (
-                  <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
-                    Taxa Retorno
-                  </TableCell>
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((client, index) => (
-                <TableRow
-                  key={client.name}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: theme.palette.grey[50],
-                    },
-                  }}
-                >
-                  <TableCell>
-                    <Box display="flex" alignItems="center" gap={2}>
-                      <Avatar
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          backgroundColor: getAvatarColor(index),
-                          fontSize: '0.75rem',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {getInitials(client.name)}
-                      </Avatar>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: index === 0 ? 'bold' : 'medium',
-                          color: index === 0
-                            ? theme.palette.primary.main
-                            : theme.palette.text.primary,
-                        }}
-                      >
-                        {client.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Chip
-                      label={client.orders}
-                      size="small"
+        <Box>
+          {data.length === 0 ? (
+            <Box
+              sx={{
+                textAlign: 'center',
+                py: 4,
+                color: theme.palette.text.secondary,
+              }}
+            >
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Nenhum cliente encontrado
+              </Typography>
+              <Typography variant="caption">
+                Dados serão atualizados automaticamente
+              </Typography>
+            </Box>
+          ) : (
+            data.map((client, index) => (
+              <Box
+                key={client.name}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                width={'80vw'}
+                mb={2}
+                p={2}
+                sx={{
+                  borderRadius: '12px',
+                  backgroundColor: index === 0
+                    ? theme.palette.primary.main + '10'
+                    : theme.palette.grey[50],
+                  border: index === 0
+                    ? `1px solid ${theme.palette.primary.main}30`
+                    : `1px solid ${theme.palette.grey[200]}`,
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    transform: 'translateX(4px)',
+                    backgroundColor: theme.palette.primary.main + '08',
+                  },
+                }}
+              >
+                <Box display="flex" alignItems="center" gap={2}>
+                  <Box>
+                    <Typography
+                      variant="body1"
                       sx={{
-                        backgroundColor: index === 0
-                          ? theme.palette.primary.main + '20'
-                          : theme.palette.grey[100],
+                        fontWeight: index === 0 ? 'bold' : 'medium',
                         color: index === 0
                           ? theme.palette.primary.main
-                          : theme.palette.text.secondary,
-                        fontWeight: 'bold',
-                        minWidth: '40px',
+                          : theme.palette.text.primary,
                       }}
-                    />
-                  </TableCell>
-                  {showReturnRate && (
-                    <TableCell align="center">
-                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: theme.palette.success.main }}>
-                        {client.returnRate}x
-                      </Typography>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                    >
+                      {client.name}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: theme.palette.text.secondary }}
+                    >
+                      {client.orders} pedidos
+                      {client.email && ` • ${client.email}`}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Chip
+                  label={`${client.orders}`}
+                  size="small"
+                  sx={{
+                    fontWeight: 'bold',
+                    backgroundColor: index === 0
+                      ? theme.palette.primary.main
+                      : theme.palette.grey[300],
+                    color: index === 0
+                      ? 'white'
+                      : theme.palette.text.primary,
+                  }}
+                />
+              </Box>
+            ))
+          )}
+        </Box>
       </CardContent>
     </Card>
   );

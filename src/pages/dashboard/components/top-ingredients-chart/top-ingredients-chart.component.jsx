@@ -84,7 +84,7 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                width={'345px'}
+                width={'80vw'}
                 mb={2}
                 p={2}
                 sx={{

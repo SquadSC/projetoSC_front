@@ -21,7 +21,7 @@ export function MetricCard({
   return (
     <Card
       sx={{
-        height: compact ? '120px' : '100%',
+        height: compact ? '75px' : '75%',
         background: `linear-gradient(135deg, ${color}08 0%, ${color}04 100%)`,
         border: `1px solid ${color}20`,
         borderLeft: `4px solid ${color}`,
@@ -32,26 +32,26 @@ export function MetricCard({
         },
       }}
     >
-      <CardContent sx={{ p: compact ? 2 : 3 }}>
+      <CardContent sx={{ p: compact ? 1 : 3 }}>
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="flex-start"
-          mb={compact ? 1 : 2}
+          mb={compact ? 0.3 : 2}
         >
           <Typography
             variant={compact ? "caption" : "body2"}
             sx={{
               color: theme.palette.text.secondary,
               fontWeight: 'medium',
-              fontSize: compact ? '0.75rem' : '0.875rem',
+              fontSize: compact ? '0.6rem' : '0.875rem',
             }}
           >
             {title}
           </Typography>
           <Typography
             variant="h4"
-            sx={{ fontSize: compact ? '1.2rem' : '1.5rem' }}
+            sx={{ fontSize: compact ? '0.9rem' : '1.5rem' }}
           >
             {icon}
           </Typography>
@@ -62,9 +62,9 @@ export function MetricCard({
           sx={{
             fontWeight: 'bold',
             color: color,
-            fontSize: compact ? '1.25rem' : { xs: '1.5rem', sm: '1.75rem' },
-            lineHeight: 1.2,
-            mb: subtitle ? 0.5 : (compact ? 1 : 2),
+            fontSize: compact ? '1rem' : { xs: '1.5rem', sm: '1.75rem' },
+            lineHeight: 1.1,
+            mb: subtitle ? 0.3 : (compact ? 1 : 2),
           }}
         >
           {value}
@@ -76,8 +76,8 @@ export function MetricCard({
             sx={{
               color: theme.palette.text.secondary,
               display: 'block',
-              mb: compact ? 0.5 : 1,
-              fontSize: compact ? '0.7rem' : '0.75rem',
+              mb: compact ? 0.3 : 1,
+              fontSize: compact ? '0.55rem' : '0.75rem',
             }}
           >
             {subtitle}

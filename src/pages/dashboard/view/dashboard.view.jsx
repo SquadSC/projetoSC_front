@@ -1,143 +1,181 @@
-import { useState, useEffect } from 'react';
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Card,
-  CardContent,
-  Skeleton,
+import { 
+  Container, 
+  Grid, 
+  Box, 
+  Typography, 
+  Button,
+  TextField,
 } from '@mui/material';
 import theme from '../../../theme';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
-
-// Components
 import { MetricCard } from '../components/metric-card/metric-card.component';
 import { TopIngredientsChart } from '../components/top-ingredients-chart/top-ingredients-chart.component';
 import { TopClientsTable } from '../components/top-clients-table/top-clients-table.component';
 
-export function DashboardView() {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
-    try {
-      setLoading(true);
-      
-      // Simula delay de carregamento
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Mock data para desenvolvimento
-      setDashboardData({
-        topIngredients: [
-          { name: 'Chocolate', count: 248, percentage: 28 },
-          { name: 'Morango', count: 195, percentage: 22 },
-          { name: 'Brigadeiro', count: 167, percentage: 19 },
-          { name: 'Doce de Leite', count: 142, percentage: 16 },
-          { name: 'Coco', count: 98, percentage: 11 },
-        ],
-        topClients: [
-          { name: 'Maria Silva Santos', orders: 18, total: 2450.75 },
-          { name: 'João Pedro Oliveira', orders: 15, total: 1980.50 },
-          { name: 'Ana Carolina Costa', orders: 12, total: 1675.25 },
-          { name: 'Pedro Henrique Lima', orders: 10, total: 1420.80 },
-          { name: 'Lucia Fernanda Souza', orders: 8, total: 1150.40 },
-          { name: 'Carlos Eduardo Rocha', orders: 7, total: 985.60 },
-          { name: 'Beatriz Almeida Cruz', orders: 6, total: 820.30 },
-        ],
-        newClientsToday: 12,
-        totalOrders: 156,
-        averageRating: 4.8,
-      });
-    } catch (err) {
-      console.error('Erro ao carregar dashboard (mock):', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export function DashboardView({ 
+  operationalData,
+  managerialData,
+  loading, 
+  error,
+  startDate,
+  endDate,
+  setStartDate,
+  setEndDate,
+  onDateFilter,
+  onRefresh 
+}) {
   if (loading) {
     return (
-      <>
-        <Container maxWidth="xl" sx={{ py: 4, pb: 10 }}>
-          <Box mb={4}>
-            <Skeleton variant="text" width={200} height={40} />
-            <Skeleton variant="text" width={300} height={24} />
-          </Box>
-          <Grid container spacing={3}>
-            {[...Array(2)].map((_, index) => (
-              <Grid item xs={12} sm={6} md={6} key={index}>
-                <Card>
-                  <CardContent>
-                    <Skeleton variant="text" width="60%" />
-                    <Skeleton variant="text" width="40%" />
-                    <Skeleton variant="rectangular" height={60} sx={{ mt: 2 }} />
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+      <Container maxWidth="xl" sx={{ py: 2, pb: 10 }}>
+        <Box mb={4}>
+          <Typography variant="h4">Dashboard</Typography>
+          <Typography variant="body2" color="text.secondary">Carregando dados...</Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 2, pb: 10 }}>
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Typography variant="h6" color="error" sx={{ mb: 2 }}>
+            Erro ao carregar dados: {error}
+          </Typography>
+          <Button 
+            variant="contained" 
+            onClick={onRefresh}
+            sx={{ backgroundColor: theme.palette.primary.main }}
+          >
+            Tentar Novamente
+          </Button>
+        </Box>
         <BottomNavigationComponent />
-      </>
+      </Container>
     );
   }
 
   return (
     <>
       <Container maxWidth="xl" sx={{ py: 4, pb: 10 }}>
-        <Box mb={3}>
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{
-              fontWeight: 'bold',
-              color: theme.palette.primary.main,
-              mb: 1
-            }}
+        {/* Header */}
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontWeight: 'bold',
+            color: theme.palette.primary.main,
+            mb: 3
+          }}
+        >
+          Dashboard
+        </Typography>
+
+        {/* Filtros de Data */}
+        <Box mb={3} sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+          <TextField
+            type="date"
+            size="small"
+            label="Data Início"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            sx={{ width: 150 }}
+          />
+
+          <TextField
+            type="date"
+            size="small"
+            label="Data Fim"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            sx={{ width: 150 }}
+          />
+
+          <Button
+            variant="contained"
+            size="small"
+            onClick={onDateFilter}
+            sx={{ backgroundColor: theme.palette.primary.main }}
           >
-            Dashboard
-          </Typography>
+            Filtrar
+          </Button>
         </Box>
 
         <Grid container spacing={2}>
-          {/* Métricas principais - apenas 2 cards */}
-          <Grid item xs={12} sm={6}>
+          {/* Métricas Gerenciais */}
+          <Grid item xs={4} sm={4}>
             <MetricCard
-              title="Novos Clientes"
-              value={dashboardData.newClientsToday}
-              subtitle="hoje"
-              icon="👥"
-              color={theme.palette.primary.main}
-              trend={{ value: 25.0, isPositive: true }}
+              title="Ticket Médio"
+              value={`R$ ${managerialData?.averageOrderValue?.toFixed(2) || '0.00'}`}
+              subtitle="por pedido"
+              color={theme.palette.info.main}
               compact={true}
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={4} sm={4}>
             <MetricCard
-              title="Total de Pedidos"
-              value={dashboardData.totalOrders}
-              subtitle="hoje"
-              icon="📦"
-              color={theme.palette.secondary.main}
-              trend={{ value: 8.5, isPositive: true }}
+              title="Pedidos Concluídos"
+              value={managerialData?.totalOrders || 0}
+              subtitle="no período"
+              color={theme.palette.success.light}
               compact={true}
             />
           </Grid>
 
-          {/* Top ingredientes */}
-          <Grid item xs={12} lg={6}>
-            <TopIngredientsChart data={dashboardData.topIngredients} />
+          <Grid item xs={4} sm={4}>
+            <MetricCard
+              title="Taxa Conclusão"
+              value={`${managerialData?.completionRate?.toFixed(1) || '0'}%`}
+              subtitle="dos pedidos"
+              color={theme.palette.success.main}
+              compact={true}
+            />
           </Grid>
 
-          {/* Top clientes */}
-          <Grid item xs={12} lg={6}>
-            <TopClientsTable data={dashboardData.topClients} />
+          {/* Top Ingredientes */}
+          <Grid item xs={12}>
+            <Typography variant="h6" sx={{ mt: 3, mb: 2, color: theme.palette.primary.main }}>
+              Top Ingredientes Mais Utilizados (Pedidos Concluídos)
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <TopIngredientsChart 
+              data={operationalData?.topIngredientsByCategory?.massa || []}
+              category="massa"
+            />
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={4}>
+            <TopIngredientsChart 
+              data={operationalData?.topIngredientsByCategory?.recheio || []}
+              category="recheio"
+            />
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={4}>
+            <TopIngredientsChart 
+              data={operationalData?.topIngredientsByCategory?.adicional || []}
+              category="adicional"
+            />
+          </Grid>
+
+          {/* Top Clientes */}
+          <Grid item xs={12}>
+            <Typography variant="h6" sx={{ mt: 3, mb: 2, color: theme.palette.primary.main }}>
+              Top Clientes - Pedidos Concluídos no Período
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TopClientsTable
+              data={managerialData?.topClients || []}
+              title="Ranking de Clientes"
+              showTotal={true}
+            />
           </Grid>
         </Grid>
       </Container>

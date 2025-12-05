@@ -20,26 +20,27 @@ import {
 import theme from '../../../theme';
 
 // Components
+import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
 import { MetricCard } from '../components/metric-card/metric-card.component';
 import { TopClientsTable } from '../components/top-clients-table/top-clients-table.component';
 import { RevenueChart } from '../components/revenue-chart/revenue-chart.component';
 
-export function DashboardManagerialView({ 
-  dashboardData, 
-  loading, 
-  error, 
-  startDate, 
-  endDate, 
-  setStartDate, 
-  setEndDate, 
-  onDateFilter 
+export function DashboardManagerialView({
+  dashboardData,
+  loading,
+  error,
+  startDate,
+  endDate,
+  setStartDate,
+  setEndDate,
+  onDateFilter
 }) {
   useEffect(() => {
     // Set default dates to last 30 days
     const today = new Date();
     const thirtyDaysAgo = new Date(today);
     thirtyDaysAgo.setDate(today.getDate() - 30);
-    
+
     setStartDate(thirtyDaysAgo.toISOString().split('T')[0]);
     setEndDate(today.toISOString().split('T')[0]);
   }, []);
@@ -104,8 +105,8 @@ export function DashboardManagerialView({
             sx={{ width: 150 }}
           />
 
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             size="small"
             onClick={onDateFilter}
             sx={{ backgroundColor: theme.palette.primary.main }}
@@ -129,7 +130,7 @@ export function DashboardManagerialView({
 
           {/* Top clientes - mesmo padrão das tabelas de ingredientes */}
           <Grid item xs={12} sm={6} md={4}>
-            <TopClientsTable 
+            <TopClientsTable
               data={dashboardData?.topClients || []}
               title="Top Clientes"
               showTotal={true}
@@ -137,6 +138,8 @@ export function DashboardManagerialView({
           </Grid>
         </Grid>
       </Container>
+      <BottomNavigationComponent />
+
     </>
   );
 }

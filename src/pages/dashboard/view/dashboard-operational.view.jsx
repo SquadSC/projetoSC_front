@@ -75,7 +75,6 @@ export function DashboardOperationalView({
               title="Pedidos Hoje"
               value={dashboardData?.todayOrders || 0}
               subtitle="atual"
-              icon="📋"
               color={theme.palette.primary.main}
               compact={true}
             />
@@ -86,7 +85,6 @@ export function DashboardOperationalView({
               title="Pendentes"
               value={dashboardData?.pendingOrders || 0}
               subtitle="agora"
-              icon="⏳"
               color={theme.palette.warning.main}
               compact={true}
             />
@@ -97,7 +95,6 @@ export function DashboardOperationalView({
               title="Produzindo"
               value={dashboardData?.completingOrders || 0}
               subtitle="agora"
-              icon="👨‍🍳"
               color={theme.palette.info.main}
               compact={true}
             />
@@ -108,7 +105,6 @@ export function DashboardOperationalView({
               title="Concluídos"
               value={dashboardData?.completedOrders || 0}
               subtitle="hoje"
-              icon="✅"
               color={theme.palette.success.main}
               compact={true}
             />
