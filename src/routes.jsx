@@ -102,6 +102,10 @@ export default function AppRoutes() {
       path: ROUTES_PATHS.ERROR_GENERIC,
       element: <ErrorGenericController />,
     },
+    {
+      path: ROUTES_PATHS.PROFILE,
+      element: <ProfileController />,
+    },
   ];
 
   // Rotas exclusivas para CLIENTES
@@ -113,14 +117,6 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.CART,
       element: <CartController />,
-    },
-    // {
-    //   path: ROUTES_PATHS.CALENDAR_USER,
-    //   element: <CalendarUserController />,
-    // },
-    {
-      path: ROUTES_PATHS.PROFILE,
-      element: <ProfileController />,
     },
     {
       path: ROUTES_PATHS.ORDERS,
