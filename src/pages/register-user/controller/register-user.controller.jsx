@@ -47,19 +47,17 @@ export function RegisterUserController() {
     if (!validate()) return;
     const cleanPhone = fields.phone.replace(/\D/g, '');
 
-    console.log('teste');
     const user = {
       email: fields.email,
       senha: fields.password,
       nome: fields.name,
       telefone: cleanPhone,
-      admin: false,
+      tipoUsuario: 'CLIENTE',
     };
 
     request
       .post('/usuarios', user)
       .then(response => {
-        console.log('Usuário registrado com sucesso:', response.data);
         Swal.fire({
           icon: 'success',
           title: 'Usuário registrado com sucesso!',
@@ -88,3 +86,6 @@ export function RegisterUserController() {
     />
   );
 }
+
+//.....
+///

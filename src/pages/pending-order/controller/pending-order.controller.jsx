@@ -42,17 +42,10 @@ export function PendingOrderController() {
           
           setOrders(ordersData);
         } else {
-          console.warn('⚠️ [PendingOrder] Resposta não é um array válido');
-          console.warn('⚠️ [PendingOrder] response:', response);
-          console.warn('⚠️ [PendingOrder] response.data:', response?.data);
           setOrders([]);
         }
       } catch (err) {
-        console.error('❌ [PendingOrder] Erro ao buscar pedidos pendentes:', err);
-        console.error('❌ [PendingOrder] Erro completo:', JSON.stringify(err, null, 2));
-        console.error('❌ [PendingOrder] Erro response:', err.response);
-        console.error('❌ [PendingOrder] Erro response.data:', err.response?.data);
-        console.error('❌ [PendingOrder] Erro response.status:', err.response?.status);
+        console.error('Erro ao buscar pedidos pendentes:', err);
         setError('Não foi possível carregar os pedidos pendentes.');
         setOrders([]);
       } finally {
@@ -68,7 +61,7 @@ export function PendingOrderController() {
   // ========================================
   // Determina o próximo status baseado no status atual
   // Status 2 (Enviado) -> 3 (Validação) -> 4 (Pagamento) -> 5 (Produção)
-  const getNextStatus = (currentStatusId) => {
+  const getNextStatus = currentStatusId => {
     // Status 2 (Enviado) -> Status 3 (Validação)
     // Status 3 (Validação) -> Status 4 (Pagamento)
     // Status 4 (Pagamento) -> Status 5 (Produção) - Aceitar pedido
@@ -82,10 +75,11 @@ export function PendingOrderController() {
   // HANDLER: AVANÇAR ETAPA / ACEITAR PEDIDO
   // ========================================
   // Avança o pedido para a próxima etapa ou aceita (status 6)
-  const handleAdvance = async (order) => {
+  const handleAdvance = async order => {
     const orderId = order.idPedido || order.id;
     // Obter ID do status a partir da descrição ou usar statusId já calculado
-    const currentStatusId = order.statusId || getStatusIdFromDescription(order.statusPedido) || 2;
+    const currentStatusId =
+      order.statusId || getStatusIdFromDescription(order.statusPedido) || 2;
     const nextStatusId = getNextStatus(currentStatusId);
 
     setActionLoading(orderId);
@@ -94,13 +88,17 @@ export function PendingOrderController() {
     try {
       // Atualizar status do pedido
       const response = await api.patch(
-        `/pedidos/alterarStatus/${orderId}/status/${nextStatusId}`
+        `/pedidos/alterarStatus/${orderId}/status/${nextStatusId}`,
       );
 
       if (response.status === 200) {
         // Atualizar a lista de pedidos - recarregar para obter status atualizado
         const refreshResponse = await api.get('/pedidos/pendentes');
-        if (refreshResponse && refreshResponse.data && Array.isArray(refreshResponse.data)) {
+        if (
+          refreshResponse &&
+          refreshResponse.data &&
+          Array.isArray(refreshResponse.data)
+        ) {
           const ordersData = refreshResponse.data.map(o => {
             const statusId = getStatusIdFromDescription(o.statusPedido) || 2;
             return {
@@ -149,7 +147,7 @@ export function PendingOrderController() {
   // HANDLER: VER DETALHES DO PEDIDO
   // ========================================
   // Navega para a tela de detalhes do pedido selecionado
-  const handleViewDetails = (order) => {
+  const handleViewDetails = order => {
     const orderId = order.idPedido || order.id;
     navigate(`${ROUTES_PATHS.PENDING_ORDER_SELECTED.replace(':id', orderId)}`);
   };

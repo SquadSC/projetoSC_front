@@ -15,9 +15,10 @@ import {
   FormControl,
   InputLabel,
   Chip,
-  Button
+  Button,
 } from '@mui/material';
 import theme from '../../../theme';
+import { formatDateToLocalString } from '../../../utils/date/date.utils';
 
 // Components
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
@@ -33,7 +34,7 @@ export function DashboardManagerialView({
   endDate,
   setStartDate,
   setEndDate,
-  onDateFilter
+  onDateFilter,
 }) {
   useEffect(() => {
     // Set default dates to last 30 days
@@ -41,24 +42,24 @@ export function DashboardManagerialView({
     const thirtyDaysAgo = new Date(today);
     thirtyDaysAgo.setDate(today.getDate() - 30);
 
-    setStartDate(thirtyDaysAgo.toISOString().split('T')[0]);
-    setEndDate(today.toISOString().split('T')[0]);
+    setStartDate(formatDateToLocalString(thirtyDaysAgo));
+    setEndDate(formatDateToLocalString(today));
   }, []);
 
   if (loading) {
     return (
-      <Container maxWidth="xl" sx={{ py: 2, pb: 10 }}>
+      <Container maxWidth='xl' sx={{ py: 2, pb: 10 }}>
         <Box mb={4}>
-          <Skeleton variant="text" width={300} height={40} />
-          <Skeleton variant="text" width={200} height={24} />
+          <Skeleton variant='text' width={300} height={40} />
+          <Skeleton variant='text' width={200} height={24} />
         </Box>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <Card>
               <CardContent>
-                <Skeleton variant="text" width="60%" />
-                <Skeleton variant="text" width="40%" />
-                <Skeleton variant="rectangular" height={40} sx={{ mt: 1 }} />
+                <Skeleton variant='text' width='60%' />
+                <Skeleton variant='text' width='40%' />
+                <Skeleton variant='rectangular' height={40} sx={{ mt: 1 }} />
               </CardContent>
             </Card>
           </Grid>
@@ -69,9 +70,9 @@ export function DashboardManagerialView({
 
   if (error) {
     return (
-      <Container maxWidth="xl" sx={{ py: 2, pb: 10 }}>
+      <Container maxWidth='xl' sx={{ py: 2, pb: 10 }}>
         <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="h6" color="error">
+          <Typography variant='h6' color='error'>
             Erro ao carregar dados: {error}
           </Typography>
           <button onClick={fetchDashboardData}>Tentar Novamente</button>
@@ -82,32 +83,32 @@ export function DashboardManagerialView({
 
   return (
     <>
-      <Container maxWidth="xl" sx={{ py: 0, pb: 10 }}>
+      <Container maxWidth='xl' sx={{ py: 0, pb: 10 }}>
         {/* Filtros Gerenciais */}
         <Box mb={3} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <TextField
-            type="date"
-            size="small"
-            label="Data Início"
+            type='date'
+            size='small'
+            label='Data Início'
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={e => setStartDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
             sx={{ width: 150 }}
           />
 
           <TextField
-            type="date"
-            size="small"
-            label="Data Fim"
+            type='date'
+            size='small'
+            label='Data Fim'
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={e => setEndDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
             sx={{ width: 150 }}
           />
 
           <Button
-            variant="contained"
-            size="small"
+            variant='contained'
+            size='small'
             onClick={onDateFilter}
             sx={{ backgroundColor: theme.palette.primary.main }}
           >
@@ -119,10 +120,10 @@ export function DashboardManagerialView({
           {/* Métrica gerencial - mesmo padrão de largura */}
           <Grid item xs={12} sm={6} md={4}>
             <MetricCard
-              title="Faturamento"
+              title='Faturamento'
               value={`R$ ${dashboardData?.totalRevenue?.toFixed(2) || '0.00'}`}
               subtitle={`${startDate} a ${endDate}`}
-              icon="💰"
+              icon='💰'
               color={theme.palette.success.main}
               compact={true}
             />
@@ -132,14 +133,13 @@ export function DashboardManagerialView({
           <Grid item xs={12} sm={6} md={4}>
             <TopClientsTable
               data={dashboardData?.topClients || []}
-              title="Top Clientes"
+              title='Top Clientes'
               showTotal={true}
             />
           </Grid>
         </Grid>
       </Container>
       <BottomNavigationComponent />
-
     </>
   );
 }
