@@ -93,7 +93,7 @@ export default function CustomCake({
           <FormField
             value={weight}
             onChange={handleWeightChange}
-            listOptions={[1, 1.5, 2, 2.5, 3, 3.5]}
+            listOptions={[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]}
           />
         </Stack>
 
@@ -208,7 +208,7 @@ export default function CustomCake({
             items={organizedIngredients.adicionais}
             selectedIngredients={selectedIngredients.adicionais || []}
             onIngredientToggle={onIngredientToggle}
-            maxQuantity={0} // Ilimitado
+            maxQuantity={2} // Máximo de 2 adicionais
             required={false}
             weight={weight}
             essentials={essentials}

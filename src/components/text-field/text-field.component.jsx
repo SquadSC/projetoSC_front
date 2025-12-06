@@ -85,6 +85,13 @@ export function FormField({
         onChange={handleChange}
         labelId="demo-simple-select-label"
         label="Peso do bolo (Kg)"
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 300, // Limita a altura máxima do menu
+            },
+          },
+        }}
       >
         {options.map((item) => (
           <MenuItem key={item} value={item}>

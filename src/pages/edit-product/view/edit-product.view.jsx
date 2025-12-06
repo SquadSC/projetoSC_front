@@ -117,15 +117,6 @@ export function EditProductView({ fields, onChange, onSubmit, isLoading }) {
             fullWidth
           />
 
-          <TextField
-            name='price'
-            label='Preço do Produto (R$)'
-            type='number'
-            value={fields.price}
-            onChange={onChange}
-            fullWidth
-          />
-
           {/* Campo Unidade - aparece para itens complementares e tabela de preços */}
           {(fields.mainCategory === 'itens-complementares' ||
             fields.mainCategory === 'tabela-precos') && (

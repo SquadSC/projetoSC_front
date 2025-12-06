@@ -7,6 +7,7 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { useGetWeeklyOrderCount } from '../hooks/use-get-weekly-order-count';
 import { useGetOrderDay } from '../hooks/use-get-order-day';
+import { getTodayLocalString } from '../../../utils/date/date.utils';
 
 export function AgendaController() {
   const [agendaView, setAgendaView] = useState('lista');
@@ -34,7 +35,7 @@ export function AgendaController() {
     ];
 
     const dayNamesShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getTodayLocalString();
 
     return rawData.map(item => {
       const date = item.data;

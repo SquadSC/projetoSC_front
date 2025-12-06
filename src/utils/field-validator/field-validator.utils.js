@@ -6,7 +6,7 @@ export const validators = {
   ],
   phone: [
     { check: v => !!v, msg: 'Telefone obrigatório' },
-    { check: v => v.length >= 15, msg: 'Informe seu telefone com DDD' },
+    { check: v => /^\d+$/.test(v) && (v.length === 10 || v.length === 11), msg: 'Informe seu telefone com DDD' },
   ],
   email: [
     { check: v => !!v, msg: 'E-mail obrigatório' },

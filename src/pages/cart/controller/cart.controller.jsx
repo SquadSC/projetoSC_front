@@ -1,13 +1,13 @@
 import { CartView } from '../view/cart.view';
 import { request } from '../../../services/api';
 import { useState, useEffect } from 'react';
-import {getUserData} from '../../../utils/auth'
+import { getUserData } from '../../../utils/auth';
 
 export function CartController() {
   const [produtos, setProdutos] = useState([]);
 
   const userData = getUserData();
-  
+
   const fetchCartData = () => {
     request
       .get(`http://localhost:8080/pedidos/carrinho?idUsuario=${userData.id}`)
@@ -19,9 +19,11 @@ export function CartController() {
       });
   };
 
-  const desabilitarItem = (idDoItemPedido) => {
+  const desabilitarItem = idDoItemPedido => {
     request
-      .delete(`http://localhost:8080/pedidos/desabilitarItemPedido/${idDoItemPedido}`)
+      .delete(
+        `http://localhost:8080/pedidos/desabilitarItemPedido/${idDoItemPedido}`,
+      )
       .then(() => {
         fetchCartData(); // Refresh cart data after deletion
       })
@@ -34,6 +36,5 @@ export function CartController() {
     fetchCartData();
   }, []);
 
-  console.log(produtos)
   return <CartView produtos={produtos} onDeleteItem={desabilitarItem} />;
 }

@@ -8,13 +8,16 @@ import {
   CircularProgress,
   Checkbox,
   FormControlLabel,
+  IconButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { ProductList } from '../components/product-list.component';
 import { useNavigate } from 'react-router-dom';
-import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
+
 
 // componente principal da tela de produtos
 export function ProductsView({
@@ -35,42 +38,54 @@ export function ProductsView({
       sx={{
         backgroundColor: 'background.default',
         minHeight: '100vh',
-        p: 3,
       }}
     >
+      <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'end',
-        }}
-      >
-        <PageHeader
-          titulo='Catálogo de Produtos'
-          showBackButton={true}
-        ></PageHeader>
+      <Box sx={{ mb: 3 }}>
+        {/* Primeira linha: Seta de voltar e ícone de adicionar */}
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mb: 3,
+            mb: 2,
           }}
         >
-          <AddCircleOutlineIcon
-            color='primary'
+          <IconButton
+            edge='start'
+            color='inherit'
+            onClick={() => navigate(-1)}
+            sx={{ color: 'primary.main' }}
+          >
+            <ArrowBackIosNewIcon />
+          </IconButton>
+          
+          <IconButton
+            edge='end'
+            color='inherit'
             onClick={() => navigate(ROUTES_PATHS.ADD_PRODUCT)}
-            aria-label='adicionar produto'
-            sx={{
-              width: 34, // aumenta o tamanho do botão
-              height: 34, // aumenta o tamanho do botão
-              '&:hover': {
-                backgroundColor: 'rgba(56, 9, 13, 0.04)', // cor do hover mais suave
-              },
+            sx={{ 
+              color: 'primary.main',
+              width: 48,
+              height: 48,
             }}
-          ></AddCircleOutlineIcon>
+          >
+            <AddCircleOutlineIcon sx={{ fontSize: 34 }} />
+          </IconButton>
         </Box>
+
+        {/* Segunda linha: Título */}
+        <Typography
+          variant='h5'
+          sx={{
+            textAlign: 'center',
+            color: 'primary.main',
+            fontWeight: 'semiBold',
+          }}
+        >
+          Catálogo de Produtos
+        </Typography>
       </Box>
 
       {/* Conteúdo da pagina */}
@@ -141,6 +156,9 @@ export function ProductsView({
           </Typography>
         )}
       </Container>
+      </Box>
+      <BottomNavigationComponent />
     </Box>
+    
   );
 }

@@ -1,0 +1,1 @@
+export { ProfileController } from './controller/profile.controller';

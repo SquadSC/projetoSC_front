@@ -68,3 +68,23 @@ export function getMonthName(dateString) {
     return '';
   }
 }
+
+// ✅ Nova função: Retorna data atual no fuso horário local (não UTC)
+export function getTodayLocalString() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0');
+  const day = today.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// ✅ Nova função: Formatar data para string local (YYYY-MM-DD)
+export function formatDateToLocalString(date) {
+  if (!date) return getTodayLocalString();
+
+  const dateObj = date instanceof Date ? date : new Date(date);
+  const year = dateObj.getFullYear();
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+  const day = dateObj.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}

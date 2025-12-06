@@ -15,6 +15,7 @@ import { LoginController } from './pages/login/index.page.jsx';
 import { RegisterUserController } from './pages/register-user/index.page';
 import { ErrorGenericController } from './pages/error-generic/index.page.jsx';
 import { CartController } from './pages/cart/index.page.jsx';
+import { ProfileController } from './pages/profile/index.page.jsx';
 import { OrderDeliveryStageController } from './pages/order-delivery-stage/index.page.jsx';
 import { OrderSummaryCakeController } from './pages/order-summary-cake/index.page.jsx';
 import { NumberGuestsController } from './pages/number-guests/index.page.jsx';
@@ -100,6 +101,10 @@ export default function AppRoutes() {
     {
       path: ROUTES_PATHS.ERROR_GENERIC,
       element: <ErrorGenericController />,
+    },
+    {
+      path: ROUTES_PATHS.PROFILE,
+      element: <ProfileController />,
     },
   ];
 

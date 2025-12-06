@@ -127,20 +127,34 @@ export function DetailOrderController() {
   };
 
   const formatAddress = endereco => {
-    if (!endereco) return 'Endereço não informado';
+    if (!endereco) return 'Não definido';
+
+    // Verificar se campos essenciais existem
+    if (!endereco.logradouro && !endereco.numero) {
+      return 'Não definido';
+    }
 
     const cepFormatado = endereco.cep ? maskCep(endereco.cep) : '';
     const complementoStr = endereco.complemento
       ? ` - ${endereco.complemento}`
       : '';
 
-    return `${endereco.logradouro}, ${endereco.numero}${complementoStr} - ${cepFormatado}`;
+    const logradouro = endereco.logradouro || '';
+    const numero = endereco.numero || '';
+    const enderecoFormatado = `${logradouro}${logradouro && numero ? ', ' : ''}${numero}${complementoStr}${cepFormatado ? ` - ${cepFormatado}` : ''}`;
+
+    return enderecoFormatado.trim() || 'Não definido';
   };
 
   const formatDateTime = dateTimeString => {
     if (!dateTimeString) return { date: 'Não definida', time: 'Não definida' };
 
     const dtEntrega = new Date(dateTimeString);
+
+    // Validar se a data é válida
+    if (isNaN(dtEntrega.getTime())) {
+      return { date: 'Não definida', time: 'Não definida' };
+    }
 
     return {
       date: dtEntrega.toLocaleDateString('pt-BR'),

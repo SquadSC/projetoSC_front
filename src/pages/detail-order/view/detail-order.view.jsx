@@ -55,23 +55,35 @@ export default function OrderDetailsView({
 
   // Formata data de entrega
   const getDeliveryDate = () => {
-    if (order.deliveryDate) return order.deliveryDate;
-    if (order.dtEntregaEsperada) {
-      return new Date(order.dtEntregaEsperada).toLocaleDateString('pt-BR');
+    if (order.deliveryDate && order.deliveryDate !== 'Não definida') {
+      return order.deliveryDate;
     }
-    return 'N/A';
+    if (order.dtEntregaEsperada) {
+      const dtEntrega = new Date(order.dtEntregaEsperada);
+      // Validar se a data é válida
+      if (!isNaN(dtEntrega.getTime())) {
+        return dtEntrega.toLocaleDateString('pt-BR');
+      }
+    }
+    return 'Não definido';
   };
 
   // Formata hora de entrega
   const getDeliveryTime = () => {
-    if (order.deliveryTime) return order.deliveryTime;
-    if (order.dtEntregaEsperada) {
-      return new Date(order.dtEntregaEsperada).toLocaleTimeString('pt-BR', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+    if (order.deliveryTime && order.deliveryTime !== 'Não definida') {
+      return order.deliveryTime;
     }
-    return 'N/A';
+    if (order.dtEntregaEsperada) {
+      const dtEntrega = new Date(order.dtEntregaEsperada);
+      // Validar se a data é válida
+      if (!isNaN(dtEntrega.getTime())) {
+        return dtEntrega.toLocaleTimeString('pt-BR', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      }
+    }
+    return 'Não definido';
   };
 
   return (
@@ -138,7 +150,7 @@ export default function OrderDetailsView({
                 sx={{ mr: 1, color: 'primary.main' }}
               />
               <Typography variant='body2' color='primary.main'>
-                {order.address || 'N/A'}
+                {order.address || 'Não definido'}
               </Typography>
             </Box>
           </Stack>

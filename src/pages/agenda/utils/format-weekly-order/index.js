@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGetOrderCountDay } from '../../hooks/use-get-order-count-day';
-import { getMonthName } from '../../../../utils/date/date.utils';
+import {
+  getMonthName,
+  getTodayLocalString,
+} from '../../../../utils/date/date.utils';
 
 export function useFormatWeeklyOrder() {
   const {
@@ -23,7 +26,7 @@ export function useFormatWeeklyOrder() {
       'Sexta-feira',
       'Sábado',
     ];
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getTodayLocalString();
 
     return ordersList.map(order => {
       const [year, month, day] = (order.data || '').split('-').map(Number);
@@ -163,7 +166,7 @@ export function getWeekMonthName(weeklyData) {
     return {
       day: '',
       month: '',
-      year: ''
+      year: '',
     };
   }
 
@@ -173,19 +176,19 @@ export function getWeekMonthName(weeklyData) {
     return {
       day: '',
       month: '',
-      year: ''
+      year: '',
     };
   }
 
   // Extrair partes da data (formato: YYYY-MM-DD)
   const [year, month, day] = firstValidDate.data.split('-');
-  
+
   // Converter mês numérico para nome
   const monthName = getMonthName(firstValidDate.data);
 
   return {
     day: day,
     month: monthName.charAt(0).toUpperCase() + monthName.slice(1),
-    year: year
+    year: year,
   };
 }

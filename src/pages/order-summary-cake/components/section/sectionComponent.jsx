@@ -74,8 +74,18 @@ export function SectionComponent({
           {required && ' *'}
         </Typography>
 
-        {/* Mostra informações de preço para adicionais */}
-        {ingredientType === 'adicionais' && (
+        {/* Mostra informações combinadas para adicionais com limite */}
+        {ingredientType === 'adicionais' && maxQuantity > 0 && (
+          <Typography
+            variant='caption'
+            color={totalPrice > 0 ? 'success.main' : 'text.secondary'}
+          >
+            {currentCount}/{maxQuantity} selecionados {totalPrice > 0 ? `(+R$ ${totalPrice.toFixed(2)})` : '(+R$ 0.00)'}
+          </Typography>
+        )}
+
+        {/* Mostra informações de preço para adicionais sem limite (fallback) */}
+        {ingredientType === 'adicionais' && maxQuantity === 0 && (
           <Typography
             variant='caption'
             color={totalPrice > 0 ? 'success.main' : 'text.secondary'}
@@ -86,8 +96,8 @@ export function SectionComponent({
           </Typography>
         )}
 
-        {/* Mostra contador para seções com limite */}
-        {maxQuantity > 0 && (
+        {/* Mostra contador para seções com limite (exceto adicionais que já mostra acima) */}
+        {maxQuantity > 0 && ingredientType !== 'adicionais' && (
           <Typography variant='caption' color='text.secondary'>
             {currentCount}/{maxQuantity} selecionados
           </Typography>
