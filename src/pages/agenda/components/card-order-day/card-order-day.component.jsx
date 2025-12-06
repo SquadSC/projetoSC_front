@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, Stack, Typography } from '@mui/material';
 import calendarioGray from '../../../../assets/icons/calendario-gray.svg';
 import relogioGray from '../../../../assets/icons/relogio-gray.svg';
 import { formatDateBrazilian } from '../../../../utils/date/date.utils';
@@ -6,17 +6,19 @@ import { formatCurrencyBRL } from '../../../../utils/formatter/currency-formatte
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES_PATHS } from '../../../../utils/enums/routes-url';
+import { OrderStatusHelper } from '../../../../utils/enums/order-status';
 
 export function CardOrderDayComponent({ selectDayOrderData }) {
   const { selectedDayData, selectedDayLoading, selectedDayError } =
     selectDayOrderData;
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // Garantir que selectedDayData seja um array
   const orders = Array.isArray(selectedDayData) ? selectedDayData : [];
 
-  // Só mostrar loading se não há dados anteriores para evitar "piscada"
+  // Só mostrar tela de loading inicial se não há dados anteriores
+  // Isso evita o "piscar" ao trocar de dia quando há cache
   if (selectedDayLoading && orders.length === 0) {
     return (
       <Box
@@ -61,8 +63,8 @@ export function CardOrderDayComponent({ selectDayOrderData }) {
     <Stack
       spacing={2}
       sx={{
-        transition: 'all 0.3s ease-in-out',
-        opacity: selectedDayLoading ? 0.7 : 1,
+        transition: 'opacity 0.2s ease-in-out',
+        opacity: selectedDayLoading && orders.length === 0 ? 0.7 : 1,
       }}
     >
       {orders.length === 0 ? (
@@ -139,13 +141,33 @@ export function CardOrderDayComponent({ selectDayOrderData }) {
                     width: '100%',
                   }}
                 >
-                  <Typography
-                    variant='text'
-                    fontWeight={'semiBold'}
-                    color='primary.main'
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
                   >
-                    Pedido #{orderId}
-                  </Typography>
+                    <Typography
+                      variant='text'
+                      fontWeight={'semiBold'}
+                      color='primary.main'
+                    >
+                      Pedido #{orderId}
+                    </Typography>
+                    <Chip
+                      label={`${OrderStatusHelper.getEffectiveStatusText(
+                        order.statusPedido,
+                        dtEntrega,
+                      )}`}
+                      variant='outlined'
+                      sx={OrderStatusHelper.getEffectiveStatusColor(
+                        order.statusPedido,
+                        dtEntrega,
+                      )}
+                    />
+                  </Box>
+
                   <Typography variant='textLittle' fontWeight={'semiBold'}>
                     Informações da entrega:
                   </Typography>
@@ -211,7 +233,18 @@ export function CardOrderDayComponent({ selectDayOrderData }) {
                     </Stack>
                   </Box>
                 </Stack>
-                <Button variant='outlined' sx={{ px: 4 }} onClick={() => navigate(`${ROUTES_PATHS.PENDING_ORDER_SELECTED.replace(':id', orderId)}`)}>
+                <Button
+                  variant='outlined'
+                  sx={{ px: 4 }}
+                  onClick={() =>
+                    navigate(
+                      `${ROUTES_PATHS.PENDING_ORDER_SELECTED.replace(
+                        ':id',
+                        orderId,
+                      )}`,
+                    )
+                  }
+                >
                   Detalhes
                 </Button>
               </Box>

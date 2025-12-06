@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
 import { WeeklyOrder } from '../../agenda/components/weekly-order/weekly-order.component';
@@ -24,14 +18,19 @@ export function AgendaView({
       {viewCalendar && (
         <Box
           sx={{
-            position: 'absolute',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             zIndex: 10,
-            width: '100%',
-            height: '100%',
+            width: '100vw',
+            height: '100vh',
             backgroundColor: 'rgba(0, 0, 0, 0.7)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            overflow: 'hidden',
           }}
           onClick={() => setViewCalendar(false)}
         >
@@ -40,11 +39,13 @@ export function AgendaView({
               zIndex: 11,
               width: 'auto',
               height: 'auto',
-              backgroundColor: 'white',
+              backgroundColor: 'background.paper',
+              borderRadius: 2,
               opacity: 1,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              border: '1px solid gray',
             }}
             onClick={e => e.stopPropagation()}
           >

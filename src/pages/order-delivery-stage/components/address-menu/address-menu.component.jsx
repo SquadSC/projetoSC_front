@@ -16,6 +16,7 @@ export function AddressMenuComponent({
       <Container
         sx={{
           p: 3,
+          pb: 10,
         }}
       >
         <Typography variant='text' sx={{ mb: 2 }}>
