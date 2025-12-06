@@ -4,6 +4,7 @@ import { PendingOrderView } from '../view/pending-order.view';
 import { api } from '../../../services/api';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
 import { getStatusIdFromDescription } from '../../../utils/helper/status-pedido-helper';
+import Swal from 'sweetalert2';
 
 export function PendingOrderController() {
   const navigate = useNavigate();
@@ -25,25 +26,20 @@ export function PendingOrderController() {
       try {
         // Usar o novo endpoint para buscar pedidos pendentes
         const response = await api.get('/pedidos/pendentes');
-
+        
         if (response && response.data && Array.isArray(response.data)) {
           // Mapear os pedidos - converter statusPedido (descrição) para ID
-          const ordersData = response.data.map((order, index) => {
-            const statusId =
-              getStatusIdFromDescription(order.statusPedido) || 2;
-
+          const ordersData = response.data.map((order) => {
+            const statusId = getStatusIdFromDescription(order.statusPedido) || 2;
+            
             const mappedOrder = {
               ...order,
               statusId: statusId,
             };
-            console.log(
-              `📋 [PendingOrder] Pedido ${index + 1} - mapeado:`,
-              mappedOrder,
-            );
-
+            
             return mappedOrder;
           });
-
+          
           setOrders(ordersData);
         } else {
           setOrders([]);
@@ -116,15 +112,32 @@ export function PendingOrderController() {
         // Se foi para status 5 (Produção), o pedido já foi removido da lista ao recarregar
         // pois o endpoint /pedidos/pendentes só retorna status 2, 3 e 4
         if (nextStatusId === 5) {
-          alert('Pedido aceito e inserido na agenda com sucesso!');
+          Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: 'Pedido aceito e inserido na agenda com sucesso!',
+            showConfirmButton: false,
+            timer: 2000,
+          });
         } else {
-          alert('Etapa avançada com sucesso!');
+          Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: 'Etapa avançada com sucesso!',
+            showConfirmButton: false,
+            timer: 2000,
+          });
         }
       }
     } catch (err) {
       console.error('Erro ao avançar etapa:', err);
       setError('Não foi possível avançar a etapa. Tente novamente.');
-      alert('Erro ao avançar etapa. Tente novamente.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro!',
+        text: 'Não foi possível avançar a etapa. Tente novamente.',
+        confirmButtonText: 'OK'
+      });
     } finally {
       setActionLoading(null);
     }
@@ -142,13 +155,6 @@ export function PendingOrderController() {
   // ========================================
   // RENDER: VIEW
   // ========================================
-  console.log('🎨 [PendingOrder] Renderizando view com:', {
-    loading,
-    ordersCount: orders.length,
-    orders,
-    error,
-  });
-
   return (
     <PendingOrderView
       loading={loading}
