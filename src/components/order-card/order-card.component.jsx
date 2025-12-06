@@ -40,19 +40,18 @@ export function OrderCard({ order, onViewDetails, loading }) {
       // Etapa 1: Verificar agenda - Mostrar data de entrega esperada
       const dataEntrega = order.dtEntregaEsperada;
       if (dataEntrega) {
-        try {
-          const dataObj = new Date(dataEntrega);
-          // Validar se a data é válida
-          if (!isNaN(dataObj.getTime())) {
-            const dataFormatada = dataObj.toLocaleDateString('pt-BR', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            });
+        const dtEntrega = new Date(dataEntrega);
+        // Validar se a data é válida
+        if (!isNaN(dtEntrega.getTime())) {
+          const dataFormatada = dtEntrega.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          });
+          // Verificar se não retornou "Invalid Date"
+          if (dataFormatada && !dataFormatada.includes('Invalid')) {
             return `Entrega agendada para ${dataFormatada}`;
           }
-        } catch {
-          // Se houver erro, retornar mensagem padrão
         }
       }
       return 'Verificar disponibilidade na agenda';
