@@ -14,12 +14,53 @@ dayjs.updateLocale('pt-br', {
 });
 dayjs.locale('pt-br');
 
+/**
+ * Calcula a data mínima permitida (3 dias úteis após hoje, sem contar domingos)
+ * Exemplo: Se hoje é sexta (06/12), a data mínima é terça (10/12)
+ */
+function getMinDate() {
+  let currentDate = dayjs().startOf('day');
+  let businessDaysAdded = 0;
+
+  // Adiciona 3 dias úteis (sem contar domingos)
+  while (businessDaysAdded < 3) {
+    currentDate = currentDate.add(1, 'day');
+    // Se não for domingo (0 = domingo)
+    if (currentDate.day() !== 0) {
+      businessDaysAdded++;
+    }
+  }
+
+  return currentDate;
+}
+
+/**
+ * Verifica se uma data deve ser desabilitada
+ * @param {dayjs.Dayjs} date - Data a ser verificada
+ * @returns {boolean} - true se a data deve ser desabilitada
+ */
+function shouldDisableDate(date) {
+  const minDate = getMinDate();
+
+  // Desabilitar domingos (day() === 0)
+  if (date.day() === 0) {
+    return true;
+  }
+
+  // Desabilitar datas antes da data mínima (hoje + 3 dias úteis)
+  if (date.isBefore(minDate, 'day')) {
+    return true;
+  }
+
+  return false;
+}
+
 export function CalendarComponent({ value, onChange }) {
   return (
-    <Container 
-      sx={{ 
-        width: '345px', 
-        p: 0, 
+    <Container
+      sx={{
+        width: '345px',
+        p: 0,
         height: '342px',
         transition: 'height 0.3s ease-in-out', // Transição suave
         '& .MuiDateCalendar-root': {
@@ -61,7 +102,8 @@ export function CalendarComponent({ value, onChange }) {
           value={value}
           onChange={onChange}
           showDaysOutsideCurrentMonth
-          minDate={dayjs().startOf('day')}
+          minDate={getMinDate()}
+          shouldDisableDate={shouldDisableDate}
           dayOfWeekFormatter={date =>
             dayjs(date).format('ddd').replace('.', '').toLowerCase()
           }

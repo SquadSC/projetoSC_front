@@ -7,6 +7,8 @@ import { BottomNavigationComponent } from '../../../components/bottomNavigation/
 export function OrdersView({
   pedidosPendentes,
   pedidosEmAndamento,
+  pedidosConcluidos,
+  pedidosCancelados,
   onViewDetails,
   loading,
   error,
@@ -55,7 +57,10 @@ export function OrdersView({
   }
 
   const temPedidos =
-    pedidosPendentes.length > 0 || pedidosEmAndamento.length > 0;
+    pedidosPendentes.length > 0 ||
+    pedidosEmAndamento.length > 0 ||
+    pedidosConcluidos.length > 0 ||
+    pedidosCancelados.length > 0;
 
   return (
     <Box sx={mainContainer}>
@@ -93,9 +98,39 @@ export function OrdersView({
 
             {/* Seção de Pedidos em Andamento */}
             {pedidosEmAndamento.length > 0 && (
-              <Box>
+              <Box mb={3}>
                 <Typography sx={sectionTitle}>Em Andamento:</Typography>
                 {pedidosEmAndamento.map(pedido => (
+                  <OrderCard
+                    key={pedido.idPedido}
+                    order={pedido}
+                    onViewDetails={() => onViewDetails(pedido)}
+                    loading={loading}
+                  />
+                ))}
+              </Box>
+            )}
+
+            {/* Seção de Pedidos Concluídos */}
+            {pedidosConcluidos.length > 0 && (
+              <Box mb={3}>
+                <Typography sx={sectionTitle}>Concluídos:</Typography>
+                {pedidosConcluidos.map(pedido => (
+                  <OrderCard
+                    key={pedido.idPedido}
+                    order={pedido}
+                    onViewDetails={() => onViewDetails(pedido)}
+                    loading={loading}
+                  />
+                ))}
+              </Box>
+            )}
+
+            {/* Seção de Pedidos Cancelados */}
+            {pedidosCancelados.length > 0 && (
+              <Box mb={3}>
+                <Typography sx={sectionTitle}>Cancelados:</Typography>
+                {pedidosCancelados.map(pedido => (
                   <OrderCard
                     key={pedido.idPedido}
                     order={pedido}

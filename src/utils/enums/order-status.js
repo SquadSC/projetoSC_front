@@ -60,6 +60,19 @@ export const OrderStatusHelper = {
     return status === ORDER_STATUS.CANCELADO;
   },
 
+  /**
+   * Verifica se o pedido pode ser cancelado pelo cliente
+   * Permite cancelamento nas etapas: Enviado, Validação, Pagamento, Produção
+   */
+  canBeCancelled: status => {
+    return [
+      ORDER_STATUS.ENVIADO,
+      ORDER_STATUS.VALIDACAO,
+      ORDER_STATUS.PAGAMENTO,
+      ORDER_STATUS.PRODUCAO,
+    ].includes(status);
+  },
+
   isExpired: (status, dtEntregaEsperada) => {
     // Só verifica expiração para pedidos em produção
     if (status !== ORDER_STATUS.PRODUCAO) return false;
