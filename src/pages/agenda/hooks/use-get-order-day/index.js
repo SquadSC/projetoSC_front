@@ -9,6 +9,14 @@ export function useGetOrderDay(autoFetch = true, day) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const lastDayRef = useRef(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const fetchOrderDay = useCallback(async () => {
     if (!day) {
@@ -23,17 +31,23 @@ export function useGetOrderDay(autoFetch = true, day) {
       return;
     }
 
-    // Verificar cache primeiro
+    // Verificar cache primeiro - se tiver, não mostra loading
     if (cache.has(day)) {
       const cachedData = cache.get(day);
-      setOrderData(cachedData);
-      setError(null);
-      lastDayRef.current = day;
+      // Atualiza dados sem alterar estado de loading
+      if (isMountedRef.current) {
+        setOrderData(cachedData);
+        setError(null);
+        lastDayRef.current = day;
+      }
+      // Não seta loading como true quando usa cache
       return;
     }
 
+    // Só marca loading se não há dados no cache
     setIsLoading(true);
     setError(null);
+
     try {
       const response = await api.get(`/pedidos/PedidosData?data=${day}`);
 
@@ -60,8 +74,10 @@ export function useGetOrderDay(autoFetch = true, day) {
       // Salvar no cache
       cache.set(day, finalData);
 
-      setOrderData(finalData);
-      lastDayRef.current = day;
+      if (isMountedRef.current) {
+        setOrderData(finalData);
+        lastDayRef.current = day;
+      }
     } catch (err) {
       console.error('Error fetching order day:', err);
       const errorMessage =
@@ -69,10 +85,14 @@ export function useGetOrderDay(autoFetch = true, day) {
         err.response?.data?.error ||
         err.message ||
         'Erro ao buscar pedidos do dia';
-      setError(errorMessage);
-      setOrderData([]);
+      if (isMountedRef.current) {
+        setError(errorMessage);
+        setOrderData([]);
+      }
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   }, [day]);
 

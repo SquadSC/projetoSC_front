@@ -35,7 +35,7 @@ export function PendingOrderView({
   // CONTAINER PRINCIPAL
   // ========================================
   return (
-    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
+    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', pb: 8 }}>
       {/* ========================================
           HEADER
           ========================================
