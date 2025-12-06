@@ -12,14 +12,21 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import PhoneIcon from '@mui/icons-material/Phone';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { CakeCard } from '../../pending-order-selected/components/cake-card.component';
+import { OrderStatusHelper } from '../../../utils/enums/order-status.js';
+import { maskPhone } from '../../../utils/mask/mask.utils';
 import { infoRow } from '../styles/detail-order.style.js';
 
 export default function OrderDetailsView({
   loading,
   error,
   order,
+  actionLoading,
   onCancel,
+  onCancelOrder,
   onViewCakeDetails,
 }) {
   // Tela de carregamento
@@ -52,6 +59,9 @@ export default function OrderDetailsView({
   const totalValue = order.total || order.precoTotal || 0;
   const paidPercent = order.paidPercent || 50;
   const halfValue = (totalValue * (paidPercent / 100)).toFixed(2);
+
+  // Verifica se o pedido pode ser cancelado
+  const canCancel = OrderStatusHelper.canBeCancelled(order?.statusPedido);
 
   // Formata data de entrega
   const getDeliveryDate = () => {
@@ -99,9 +109,9 @@ export default function OrderDetailsView({
       {/* Container principal - Detalhes do pedido */}
       <Container sx={{ p: 4, pb: 2 }}>
         <Stack spacing={3}>
-          {/* Seção: Informações do Cliente e Entrega */}
+          {/* Seção: Informações da Confeiteira e Entrega */}
           <Stack spacing={2}>
-            {/* Nome do cliente e data de cadastro */}
+            {/* Nome da confeiteira e telefone */}
             <Box sx={infoRow}>
               <PersonOutlineIcon
                 fontSize='small'
@@ -115,44 +125,90 @@ export default function OrderDetailsView({
                 >
                   {order.customer?.name || 'N/A'}
                 </Typography>
-                <Typography variant='caption' color='text.secondary'>
-                  Desde {order.customer?.memberSince || 'N/A'}
-                </Typography>
+                {order.customer?.phone && (
+                  <Typography
+                    variant='caption'
+                    color='gray'
+                    component='a'
+                    href={`tel:${order.customer.phone}`}
+                    sx={{ textDecoration: 'none', display: 'block' }}
+                  >
+                    {maskPhone(order.customer.phone)}
+                  </Typography>
+                )}
               </Box>
             </Box>
 
-            {/* Data de entrega */}
+            {/* Data de entrega ou retirada */}
             <Box sx={infoRow}>
               <CalendarTodayIcon
                 fontSize='small'
                 sx={{ mr: 1, color: 'primary.main' }}
               />
               <Typography variant='body2' color='primary.main'>
-                Data de entrega: {getDeliveryDate()}
+                {order.isRetirada ? 'Data de retirada:' : 'Data de entrega:'}{' '}
+                {getDeliveryDate()}
               </Typography>
             </Box>
 
-            {/* Hora de entrega */}
+            {/* Hora de entrega ou retirada */}
             <Box sx={infoRow}>
               <AccessTimeIcon
                 fontSize='small'
                 sx={{ mr: 1, color: 'primary.main' }}
               />
               <Typography variant='body2' color='primary.main'>
-                Hora de entrega: {getDeliveryTime()}
+                {order.isRetirada ? 'Hora de retirada:' : 'Hora de entrega:'}{' '}
+                {getDeliveryTime()}
               </Typography>
             </Box>
 
-            {/* Endereço de entrega */}
+            {/* Endereço de entrega ou local de retirada */}
             <Box sx={infoRow}>
-              <LocationOnIcon
-                fontSize='small'
-                sx={{ mr: 1, color: 'primary.main' }}
-              />
+              {order.isRetirada ? (
+                <StorefrontIcon
+                  fontSize='small'
+                  sx={{ mr: 1, color: 'primary.main' }}
+                />
+              ) : (
+                <LocationOnIcon
+                  fontSize='small'
+                  sx={{ mr: 1, color: 'primary.main' }}
+                />
+              )}
               <Typography variant='body2' color='primary.main'>
                 {order.address || 'Não definido'}
               </Typography>
             </Box>
+
+            {/* Status do pedido */}
+            {order.statusPedido && (
+              <Box sx={infoRow}>
+                <InfoOutlinedIcon
+                  fontSize='small'
+                  sx={{ mr: 1, color: 'primary.main' }}
+                />
+                <Box
+                  sx={{
+                    ...OrderStatusHelper.getEffectiveStatusColor(
+                      order.statusPedido,
+                      order.dtEntregaEsperada,
+                    ),
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontSize: '0.75rem',
+                    fontWeight: 'medium',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {OrderStatusHelper.getEffectiveStatusText(
+                    order.statusPedido,
+                    order.dtEntregaEsperada,
+                  )}
+                </Box>
+              </Box>
+            )}
           </Stack>
 
           {/* Seção: Total do pedido e valor parcial */}
@@ -189,6 +245,48 @@ export default function OrderDetailsView({
             </Typography>
           )}
         </Stack>
+
+        {/* Botão de Cancelar Pedido - Apenas se pode cancelar */}
+        {canCancel && (
+          <Box
+            sx={{
+              position: 'fixed',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              display: 'flex',
+              gap: 2,
+              padding: '16px',
+              backgroundColor: 'background.default',
+              boxShadow: '0 -1px 6px rgba(41, 40, 40, 0.1)',
+              zIndex: 1000,
+              pb: 2,
+            }}
+          >
+            <Button
+              variant='outlined'
+              color='error'
+              sx={{
+                flex: 1,
+                height: '48px',
+                borderWidth: '2px',
+                '&:hover': {
+                  borderWidth: '2px',
+                  backgroundColor: 'error.main',
+                  color: 'white',
+                },
+              }}
+              onClick={onCancelOrder}
+              disabled={actionLoading}
+            >
+              {actionLoading ? (
+                <CircularProgress size={24} color='inherit' />
+              ) : (
+                'Cancelar Pedido'
+              )}
+            </Button>
+          </Box>
+        )}
       </Container>
     </Box>
   );
