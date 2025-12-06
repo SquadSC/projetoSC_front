@@ -4,7 +4,7 @@ import {
   getWeekMonthName,
   useFormatWeeklyOrder,
 } from '../../agenda/utils/format-weekly-order';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGetWeeklyOrderCount } from '../hooks/use-get-weekly-order-count';
 import { useGetOrderDay } from '../hooks/use-get-order-day';
 import { getTodayLocalString } from '../../../utils/date/date.utils';
@@ -12,14 +12,21 @@ import { getTodayLocalString } from '../../../utils/date/date.utils';
 export function AgendaController() {
   const [agendaView, setAgendaView] = useState('lista');
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
 
+  // Inicializa com a data de hoje quando não há parâmetro na URL
   useEffect(() => {
     const urlDate = searchParams.get('day');
     if (urlDate) {
       setSelectedDate(urlDate);
+    } else {
+      // Se não há parâmetro na URL, seleciona o dia de hoje e atualiza a URL
+      const today = getTodayLocalString();
+      setSelectedDate(today);
+      navigate(`/agenda?day=${today}`, { replace: true });
     }
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
   const formatSelectedWeekData = useCallback(rawData => {
     if (!rawData || !Array.isArray(rawData)) return [];
