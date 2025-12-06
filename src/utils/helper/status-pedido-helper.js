@@ -9,24 +9,21 @@
  * @returns {number|null} ID do status ou null se não encontrado
  */
 export function getStatusIdFromDescription(statusDescricao) {
-  console.log('🔑 [StatusHelper] getStatusIdFromDescription chamado com:', statusDescricao);
-  
   if (!statusDescricao) {
-    console.log('⚠️ [StatusHelper] statusDescricao é vazio/null');
     return null;
   }
 
   const statusMap = {
-    'Criado': 1,
-    'Enviado': 2,
-    'Validação': 3,
-    'Pagamento': 4,
-    'Produção': 5,
-    'Concluído': 7,
-    'Concluido': 7, // Variação possível
-    'Cancelado': 8,
+    Criado: 1,
+    Enviado: 2,
+    Validação: 3,
+    Pagamento: 4,
+    Produção: 5,
+    Concluído: 7,
+    Concluido: 7, // Variação possível
+    Cancelado: 8,
     // Mapeamentos antigos para compatibilidade
-    'Aberto': 1,
+    Aberto: 1,
     'Aceito pela confeiteira': 3,
     'Validado pelo fornecedor': 4,
     'Agendamento confirmado': 5,
@@ -36,21 +33,17 @@ export function getStatusIdFromDescription(statusDescricao) {
 
   // Busca exata
   if (statusMap[statusDescricao]) {
-    console.log('✅ [StatusHelper] Encontrado mapeamento exato:', statusDescricao, '->', statusMap[statusDescricao]);
     return statusMap[statusDescricao];
   }
 
   // Busca case-insensitive
   const statusLower = statusDescricao.toLowerCase().trim();
-  console.log('🔍 [StatusHelper] Buscando case-insensitive:', statusLower);
   for (const [key, value] of Object.entries(statusMap)) {
     if (key.toLowerCase() === statusLower) {
-      console.log('✅ [StatusHelper] Encontrado mapeamento case-insensitive:', key, '->', value);
       return value;
     }
   }
 
-  console.log('❌ [StatusHelper] Nenhum mapeamento encontrado para:', statusDescricao);
   return null;
 }
 
@@ -69,7 +62,7 @@ export function getStatusDescriptionFromId(statusId) {
     4: 'Pagamento',
     5: 'Produção',
     7: 'Concluído',
-    8: 'Cancelado'
+    8: 'Cancelado',
   };
 
   return statusMap[statusId] || null;

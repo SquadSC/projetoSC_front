@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGetOrderCountDay } from '../../hooks/use-get-order-count-day';
-import { getMonthName } from '../../../../utils/date/date.utils';
+import {
+  getMonthName,
+  getTodayLocalString,
+} from '../../../../utils/date/date.utils';
 
 export function useFormatWeeklyOrder() {
   const {
@@ -23,7 +26,9 @@ export function useFormatWeeklyOrder() {
       'Sexta-feira',
       'Sábado',
     ];
-    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Usar data local em vez de UTC para evitar problemas de fuso horário
+    const todayStr = getTodayLocalString();
 
     return ordersList.map(order => {
       const [year, month, day] = (order.data || '').split('-').map(Number);

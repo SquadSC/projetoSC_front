@@ -1,41 +1,47 @@
 import axios from 'axios';
+import { getUserData } from '../utils/auth'; // Importa a função que pega dados do localStorage
 
-// Configuração da instância do axios para comunicação com a API
+// Configuração da instância do axios
 const api = axios.create({
   baseURL: 'http://localhost:8080',
+  // baseURL: 'http://localhost:3001',
   timeout: 30000, // timeout de 30 segundos (para uploads)
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor para requisições (pode ser usado para adicionar tokens, logs, etc.)
+// 2. ADICIONE O INTERCEPTOR de Requisição
+// Isso "intercepta" toda requisição ANTES dela ser enviada
 api.interceptors.request.use(
-  config => {
-    // Aqui você pode adicionar tokens de autenticação, logs, etc.
-    console.log(
-      `Making ${config.method?.toUpperCase()} request to ${config.url}`,
-    );
+  (config) => {
+    // Pega os dados do usuário (que contêm o token) do localStorage
+    const userData = getUserData(); //
+
+    // Se o usuário está logado e tem um token
+    if (userData && userData.token) {
+      // Adiciona o token no cabeçalho 'Authorization'
+      config.headers['Authorization'] = `Bearer ${userData.token}`;
+    }
+    
+    // Retorna a configuração modificada para o Axios continuar
     return config;
   },
-  error => {
+  (error) => {
+    // Em caso de erro na configuração da requisição
     return Promise.reject(error);
   },
 );
 
-// Interceptor para respostas (pode ser usado para tratamento global de erros)
+// (Opcional, mas bom para debug) Interceptor de Resposta
 api.interceptors.response.use(
-  response => {
-    return response;
-  },
+  response => response,
   error => {
-    // Tratamento global de erros
-    console.error('API Error:', error.response?.data || error.message);
+    console.error("Erro na resposta da API:", error.response?.data || error.message);
     return Promise.reject(error);
-  },
+  }
 );
+
 
 export { api };
-
-// Exportação para compatibilidade com o código existente
 export { api as request };

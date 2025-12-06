@@ -24,6 +24,6 @@ export const ROUTES_PATHS = {
   ORDER_SUMMARY_CAKE: '/order-summary-cake',
   DETAIL_ORDER: '/detail-order',
   NUMBER_GUESTS: '/number-guests',
+  PROFILE: '/profile', 
   ORDERS: '/orders',
-  // PENDING_ORDERS:'/pending-orders',
 };
