@@ -19,89 +19,157 @@ export function PendingOrderSelectedController() {
    * Busca os dados do pedido e do cliente do backend
    * Formata os dados para exibição na view
    */
-  useEffect(() => {
-    const fetchOrder = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // Buscar dados do pedido
-        const response = await api.get(`/pedidos/${id}`);
-        const pedidoData = response.data;
+  const fetchOrder = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Buscar dados do pedido
+      const response = await api.get(`/pedidos/${id}`);
+      const pedidoData = response.data;
 
-        // Buscar dados do cliente se houver clienteId
-        let clienteData = null;
-        if (pedidoData.clienteId) {
-          try {
-            const clienteResponse = await api.get(`/usuarios/${pedidoData.clienteId}`);
-            clienteData = clienteResponse.data;
-          } catch (clienteErr) {
-            console.warn('Erro ao buscar dados do cliente:', clienteErr);
-            // Continua mesmo se não conseguir buscar o cliente
+      // Buscar dados do cliente se houver clienteId
+      let clienteData = null;
+      if (pedidoData.clienteId) {
+        try {
+          const clienteResponse = await api.get(
+            `/usuarios/${pedidoData.clienteId}`,
+          );
+          clienteData = clienteResponse.data;
+        } catch (clienteErr) {
+          console.warn('Erro ao buscar dados do cliente:', clienteErr);
+          // Continua mesmo se não conseguir buscar o cliente
+        }
+      }
+
+      // Buscar dados do endereço se houver enderecoId
+      let enderecoCompleto = null;
+      if (pedidoData.enderecoId) {
+        try {
+          const enderecoResponse = await api.get(
+            `/enderecos/${pedidoData.enderecoId}`,
+          );
+          enderecoCompleto = enderecoResponse.data;
+        } catch (enderecoErr) {
+          console.warn('Erro ao buscar dados do endereço:', enderecoErr);
+          // Continua mesmo se não conseguir buscar o endereço
+        }
+      }
+
+      // Mapear os dados do backend para o formato esperado pela view
+      // Usa endereço completo buscado ou endereço direto do pedido
+      const endereco = enderecoCompleto || pedidoData.endereco;
+
+      // Função para formatar endereço de forma mais robusta
+      const formatAddress = (endereco, isRetirada) => {
+        // Se é retirada, mostrar informação do ateliê
+        if (isRetirada) {
+          return 'Retirada no ateliê - Trav. La Paloma, 23 - Jardim da Conquista - 08343-190';
+        }
+
+        if (!endereco) return 'Endereço não informado';
+
+        // Verificar se campos essenciais existem
+        if (!endereco.logradouro && !endereco.numero) {
+          return 'Endereço não informado';
+        }
+
+        const logradouro = endereco.logradouro || '';
+        const numero = endereco.numero || '';
+        const complemento = endereco.complemento || '';
+        const bairro = endereco.bairro || '';
+        const cidade = endereco.cidade || '';
+        const cep = endereco.cep || '';
+
+        // Monta endereço linha por linha
+        let enderecoCompleto = '';
+
+        // Linha 1: Logradouro, número e complemento
+        if (logradouro || numero) {
+          enderecoCompleto += `${logradouro}${
+            logradouro && numero ? ', ' : ''
+          }${numero}`;
+          if (complemento) {
+            enderecoCompleto += ` - ${complemento}`;
           }
         }
 
-        // Mapear os dados do backend para o formato esperado pela view
-        const endereco = pedidoData.endereco;
-        const cepFormatado = endereco?.cep ? maskCep(endereco.cep) : '';
-        const enderecoFormatado = endereco
-          ? `${endereco.logradouro}, ${endereco.numero} - ${cepFormatado}`
-          : 'Endereço não informado';
-
-        // Formatar data e hora de entrega
-        const dtEntrega = pedidoData.dtEntregaEsperada
-          ? new Date(pedidoData.dtEntregaEsperada)
-          : null;
-        const deliveryDate = dtEntrega
-          ? dtEntrega.toLocaleDateString('pt-BR')
-          : null;
-        const deliveryTime = dtEntrega
-          ? dtEntrega.toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })
-          : null;
-
-        // Formatar data de cadastro do cliente (usar dataUltimoLogin como referência se não houver data de cadastro)
-        const memberSince = clienteData?.dataUltimoLogin
-          ? new Date(clienteData.dataUltimoLogin).toLocaleDateString('pt-BR')
-          : pedidoData.dtPedido
-          ? new Date(pedidoData.dtPedido).toLocaleDateString('pt-BR')
-          : '';
-
-        // Mapear para o formato esperado pela view
-        const orderMapped = {
-          idPedido: pedidoData.idPedido,
-          id: pedidoData.idPedido,
-          precoTotal: pedidoData.precoTotal || 0,
-          total: pedidoData.precoTotal || 0,
-          paidPercent: 50, // Valor padrão, pode ser ajustado se houver no backend
-          dtEntregaEsperada: pedidoData.dtEntregaEsperada,
-          deliveryDate: deliveryDate,
-          deliveryTime: deliveryTime,
-          address: enderecoFormatado,
-          statusPedido: pedidoData.statusPedido, // Manter a descrição do status
-          statusId: getStatusIdFromDescription(pedidoData.statusPedido) || 2, // Calcular ID do status
-          // Dados do cliente vindos do backend
-          customer: {
-            name: clienteData?.nome || 'Cliente',
-            memberSince: memberSince,
-          },
-          itensPedido: pedidoData.itensPedido || [],
-        };
-
-        setOrder(orderMapped);
-      } catch (err) {
-        console.error('Erro ao buscar pedido:', err);
-        if (err.response?.status === 404) {
-          setError('Pedido não encontrado.');
-        } else {
-          setError('Não foi possível carregar os dados do pedido.');
+        // Linha 2: Bairro e cidade
+        if (bairro || cidade) {
+          if (enderecoCompleto) enderecoCompleto += ' - ';
+          enderecoCompleto += `${bairro}${
+            bairro && cidade ? ', ' : ''
+          }${cidade}`;
         }
-      } finally {
-        setLoading(false);
-      }
-    };
 
+        // Linha 3: CEP
+        if (cep) {
+          if (enderecoCompleto) enderecoCompleto += ' - ';
+          enderecoCompleto += maskCep(cep);
+        }
+
+        return enderecoCompleto.trim() || 'Endereço não informado';
+      };
+
+      const enderecoFormatado = formatAddress(endereco, pedidoData.isRetirada);
+
+      // Formatar data e hora de entrega
+      const dtEntrega = pedidoData.dtEntregaEsperada
+        ? new Date(pedidoData.dtEntregaEsperada)
+        : null;
+      const deliveryDate = dtEntrega
+        ? dtEntrega.toLocaleDateString('pt-BR')
+        : null;
+      const deliveryTime = dtEntrega
+        ? dtEntrega.toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+        : null;
+
+      // Formatar data de cadastro do cliente (usar dataUltimoLogin como referência se não houver data de cadastro)
+      const memberSince = clienteData?.dataUltimoLogin
+        ? new Date(clienteData.dataUltimoLogin).toLocaleDateString('pt-BR')
+        : pedidoData.dtPedido
+        ? new Date(pedidoData.dtPedido).toLocaleDateString('pt-BR')
+        : '';
+
+      // Mapear para o formato esperado pela view
+      const orderMapped = {
+        idPedido: pedidoData.idPedido,
+        id: pedidoData.idPedido,
+        precoTotal: pedidoData.precoTotal || 0,
+        total: pedidoData.precoTotal || 0,
+        paidPercent: 50, // Valor padrão, pode ser ajustado se houver no backend
+        dtEntregaEsperada: pedidoData.dtEntregaEsperada,
+        deliveryDate: deliveryDate,
+        deliveryTime: deliveryTime,
+        address: enderecoFormatado,
+        isRetirada: pedidoData.isRetirada || false, // Indica se é retirada no ateliê
+        statusPedido: pedidoData.statusPedido, // Manter a descrição do status
+        statusId: getStatusIdFromDescription(pedidoData.statusPedido) || 2, // Calcular ID do status
+        // Dados do cliente vindos do backend
+        customer: {
+          name: clienteData?.nome || 'Cliente',
+          memberSince: memberSince,
+          phone: clienteData?.telefone || null,
+        },
+        itensPedido: pedidoData.itensPedido || [],
+      };
+
+      setOrder(orderMapped);
+    } catch (err) {
+      console.error('Erro ao buscar pedido:', err);
+      if (err.response?.status === 404) {
+        setError('Pedido não encontrado.');
+      } else {
+        setError('Não foi possível carregar os dados do pedido.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (id) {
       fetchOrder();
     }
@@ -118,16 +186,19 @@ export function PendingOrderSelectedController() {
     try {
       // Avançar para o próximo status ou aceitar (status 5 = Produção)
       // Obter ID do status a partir da descrição ou usar statusId já calculado
-      const currentStatus = order?.statusId || getStatusIdFromDescription(order?.statusPedido) || 2;
+      const currentStatus =
+        order?.statusId || getStatusIdFromDescription(order?.statusPedido) || 2;
       let nextStatus = 3;
-      
+
       if (currentStatus === 2) nextStatus = 3; // Enviado -> Validação
       else if (currentStatus === 3) nextStatus = 4; // Validação -> Pagamento
-      else if (currentStatus === 4) nextStatus = 5; // Pagamento -> Produção (aceitar)
+      else if (currentStatus === 4)
+        nextStatus = 5; // Pagamento -> Produção (aceitar)
+      else if (currentStatus === 5) nextStatus = 7; // Outros casos, mantém o mesmo status
 
       // Atualizar status do pedido
       await api.patch(`/pedidos/alterarStatus/${id}/status/${nextStatus}`);
-      
+
       // Se foi para status 5 (Produção), agendar no Google Calendar
       if (nextStatus === 5) {
         try {
@@ -139,12 +210,14 @@ export function PendingOrderSelectedController() {
             icon: 'warning',
             title: 'Atenção!',
             text: 'Pedido aceito, mas houve um problema ao agendar no calendário. Verifique manualmente.',
-            confirmButtonText: 'OK'
+            confirmButtonText: 'OK',
           });
-          navigate('/pending-orders');
+          setActionLoading(false);
+          // Recarregar dados do pedido para refletir novo status
+          fetchOrder();
           return;
         }
-        
+
         // Popup de sucesso quando aceita e agenda
         Swal.fire({
           icon: 'success',
@@ -163,11 +236,10 @@ export function PendingOrderSelectedController() {
           timer: 2000,
         });
       }
-      
-      // Redirecionar após 2 segundos
-      setTimeout(() => {
-        navigate('/pending-orders');
-      }, 2000);
+
+      // Recarregar dados do pedido para refletir novo status
+      setActionLoading(false);
+      fetchOrder();
     } catch (err) {
       console.error('Erro ao aceitar pedido:', err);
       setError('Não foi possível aceitar o pedido. Tente novamente.');
@@ -175,9 +247,8 @@ export function PendingOrderSelectedController() {
         icon: 'error',
         title: 'Erro!',
         text: 'Não foi possível aceitar o pedido. Tente novamente.',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
       });
-    } finally {
       setActionLoading(false);
     }
   };
@@ -211,7 +282,7 @@ export function PendingOrderSelectedController() {
     try {
       // Cancelar pedido (status 8 = Cancelado)
       await api.patch(`/pedidos/alterarStatus/${id}/status/8`);
-      
+
       // Popup de sucesso após recusar
       Swal.fire({
         icon: 'success',
@@ -220,11 +291,10 @@ export function PendingOrderSelectedController() {
         showConfirmButton: false,
         timer: 2000,
       });
-      
-      // Redirecionar após 2 segundos
-      setTimeout(() => {
-        navigate('/pending-orders');
-      }, 2000);
+
+      // Recarregar dados do pedido para refletir novo status
+      setActionLoading(false);
+      fetchOrder();
     } catch (err) {
       console.error('Erro ao recusar pedido:', err);
       setError('Não foi possível recusar o pedido. Tente novamente.');
@@ -232,9 +302,8 @@ export function PendingOrderSelectedController() {
         icon: 'error',
         title: 'Erro!',
         text: 'Não foi possível recusar o pedido. Tente novamente.',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
       });
-    } finally {
       setActionLoading(false);
     }
   };
@@ -242,25 +311,22 @@ export function PendingOrderSelectedController() {
   /**
    * Navega para a tela de detalhes do bolo selecionado
    */
-  const handleViewCakeDetails = (item) => {
+  const handleViewCakeDetails = item => {
     const orderId = order?.idPedido || order?.id;
     const itemId = item.idItemPedido;
-    
+
     if (!orderId || !itemId) {
       console.error('IDs do pedido ou item não disponíveis');
       return;
     }
 
     // Navegar para a tela de detalhes do bolo, passando o item via state
-    navigate(
-      `/pending-order-selected/${orderId}/cake/${itemId}`,
-      {
-        state: {
-          item: item,
-          orderId: orderId,
-        },
-      }
-    );
+    navigate(`/pending-order-selected/${orderId}/cake/${itemId}`, {
+      state: {
+        item: item,
+        orderId: orderId,
+      },
+    });
   };
 
   return (
@@ -276,4 +342,3 @@ export function PendingOrderSelectedController() {
     />
   );
 }
-

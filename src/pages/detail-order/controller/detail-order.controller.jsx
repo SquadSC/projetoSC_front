@@ -5,6 +5,11 @@ import OrderDetailsView from '../view/detail-order.view';
 import { api } from '../../../services/api';
 import { maskCep } from '../../../utils/mask/mask.utils';
 import { ROUTES_PATHS } from '../../../utils/enums/routes-url';
+import {
+  ORDER_STATUS_ID,
+  OrderStatusHelper,
+} from '../../../utils/enums/order-status';
+import Swal from 'sweetalert2';
 
 /**
  * DetailOrderController
@@ -24,35 +29,29 @@ export function DetailOrderController() {
 
   const [order, setOrder] = useState(null); // Dados do pedido formatados
   const [loading, setLoading] = useState(true); // Loading inicial
+  const [actionLoading, setActionLoading] = useState(false); // Loading de ações (cancelar)
   const [error, setError] = useState(null); // Mensagem de erro
   const [refImages, setRefImages] = useState({}); // Images map: { anexoId: blobUrl }
 
   const fetchReferenceImage = async anexoData => {
     // Validar se anexoData é válido e tem ID
     if (!anexoData || typeof anexoData !== 'object') {
-      console.warn(`[DetailOrder] anexoData inválido:`, anexoData);
       return null;
     }
 
     const anexoId = anexoData.idAnexo;
     if (!anexoId || typeof anexoId !== 'number') {
-      console.warn(`[DetailOrder] ID do anexo inválido:`, anexoId);
       return null;
     }
 
     // Verificar se já temos esta imagem em cache
     if (refImages[anexoId]) {
-      console.log(`[DetailOrder] Imagem ${anexoId} já está em cache`);
       return refImages[anexoId];
     }
 
     try {
-      console.log(`[DetailOrder] Buscando imagem anexo ${anexoId}...`);
-
       // Se já temos a imagem em base64, usar ela diretamente
       if (anexoData.imagemAnexo && typeof anexoData.imagemAnexo === 'string') {
-        console.log(`[DetailOrder] Usando imagem base64 do anexo ${anexoId}`);
-
         // Verificar se já tem o prefixo data:image
         let base64Image = anexoData.imagemAnexo;
         if (!base64Image.startsWith('data:')) {
@@ -77,10 +76,6 @@ export function DetailOrderController() {
       const blob = new Blob([response.data], { type: 'image/jpeg' });
       const blobUrl = URL.createObjectURL(blob);
 
-      console.log(
-        `[DetailOrder] Imagem anexo ${anexoId} carregada com sucesso via API`,
-      );
-
       // Armazenar no mapa de imagens
       setRefImages(prev => ({
         ...prev,
@@ -89,10 +84,6 @@ export function DetailOrderController() {
 
       return blobUrl;
     } catch (err) {
-      console.warn(
-        `[DetailOrder] Erro ao buscar imagem anexo ${anexoId}:`,
-        err,
-      );
       return null;
     }
   };
@@ -100,7 +91,6 @@ export function DetailOrderController() {
   // Cleanup: Revogar blob URLs ao desmontar componente
   useEffect(() => {
     return () => {
-      console.log('[DetailOrder] Limpando blob URLs ao desmontar...');
       Object.values(refImages).forEach(url => {
         if (url) URL.revokeObjectURL(url);
       });
@@ -141,7 +131,9 @@ export function DetailOrderController() {
 
     const logradouro = endereco.logradouro || '';
     const numero = endereco.numero || '';
-    const enderecoFormatado = `${logradouro}${logradouro && numero ? ', ' : ''}${numero}${complementoStr}${cepFormatado ? ` - ${cepFormatado}` : ''}`;
+    const enderecoFormatado = `${logradouro}${
+      logradouro && numero ? ', ' : ''
+    }${numero}${complementoStr}${cepFormatado ? ` - ${cepFormatado}` : ''}`;
 
     return enderecoFormatado.trim() || 'Não definido';
   };
@@ -173,13 +165,7 @@ export function DetailOrderController() {
 
         // Processar imagem de referência se houver anexo válido
         if (informacaoBolo.anexo?.idAnexo) {
-          console.log(`[DetailOrder] Processando anexo:`, informacaoBolo.anexo);
           imagemUrl = await fetchReferenceImage(informacaoBolo.anexo);
-        } else {
-          console.log(
-            `[DetailOrder] Item sem anexo válido:`,
-            item.idItemPedido,
-          );
         }
 
         return {
@@ -227,12 +213,9 @@ export function DetailOrderController() {
     if (!clienteId) return null;
 
     try {
-      console.log(`[DetailOrder] Buscando dados do cliente ${clienteId}...`);
       const response = await api.get(`/usuarios/${clienteId}`);
-      console.log('[DetailOrder] Cliente carregado:', response.data);
       return response.data;
     } catch (err) {
-      console.warn('[DetailOrder] Erro ao buscar cliente:', err);
       return null;
     }
   };
@@ -244,6 +227,16 @@ export function DetailOrderController() {
     const memberSince = customerData?.dataUltimoLogin
       ? new Date(customerData.dataUltimoLogin).toLocaleDateString('pt-BR')
       : 'Data não disponível';
+
+    // Função para formatar endereço considerando retirada
+    const formatAddressWithRetirada = (endereco, isRetirada) => {
+      // Se é retirada, mostrar informação do ateliê
+      if (isRetirada) {
+        return 'Retirada no ateliê - Trav. La Paloma, 23 - Jardim da Conquista - 08343-190';
+      }
+      // Caso contrário, formata endereço normalmente
+      return formatAddress(endereco);
+    };
 
     return {
       // Identificadores
@@ -261,8 +254,11 @@ export function DetailOrderController() {
       deliveryTime,
 
       // Localização
-      address: formatAddress(orderData.endereco),
-      isRetirada: orderData.isRetirada,
+      address: formatAddressWithRetirada(
+        orderData.endereco,
+        orderData.isRetirada,
+      ),
+      isRetirada: orderData.isRetirada || false,
 
       // Status
       statusPedidoId: orderData.statusPedidoId,
@@ -271,11 +267,12 @@ export function DetailOrderController() {
       // Forma de pagamento
       formaPagamento: formatFormaPagamento(orderData.formaPagamento),
 
-      // Dados do cliente
+      // Dados do cliente (na verdade é a confeiteira para o cliente)
       customer: {
-        name: customerData?.nome || 'Cliente',
+        name: customerData?.nome || 'Confeiteira',
         memberSince: memberSince,
         avatar: customerData?.fotoPerfil,
+        phone: customerData?.telefone || null,
       },
 
       // Itens do pedido
@@ -290,67 +287,55 @@ export function DetailOrderController() {
   // MAIN FETCH FUNCTION
   // ========================================
 
-  useEffect(() => {
-    const fetchOrderData = async () => {
-      if (!id) {
-        setError('ID do pedido não fornecido');
-        setLoading(false);
+  const fetchOrderData = async () => {
+    if (!id) {
+      setError('ID do pedido não fornecido');
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // 1️⃣ Buscar dados do pedido
+      const pedidoResponse = await api.get(`/pedidos/${id}`);
+      const rawData = pedidoResponse.data;
+
+      // 2️⃣ Validar e extrair dados do pedido
+      if (!validateOrderData(rawData)) {
+        setError(
+          'Nenhum pedido encontrado para este ID. Verifique se o ID está correto.',
+        );
         return;
       }
 
-      setLoading(true);
-      setError(null);
+      const orderData = Array.isArray(rawData) ? rawData[0] : rawData;
 
-      try {
-        console.log(`[DetailOrder] Buscando pedido ${id}...`);
+      // 3️⃣ Buscar dados do cliente (paralelo com processamento de itens)
+      const [customerData, processedItems] = await Promise.all([
+        fetchCustomerData(orderData.clienteId),
+        processOrderItems(orderData.itensPedido),
+      ]);
 
-        // 1️⃣ Buscar dados do pedido
-        const pedidoResponse = await api.get(`/pedidos/${id}`);
-        const rawData = pedidoResponse.data;
+      // 4️⃣ Mapear dados para formato da view
+      const mappedOrder = mapOrderForView(
+        orderData,
+        customerData,
+        processedItems,
+      );
 
-        console.log('[DetailOrder] Dados brutos recebidos:', rawData);
+      setOrder(mappedOrder);
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
+      setError(errorMessage);
+      setOrder(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // 2️⃣ Validar e extrair dados do pedido
-        if (!validateOrderData(rawData)) {
-          console.error('[DetailOrder] Dados do pedido inválidos:', rawData);
-          setError(
-            'Nenhum pedido encontrado para este ID. Verifique se o ID está correto.',
-          );
-          return;
-        }
-
-        const orderData = Array.isArray(rawData) ? rawData[0] : rawData;
-        console.log('[DetailOrder] Dados do pedido validados:', orderData);
-
-        // 3️⃣ Buscar dados do cliente (paralelo com processamento de itens)
-        const [customerData, processedItems] = await Promise.all([
-          fetchCustomerData(orderData.clienteId),
-          processOrderItems(orderData.itensPedido),
-        ]);
-
-        console.log('[DetailOrder] Itens processados:', processedItems);
-
-        // 4️⃣ Mapear dados para formato da view
-        const mappedOrder = mapOrderForView(
-          orderData,
-          customerData,
-          processedItems,
-        );
-
-        setOrder(mappedOrder);
-        console.log('[DetailOrder] Pedido formatado com sucesso:', mappedOrder);
-        console.log('[DetailOrder] RefImages state:', refImages);
-      } catch (err) {
-        console.error('[DetailOrder] Erro ao buscar pedido:', err);
-
-        const errorMessage = getErrorMessage(err);
-        setError(errorMessage);
-        setOrder(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  useEffect(() => {
     fetchOrderData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -389,7 +374,6 @@ export function DetailOrderController() {
   // HANDLER: CANCELAR (VOLTAR)
   // ========================================
   const handleCancel = () => {
-    console.log('[DetailOrder] Voltar para página anterior');
     navigate(-1);
   };
 
@@ -458,14 +442,10 @@ export function DetailOrderController() {
     );
   }
 
-  console.log('refImage ----------------------------', refImages);
-
   // ========================================
   // HANDLER: VER DETALHES DO BOLO
   // ========================================
   const handleViewCakeDetails = cakeItem => {
-    console.log('[DetailOrder] Ver detalhes do bolo:', cakeItem);
-
     if (order?.idPedido && cakeItem?.idItemPedido) {
       // Navegar para tela de detalhes do bolo (rota específica para clientes)
       navigate(
@@ -477,10 +457,71 @@ export function DetailOrderController() {
           },
         },
       );
-    } else {
-      console.warn(
-        '[DetailOrder] Dados insuficientes para navegar para detalhes do bolo',
+    }
+  };
+
+  // ========================================
+  // HANDLER: CANCELAR PEDIDO
+  // ========================================
+  const handleCancelOrder = async () => {
+    // Verificar se o pedido pode ser cancelado
+    if (!OrderStatusHelper.canBeCancelled(order?.statusPedido)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Não é possível cancelar',
+        text: 'Este pedido não pode mais ser cancelado.',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    // Popup de confirmação antes de cancelar
+    const result = await Swal.fire({
+      title: 'Deseja cancelar o pedido?',
+      text: 'Esta ação não poderá ser desfeita.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d32f2f',
+      cancelButtonColor: '#757575',
+      cancelButtonText: 'Não, voltar',
+      confirmButtonText: 'Sim, cancelar pedido',
+    });
+
+    // Se o usuário cancelou a ação, não faz nada
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    setActionLoading(true);
+    setError(null);
+
+    try {
+      // Cancelar pedido (status 8 = Cancelado)
+      await api.patch(
+        `/pedidos/alterarStatus/${id}/status/${ORDER_STATUS_ID.CANCELADO}`,
       );
+
+      // Popup de sucesso após cancelar
+      Swal.fire({
+        icon: 'success',
+        title: 'Pedido cancelado!',
+        text: 'Seu pedido foi cancelado com sucesso.',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      // Recarregar dados do pedido para refletir novo status
+      setActionLoading(false);
+      fetchOrderData();
+    } catch (err) {
+      setError('Não foi possível cancelar o pedido. Tente novamente.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro ao cancelar',
+        text: 'Não foi possível cancelar o pedido. Tente novamente ou entre em contato conosco.',
+        confirmButtonText: 'OK',
+      });
+      setActionLoading(false);
     }
   };
 
@@ -492,7 +533,9 @@ export function DetailOrderController() {
       loading={false}
       error={null}
       order={order}
+      actionLoading={actionLoading}
       onCancel={handleCancel}
+      onCancelOrder={handleCancelOrder}
       onViewCakeDetails={handleViewCakeDetails}
     />
   );

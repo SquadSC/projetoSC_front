@@ -236,8 +236,8 @@ export function HomeView() {
               variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
-              Cada pedido é único, feito especialmente para você, com atenção
-              aos detalhes e ao que você imagina.
+              Cada pedido é preparado especialmente para você, com atenção aos
+              detalhes e ao que deseja para o seu momento.
             </Typography>
           </Box>
 
@@ -269,8 +269,8 @@ export function HomeView() {
               variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
-              Produzimos de forma artesanal, com cuidado e carinho em cada
-              etapa.
+              Produzimos tudo de forma artesanal, com cuidado e carinho do
+              início ao fim, garantindo sabor e qualidade.
             </Typography>
           </Box>
 
@@ -303,8 +303,8 @@ export function HomeView() {
               variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
-              Só usamos ingredientes frescos e selecionados. Aqui não tem massa
-              pronta, tudo é feito do zero.
+              Usamos somente ingredientes frescos e de alta qualidade,
+              garantindo um sabor único e receitas feitas do zero.
             </Typography>
           </Box>
 
@@ -336,8 +336,8 @@ export function HomeView() {
               variant='text'
               sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
             >
-              Você escolhe sabores, tamanhos, recheios e pode enviar referências
-              de decoração para deixar do seu jeitinho.
+              Você escolhe sabores, tamanhos e recheios, além de poder enviar
+              referências para criar algo com a sua cara.
             </Typography>
           </Box>
         </Stack>
