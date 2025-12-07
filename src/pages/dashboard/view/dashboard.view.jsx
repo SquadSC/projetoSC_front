@@ -79,7 +79,15 @@ export function DashboardView({
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               InputLabelProps={{ shrink: true }}
-              sx={{ width: 160 }}
+              inputProps={{
+                max: endDate || undefined, // Não permite data de início maior que data de fim
+              }}
+              sx={{ 
+                width: 160,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                },
+              }}
             />
 
             <TextField
@@ -89,7 +97,15 @@ export function DashboardView({
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               InputLabelProps={{ shrink: true }}
-              sx={{ width: 160 }}
+              inputProps={{
+                min: startDate || undefined, // Não permite data de fim menor que data de início
+              }}
+              sx={{ 
+                width: 160,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                },
+              }}
             />
           </Box>
 
@@ -108,7 +124,7 @@ export function DashboardView({
 
 
 
-        <Grid container spacing={2} sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Grid container spacing={2} sx={{ width: '100%', boxSizing: 'border-box' }}>
           {/* Métricas Gerenciais */}
           <Grid item xs={4} sm={4}>
             <MetricCard
@@ -150,25 +166,31 @@ export function DashboardView({
             </Typography>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <TopIngredientsChart 
-              data={operationalData?.topIngredientsByCategory?.massa || []}
-              category="massa"
-            />
+          <Grid item xs={12} sm={6} md={4} sx={{ width: '100%', minWidth: 0, display: 'flex' }}>
+            <Box sx={{ width: '100%', minWidth: 0 }}>
+              <TopIngredientsChart 
+                data={operationalData?.topIngredientsByCategory?.massa || []}
+                category="massa"
+              />
+            </Box>
           </Grid>
           
-          <Grid item xs={12} sm={6} md={4}>
-            <TopIngredientsChart 
-              data={operationalData?.topIngredientsByCategory?.recheio || []}
-              category="recheio"
-            />
+          <Grid item xs={12} sm={6} md={4} sx={{ width: '100%', minWidth: 0, display: 'flex' }}>
+            <Box sx={{ width: '100%', minWidth: 0 }}>
+              <TopIngredientsChart 
+                data={operationalData?.topIngredientsByCategory?.recheio || []}
+                category="recheio"
+              />
+            </Box>
           </Grid>
           
-          <Grid item xs={12} sm={6} md={4}>
-            <TopIngredientsChart 
-              data={operationalData?.topIngredientsByCategory?.adicional || []}
-              category="adicional"
-            />
+          <Grid item xs={12} sm={6} md={4} sx={{ width: '100%', minWidth: 0, display: 'flex' }}>
+            <Box sx={{ width: '100%', minWidth: 0 }}>
+              <TopIngredientsChart 
+                data={operationalData?.topIngredientsByCategory?.adicional || []}
+                category="adicional"
+              />
+            </Box>
           </Grid>
 
           {/* Top Clientes */}
@@ -181,12 +203,14 @@ export function DashboardView({
             </Typography>
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <TopClientsTable
-              data={managerialData?.topClients || []}
-              title="Clientes"
-              showTotal={true}
-            />
+          <Grid item xs={12} md={6} sx={{ width: '100%', minWidth: 0, display: 'flex' }}>
+            <Box sx={{ width: '100%', minWidth: 0 }}>
+              <TopClientsTable
+                data={managerialData?.topClients || []}
+                title="Clientes"
+                showTotal={true}
+              />
+            </Box>
           </Grid>
         </Grid>
       </Container>

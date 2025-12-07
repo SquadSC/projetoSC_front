@@ -46,27 +46,19 @@ export function DashboardController() {
       }
       const overviewData = await overviewResponse.json();
 
-      // O endpoint /top-ingredientes não aceita parâmetros de data
-      const ingredientsResponse = await fetch(`${baseUrl}/top-ingredientes`);
-      if (!ingredientsResponse.ok) {
-        const errorText = await ingredientsResponse.text();
-        throw new Error(`Erro ao buscar ingredientes: ${errorText}`);
-      }
-      const ingredientsData = await ingredientsResponse.json();
-
-      // Debug: verificar estrutura dos dados
-      console.log('[DashboardController] Resposta completa:', ingredientsData);
-      if (ingredientsData.massa && ingredientsData.massa.length > 0) {
-        console.log('[DashboardController] Primeiro item de massa:', ingredientsData.massa[0]);
-        console.log('[DashboardController] Todas propriedades do primeiro item de massa:', Object.keys(ingredientsData.massa[0]));
-      }
-      if (ingredientsData.recheio && ingredientsData.recheio.length > 0) {
-        console.log('[DashboardController] Primeiro item de recheio:', ingredientsData.recheio[0]);
-        console.log('[DashboardController] Todas propriedades do primeiro item de recheio:', Object.keys(ingredientsData.recheio[0]));
-      }
-      if (ingredientsData.adicional && ingredientsData.adicional.length > 0) {
-        console.log('[DashboardController] Primeiro item de adicional:', ingredientsData.adicional[0]);
-        console.log('[DashboardController] Todas propriedades do primeiro item de adicional:', Object.keys(ingredientsData.adicional[0]));
+      // Buscar ingredientes com filtro de período (se datas estiverem definidas)
+      let ingredientsData = { massa: [], recheio: [], adicional: [] };
+      if (startDate && endDate) {
+        const ingredientsParams = new URLSearchParams({
+          dataInicio: startDate,
+          dataFim: endDate,
+        });
+        const ingredientsResponse = await fetch(
+          `${baseUrl}/top-ingredientes?${ingredientsParams}`,
+        );
+        if (ingredientsResponse.ok) {
+          ingredientsData = await ingredientsResponse.json();
+        }
       }
 
       const ingredientsByCategory = {
@@ -153,7 +145,29 @@ export function DashboardController() {
       alert('Por favor, selecione as datas de início e fim.');
       return;
     }
+    if (new Date(startDate) > new Date(endDate)) {
+      alert('A data de início não pode ser posterior à data de fim.');
+      return;
+    }
     fetchManagerialData();
+    fetchOperationalData(); // Atualizar também os rankings de ingredientes
+  };
+
+  const handleStartDateChange = (newDate) => {
+    setStartDate(newDate);
+    // Se a data de início for maior que a data de fim, ajustar a data de fim
+    if (newDate && endDate && new Date(newDate) > new Date(endDate)) {
+      setEndDate(newDate);
+    }
+  };
+
+  const handleEndDateChange = (newDate) => {
+    // Não permitir data de fim anterior à data de início
+    if (newDate && startDate && new Date(newDate) < new Date(startDate)) {
+      alert('A data de fim não pode ser anterior à data de início.');
+      return;
+    }
+    setEndDate(newDate);
   };
 
   const handleRefresh = () => {
@@ -172,8 +186,8 @@ export function DashboardController() {
       error={error}
       startDate={startDate}
       endDate={endDate}
-      setStartDate={setStartDate}
-      setEndDate={setEndDate}
+      setStartDate={handleStartDateChange}
+      setEndDate={handleEndDateChange}
       onDateFilter={handleDateFilter}
       onRefresh={handleRefresh}
     />

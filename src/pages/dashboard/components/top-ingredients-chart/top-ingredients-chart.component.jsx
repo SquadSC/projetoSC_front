@@ -32,8 +32,8 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
   const displayTitle = title || config.title;
 
   return (
-    <Card sx={{ height: '100%', width : '100%', borderRadius: '8px' }}>
-      <CardContent sx={{ p: 3 }}>
+    <Card sx={{ height: '100%', width: '100%', minWidth: '100%', borderRadius: '8px', boxSizing: 'border-box' }}>
+      <CardContent sx={{ p: 3, width: '100%', boxSizing: 'border-box' }}>
         <Box mb={3} display="flex" alignItems="center" gap={1}>
     
           <Box>
@@ -73,12 +73,14 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
               <Box
                 key={ingredient.id || ingredient.nome}
                 display="flex"
-                alignItems="center"
+                alignItems="flex-start"
                 justifyContent="space-between"
-                width={'80vw'}
                 mb={2}
                 p={2}
                 sx={{
+                  width: '100%',
+                  maxWidth: '100%',
+                  boxSizing: 'border-box',
                   borderRadius: '8px',
                   backgroundColor: index === 0
                     ? config.color + '10'
@@ -95,15 +97,31 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
                   },
                 }}
               >
-                <Box display="flex" alignItems="center" gap={2}>
-                  <Box>
+                <Box 
+                  display="flex" 
+                  alignItems="flex-start" 
+                  gap={2}
+                  sx={{
+                    flex: 1,
+                    minWidth: 0, // Permite que o conteúdo encolha
+                  }}
+                >
+                  <Box
+                    sx={{
+                      flex: 1,
+                      minWidth: 0, // Permite que o texto encolha
+                    }}
+                  >
                     <Typography
-                      variant="body1"
+                      variant="body2"
                       sx={{
                         fontWeight: index === 0 ? 'bold' : 'medium',
                         color: index === 0
                           ? config.color
                           : theme.palette.text.primary,
+                        fontSize: '0.875rem',
+                        wordBreak: 'break-word',
+                        lineHeight: 1.4,
                       }}
                     >
                       {ingredient.nome}
@@ -129,6 +147,9 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
                     color: index === 0
                       ? 'white'
                       : theme.palette.text.primary,
+                    flexShrink: 0, // Não encolhe o chip
+                    ml: 1,
+                    mt: 0.5, // Alinha com o topo do texto quando quebra linha
                   }}
                 />
               </Box>
