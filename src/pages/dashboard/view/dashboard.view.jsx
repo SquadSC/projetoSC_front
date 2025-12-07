@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import theme from '../../../theme';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
+import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
 import { MetricCard } from '../components/metric-card/metric-card.component';
 import { TopIngredientsChart } from '../components/top-ingredients-chart/top-ingredients-chart.component';
 import { TopClientsTable } from '../components/top-clients-table/top-clients-table.component';
@@ -57,53 +58,57 @@ export function DashboardView({
 
   return (
     <>
-      <Container maxWidth="xl" sx={{ py: 4, pb: 10 }}>
+      <Container maxWidth="xl" sx={{ pb: 10 }}>
         {/* Header */}
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            fontWeight: 'bold',
-            color: theme.palette.primary.main,
-            mb: 3
-          }}
-        >
-          Dashboard
-        </Typography>
+        <Box sx={{ p: 3, pb: 0 }}>
+          <PageHeader
+            titulo="Dashboard"
+            showBackButton={true}
+          />
+        </Box>
 
         {/* Filtros de Data */}
-        <Box mb={3} sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-          <TextField
-            type="date"
-            size="small"
-            label="Data Início"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            sx={{ width: 150 }}
-          />
+        <Box mb={3} sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
 
-          <TextField
-            type="date"
-            size="small"
-            label="Data Fim"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            sx={{ width: 150 }}
-          />
+
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+            <TextField
+              type="date"
+              size="small"
+              label="Data Início"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              sx={{ width: 160 }}
+            />
+
+            <TextField
+              type="date"
+              size="small"
+              label="Data Fim"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              sx={{ width: 160 }}
+            />
+          </Box>
 
           <Button
             variant="contained"
             size="small"
             onClick={onDateFilter}
-            sx={{ backgroundColor: theme.palette.primary.main }}
+            sx={{ 
+              backgroundColor: theme.palette.primary.main,
+              borderRadius: '8px',
+            }}
           >
             Filtrar
           </Button>
         </Box>
 
-        <Grid container spacing={2}>
+
+
+        <Grid container spacing={2} sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           {/* Métricas Gerenciais */}
           <Grid item xs={4} sm={4}>
             <MetricCard
@@ -136,9 +141,12 @@ export function DashboardView({
           </Grid>
 
           {/* Top Ingredientes */}
-          <Grid item xs={12}>
-            <Typography variant="h6" sx={{ mt: 3, mb: 2, color: theme.palette.primary.main }}>
-              Top Ingredientes Mais Utilizados (Pedidos Concluídos)
+          <Grid item xs={12} mt={4}>
+            <Typography variant="subTitle" fontWeight="semiBold" sx={{ mt: 4, mb: 1, color: theme.palette.primary.main }}>
+              Ranking de Ingredientes
+            </Typography>
+            <Typography variant="subTitleLittle" fontWeight="medium" sx={{ mt: 1, color: theme.palette.text.secondary, mb: 2, display: 'block' }}>
+              Os mais utilizados em pedidos concluídos
             </Typography>
           </Grid>
 
@@ -164,16 +172,19 @@ export function DashboardView({
           </Grid>
 
           {/* Top Clientes */}
-          <Grid item xs={12}>
-            <Typography variant="h6" sx={{ mt: 3, mb: 2, color: theme.palette.primary.main }}>
-              Top Clientes - Pedidos Concluídos no Período
+          <Grid item xs={12} mt={4}>
+            <Typography variant="subTitle" fontWeight="semiBold" sx={{ mt: 3, mb: 1, color: theme.palette.primary.main }}>
+              Ranking de Clientes
+            </Typography>
+            <Typography variant="subTitleLittle" fontWeight="medium" sx={{ mt: 1, color: theme.palette.text.secondary, mb: 2, display: 'block' }}>
+              Quem mais comprou em pedidos já concluídos
             </Typography>
           </Grid>
 
           <Grid item xs={12} md={6}>
             <TopClientsTable
               data={managerialData?.topClients || []}
-              title="Ranking de Clientes"
+              title="Clientes"
               showTotal={true}
             />
           </Grid>

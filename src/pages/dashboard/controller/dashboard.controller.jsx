@@ -21,10 +21,12 @@ export function DashboardController() {
   }, []);
 
   useEffect(() => {
-    fetchOperationalData();
-    const interval = setInterval(fetchOperationalData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    if (startDate && endDate) {
+      fetchOperationalData();
+      const interval = setInterval(fetchOperationalData, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -44,12 +46,28 @@ export function DashboardController() {
       }
       const overviewData = await overviewResponse.json();
 
+      // O endpoint /top-ingredientes não aceita parâmetros de data
       const ingredientsResponse = await fetch(`${baseUrl}/top-ingredientes`);
       if (!ingredientsResponse.ok) {
         const errorText = await ingredientsResponse.text();
         throw new Error(`Erro ao buscar ingredientes: ${errorText}`);
       }
       const ingredientsData = await ingredientsResponse.json();
+
+      // Debug: verificar estrutura dos dados
+      console.log('[DashboardController] Resposta completa:', ingredientsData);
+      if (ingredientsData.massa && ingredientsData.massa.length > 0) {
+        console.log('[DashboardController] Primeiro item de massa:', ingredientsData.massa[0]);
+        console.log('[DashboardController] Todas propriedades do primeiro item de massa:', Object.keys(ingredientsData.massa[0]));
+      }
+      if (ingredientsData.recheio && ingredientsData.recheio.length > 0) {
+        console.log('[DashboardController] Primeiro item de recheio:', ingredientsData.recheio[0]);
+        console.log('[DashboardController] Todas propriedades do primeiro item de recheio:', Object.keys(ingredientsData.recheio[0]));
+      }
+      if (ingredientsData.adicional && ingredientsData.adicional.length > 0) {
+        console.log('[DashboardController] Primeiro item de adicional:', ingredientsData.adicional[0]);
+        console.log('[DashboardController] Todas propriedades do primeiro item de adicional:', Object.keys(ingredientsData.adicional[0]));
+      }
 
       const ingredientsByCategory = {
         massa: ingredientsData.massa || [],

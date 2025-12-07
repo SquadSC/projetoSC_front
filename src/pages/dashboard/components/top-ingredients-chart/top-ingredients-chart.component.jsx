@@ -11,17 +11,14 @@ import theme from '../../../../theme';
 const categoryConfig = {
   massa: {
     title: 'Massas',
-    icon: '🍰',
     color: theme.palette.primary.main
   },
   recheio: {
     title: 'Recheios',
-    icon: '🥧',
     color: theme.palette.primary.main
   },
   adicional: {
     title: 'Adicionais',
-    icon: '🍯',
     color: theme.palette.primary.main
   }
 };
@@ -29,36 +26,28 @@ const categoryConfig = {
 export function TopIngredientsChart({ data = [], category = '', title }) {
   const config = categoryConfig[category] || {
     title: 'Ingredientes',
-    icon: '🧁',
     color: theme.palette.primary.main
   };
   
   const displayTitle = title || config.title;
 
   return (
-    <Card sx={{ height: '100%', width : '100%' }}>
+    <Card sx={{ height: '100%', width : '100%', borderRadius: '8px' }}>
       <CardContent sx={{ p: 3 }}>
         <Box mb={3} display="flex" alignItems="center" gap={1}>
-          <Avatar
-            sx={{
-              width: 24,
-              height: 24,
-              backgroundColor: 'transparent',
-              fontSize: '1rem',
-            }}
-          >
-            {config.icon}
-          </Avatar>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 'bold',
-              color: config.color,
-              mb: 0,
-            }}
-          >
-            {displayTitle}
-          </Typography>
+    
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 'bold',
+                color: config.color,
+                mb: 0,
+              }}
+            >
+              {displayTitle}
+            </Typography>
+          </Box>
         </Box>
 
         <Box>
@@ -78,7 +67,9 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
               </Typography>
             </Box>
           ) : (
-            data.map((ingredient, index) => (
+            data.map((ingredient, index) => {
+              const isPremium = ingredient.premium || false;
+              return (
               <Box
                 key={ingredient.id || ingredient.nome}
                 display="flex"
@@ -88,11 +79,13 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
                 mb={2}
                 p={2}
                 sx={{
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   backgroundColor: index === 0
                     ? config.color + '10'
                     : theme.palette.grey[50],
-                  border: index === 0
+                  border: isPremium
+                    ? '2px solid #CDA243'
+                    : index === 0
                     ? `1px solid ${config.color}30`
                     : `1px solid ${theme.palette.grey[200]}`,
                   transition: 'all 0.2s ease',
@@ -129,6 +122,7 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
                   size="small"
                   sx={{
                     fontWeight: 'bold',
+                    borderRadius: '8px',
                     backgroundColor: index === 0
                       ? config.color
                       : theme.palette.grey[300],
@@ -138,7 +132,8 @@ export function TopIngredientsChart({ data = [], category = '', title }) {
                   }}
                 />
               </Box>
-            ))
+            );
+            })
           )}
         </Box>
       </CardContent>

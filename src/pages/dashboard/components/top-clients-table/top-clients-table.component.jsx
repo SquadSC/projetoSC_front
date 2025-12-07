@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import theme from '../../../../theme';
 
-export function TopClientsTable({ data = [], showReturnRate = false, title = "Top Clientes" }) {
+export function TopClientsTable({ data = [], showReturnRate = false, title = "Ranking de Clientes", subtitle }) {
   const getInitials = (name) => {
     return name
       .split(' ')
@@ -19,29 +19,21 @@ export function TopClientsTable({ data = [], showReturnRate = false, title = "To
   };
 
   return (
-    <Card sx={{ height: '100%', width: '100%' }}>
+    <Card sx={{ height: '100%', width: '100%', borderRadius: '8px' }}>
       <CardContent sx={{ p: 3 }}>
         <Box mb={3} display="flex" alignItems="center" gap={1}>
-          <Avatar
-            sx={{
-              width: 24,
-              height: 24,
-              backgroundColor: 'transparent',
-              fontSize: '1rem',
-            }}
-          >
-            👥
-          </Avatar>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 'bold',
-              color: theme.palette.primary.main,
-              mb: 0,
-            }}
-          >
-            {title}
-          </Typography>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 'bold',
+                color: theme.palette.primary.main,
+                mb: 0,
+              }}
+            >
+              {title}
+            </Typography>
+          </Box>
         </Box>
 
         <Box>
@@ -61,7 +53,8 @@ export function TopClientsTable({ data = [], showReturnRate = false, title = "To
               </Typography>
             </Box>
           ) : (
-            data.map((client, index) => (
+            data.map((client, index) => {
+              return (
               <Box
                 key={client.name}
                 display="flex"
@@ -71,7 +64,7 @@ export function TopClientsTable({ data = [], showReturnRate = false, title = "To
                 mb={2}
                 p={2}
                 sx={{
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   backgroundColor: index === 0
                     ? theme.palette.primary.main + '10'
                     : theme.palette.grey[50],
@@ -112,6 +105,7 @@ export function TopClientsTable({ data = [], showReturnRate = false, title = "To
                   size="small"
                   sx={{
                     fontWeight: 'bold',
+                    borderRadius: '8px',
                     backgroundColor: index === 0
                       ? theme.palette.primary.main
                       : theme.palette.grey[300],
@@ -121,7 +115,8 @@ export function TopClientsTable({ data = [], showReturnRate = false, title = "To
                   }}
                 />
               </Box>
-            ))
+            );
+            })
           )}
         </Box>
       </CardContent>
