@@ -21,10 +21,12 @@ export function DashboardController() {
   }, []);
 
   useEffect(() => {
-    fetchOperationalData();
-    const interval = setInterval(fetchOperationalData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    if (startDate && endDate) {
+      fetchOperationalData();
+      const interval = setInterval(fetchOperationalData, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -44,12 +46,20 @@ export function DashboardController() {
       }
       const overviewData = await overviewResponse.json();
 
-      const ingredientsResponse = await fetch(`${baseUrl}/top-ingredientes`);
-      if (!ingredientsResponse.ok) {
-        const errorText = await ingredientsResponse.text();
-        throw new Error(`Erro ao buscar ingredientes: ${errorText}`);
+      // Buscar ingredientes com filtro de período (se datas estiverem definidas)
+      let ingredientsData = { massa: [], recheio: [], adicional: [] };
+      if (startDate && endDate) {
+        const ingredientsParams = new URLSearchParams({
+          dataInicio: startDate,
+          dataFim: endDate,
+        });
+        const ingredientsResponse = await fetch(
+          `${baseUrl}/top-ingredientes?${ingredientsParams}`,
+        );
+        if (ingredientsResponse.ok) {
+          ingredientsData = await ingredientsResponse.json();
+        }
       }
-      const ingredientsData = await ingredientsResponse.json();
 
       const ingredientsByCategory = {
         massa: ingredientsData.massa || [],
@@ -135,7 +145,29 @@ export function DashboardController() {
       alert('Por favor, selecione as datas de início e fim.');
       return;
     }
+    if (new Date(startDate) > new Date(endDate)) {
+      alert('A data de início não pode ser posterior à data de fim.');
+      return;
+    }
     fetchManagerialData();
+    fetchOperationalData(); // Atualizar também os rankings de ingredientes
+  };
+
+  const handleStartDateChange = (newDate) => {
+    setStartDate(newDate);
+    // Se a data de início for maior que a data de fim, ajustar a data de fim
+    if (newDate && endDate && new Date(newDate) > new Date(endDate)) {
+      setEndDate(newDate);
+    }
+  };
+
+  const handleEndDateChange = (newDate) => {
+    // Não permitir data de fim anterior à data de início
+    if (newDate && startDate && new Date(newDate) < new Date(startDate)) {
+      alert('A data de fim não pode ser anterior à data de início.');
+      return;
+    }
+    setEndDate(newDate);
   };
 
   const handleRefresh = () => {
@@ -154,8 +186,8 @@ export function DashboardController() {
       error={error}
       startDate={startDate}
       endDate={endDate}
-      setStartDate={setStartDate}
-      setEndDate={setEndDate}
+      setStartDate={handleStartDateChange}
+      setEndDate={handleEndDateChange}
       onDateFilter={handleDateFilter}
       onRefresh={handleRefresh}
     />
