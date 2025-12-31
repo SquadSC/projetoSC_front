@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RegisterUserView } from '../view/register-user.view';
 import { request } from '../../../services/api';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,7 @@ export function RegisterUserController() {
     password: '',
     confirmPassword: '',
   });
+  
   const [errors, setErrors] = useState({});
 
   function handleChange(field, value) {
