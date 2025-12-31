@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import theme from '../../../theme';
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
+import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
 
 // Components
 import { MetricCard } from '../components/metric-card/metric-card.component';
@@ -68,6 +69,14 @@ export function DashboardOperationalView({
   return (
     <>
       <Container maxWidth="xl" sx={{ py: 0, pb: 10 }}>
+        {/* Header */}
+        <Box sx={{ p: 3, pb: 0 }}>
+          <PageHeader
+            titulo="Dashboard"
+            showBackButton={true}
+          />
+        </Box>
+
         <Grid container spacing={2}>
           {/* Métricas operacionais atuais - 4 cards */}
           <Grid item xs={12} sm={6} md={3}>

@@ -22,6 +22,7 @@ import { formatDateToLocalString } from '../../../utils/date/date.utils';
 
 // Components
 import { BottomNavigationComponent } from '../../../components/bottomNavigation/bottom-navigation.component';
+import { PageHeader } from '../../../components/header-jornada/header-jornada.component';
 import { MetricCard } from '../components/metric-card/metric-card.component';
 import { TopClientsTable } from '../components/top-clients-table/top-clients-table.component';
 import { RevenueChart } from '../components/revenue-chart/revenue-chart.component';
@@ -84,6 +85,14 @@ export function DashboardManagerialView({
   return (
     <>
       <Container maxWidth='xl' sx={{ py: 0, pb: 10 }}>
+        {/* Header */}
+        <Box sx={{ p: 3, pb: 0 }}>
+          <PageHeader
+            titulo="Dashboard"
+            showBackButton={true}
+          />
+        </Box>
+
         {/* Filtros Gerenciais */}
         <Box mb={3} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <TextField
@@ -110,7 +119,10 @@ export function DashboardManagerialView({
             variant='contained'
             size='small'
             onClick={onDateFilter}
-            sx={{ backgroundColor: theme.palette.primary.main }}
+            sx={{ 
+              backgroundColor: theme.palette.primary.main,
+              borderRadius: '8px',
+            }}
           >
             Filtrar
           </Button>
@@ -123,7 +135,6 @@ export function DashboardManagerialView({
               title='Faturamento'
               value={`R$ ${dashboardData?.totalRevenue?.toFixed(2) || '0.00'}`}
               subtitle={`${startDate} a ${endDate}`}
-              icon='💰'
               color={theme.palette.success.main}
               compact={true}
             />
@@ -133,7 +144,7 @@ export function DashboardManagerialView({
           <Grid item xs={12} sm={6} md={4}>
             <TopClientsTable
               data={dashboardData?.topClients || []}
-              title='Top Clientes'
+              title='Ranking de Clientes'
               showTotal={true}
             />
           </Grid>
