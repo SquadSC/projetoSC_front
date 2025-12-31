@@ -6,7 +6,9 @@ export const validators = {
   ],
   phone: [
     { check: v => !!v, msg: 'Telefone obrigatório' },
-    { check: v => /^\d+$/.test(v) && (v.length === 10 || v.length === 11), msg: 'Informe seu telefone com DDD' },
+    { check: v => /^\d+$/.test(v), msg: 'Telefone deve conter apenas números' },
+    { check: v => v.length === 11, msg: 'Telefone deve ter 11 dígitos (DDD + número)' },
+    { check: v => /^[1-9]{2}9/.test(v), msg: 'Número de celular deve começar com 9 após o DDD' },
   ],
   email: [
     { check: v => !!v, msg: 'E-mail obrigatório' },
